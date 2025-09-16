@@ -3,7 +3,7 @@ import { shouldCompress, compressData } from '../utils/compression';
 import Swal from 'sweetalert2';
 
 const handlePDFGeneration = async (proposal) => {
-    const project = JSON.parse(localStorage.getItem('canva-project')) || JSON.parse(proposal);
+    const project = proposal;
     const loadingDiv = document.createElement('div');
     loadingDiv.style.cssText = `
         position: fixed;
@@ -23,7 +23,6 @@ const handlePDFGeneration = async (proposal) => {
     loadingDiv.innerHTML = 'Preparing PDF export...';
     document.body.appendChild(loadingDiv);
     try {
-        // console.log("Sending request to generate PDF...");
         let jsonData = null;
         let isCompressed = false;
         if (shouldCompress(project)) {
@@ -48,11 +47,8 @@ const handlePDFGeneration = async (proposal) => {
             }
         );
 
-        // console.log("Response status:", res.status);
         const contentType = (res.headers && (res.headers['content-type'] || res.headers['Content-Type'])) || '';
-        // console.log("Content type:", contentType);
 
-        // If server sent JSON, extract and show the error/info
         if (contentType && contentType.includes('application/json')) {
             const text = await res.data.text();
             try {
@@ -63,30 +59,23 @@ const handlePDFGeneration = async (proposal) => {
             }
         }
 
-        // Expect a PDF blob
         const pdfBlob = res.data && res.data instanceof Blob ? res.data : new Blob([res.data], { type: 'application/pdf' });
 
         const blobUrl = URL.createObjectURL(pdfBlob);
-        // console.log("Blob URL:", blobUrl);
-        // Download automatically
         const link = document.createElement("a");
         link.href = blobUrl;
         link.download = `proposal-${new Date()
             .toISOString()
             .slice(0, 19)
             .replace(/:/g, "-")}.pdf`;
-        // console.log("Link:", link);
         document.body.appendChild(link);
         link.click();
         link.remove();
 
-        // Optional: open in new tab
         window.open(blobUrl, "_blank");
 
-        // Cleanup
         setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
     } catch (err) {
-        // console.error("PDF export error:", err);
         Swal.fire({
             title: "Failed to generate PDF. Please try again.",
             icon: "error",
@@ -95,7 +84,6 @@ const handlePDFGeneration = async (proposal) => {
             showCancelButton: false,
         });
     } finally {
-        // Remove loading indicator
         document.body.removeChild(loadingDiv);
     }
 };
