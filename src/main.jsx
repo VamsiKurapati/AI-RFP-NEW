@@ -14,9 +14,6 @@ import { ProfileProvider } from './context/ProfileContext';
 import { EmployeeProfileProvider } from './context/EmployeeProfileContext';
 import { SubscriptionPlansProvider } from './context/SubscriptionPlansContext';
 
-// Import storage utilities for debugging
-import './utils/clearStorage';
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <UserProvider>
