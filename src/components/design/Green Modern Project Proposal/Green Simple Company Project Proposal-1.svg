@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="794.66669"
+   height="1122.6667"
+   viewBox="0 0 794.66669 1122.6667"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath22">
+      <path
+         d="M -1,663.26306 H 554.79919 V 843 H -1 Z"
+         clip-rule="evenodd"
+         id="path20" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath34">
+      <path
+         d="m 362.17517,492.99295 h 29.26102 v 29.26254 h -29.26102 z"
+         clip-rule="evenodd"
+         id="path32" />
+    </clipPath>
+  </defs>
+  <g
+     id="g8"
+     transform="matrix(1.3333333,0,0,-1.3333333,0,1122.6667)">
+    <g
+       id="g10"
+       transform="matrix(1,0,0,-1,0,842)">
+      <g
+         id="g12"
+         transform="scale(0.7502827,0.75032091)">
+        <path
+           d="M 0,0 H 793.70081 V 1122.5197 H 0 Z"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="path14" />
+      </g>
+      <g
+         id="g16">
+        <g
+           id="g18"
+           clip-path="url(#clipPath22)">
+          <g
+             id="g24"
+             transform="matrix(2.7914062,0,0,2.7915483,-23.768217,663.26306)">
+            <path
+               d="M 4.0317459,0 H 203.23561 c 1.06929,0 2.09477,0.42477202 2.85088,1.1808711 0.7561,0.756099 1.18087,1.7815894 1.18087,2.8508748 V 64.316284 c 0,1.069283 -0.42477,2.094773 -1.18087,2.850876 -0.75611,0.756096 -1.78159,1.18087 -2.85088,1.18087 H 4.0317459 c -1.0692854,0 -2.0947758,-0.424774 -2.8508748,-1.18087 C 0.42477202,66.411057 0,65.385567 0,64.316284 V 4.0317459 C 0,2.9624605 0.42477202,1.9369701 1.1808711,1.1808711 1.9369701,0.42477202 2.9624605,0 4.0317459,0 Z"
+               style="fill:#3d4d4e;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               id="path26" />
+          </g>
+        </g>
+      </g>
+      <g
+         id="g28">
+        <g
+           id="g30"
+           clip-path="url(#clipPath34)">
+          <g
+             id="g36"
+             transform="matrix(0.06990211,0,0,0.06990211,362.17517,492.99368)">
+            <path
+               d="M 418.58929,0 V 418.17719 H 334.8912 V 142.87869 L 59.183998,418.58588 0,359.40189 275.70929,83.698097 H 0.41209999 l 0,-83.698097 z"
+               style="fill:#3d4d4e;fill-opacity:1;fill-rule:nonzero;stroke:none"
+               id="path38" />
+          </g>
+        </g>
+      </g>
+      <g
+         id="g40"
+         transform="matrix(0.87967426,0,0,0.87971908,36.212795,399.70059)">
+        <text
+           xml:space="preserve"
+           transform="translate(0,75.866669)"
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:1e-32px;font-family:'Cy Grotesk';-inkscape-font-specification:Arial;writing-mode:lr-tb;fill:#3d4d4e;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="text44"><tspan
+             x="0 54.361725 88.154144 137.02557 159.99205 208.09019"
+             y="0"
+             id="tspan42">Projec</tspan></text>
+        <text
+           xml:space="preserve"
+           transform="translate(256.03369,75.866669)"
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:1e-32px;font-family:'Cy Grotesk';-inkscape-font-specification:Arial;writing-mode:lr-tb;fill:#3d4d4e;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="text48"><tspan
+             x="0"
+             y="0"
+             id="tspan46">t</tspan></text>
+        <text
+           xml:space="preserve"
+           transform="translate(0,160.86667)"
+           style="font-variant:normal;font-weight:600;font-stretch:normal;font-size:1e-32px;font-family:'Cy Grotesk';-inkscape-font-specification:Arial;writing-mode:lr-tb;fill:#3d4d4e;fill-opacity:1;fill-rule:nonzero;stroke:none"
+           id="text52"><tspan
+             x="0 54.361725 88.154144 137.02557 188.29417 237.1656 282.94391 330.6554"
+             y="0"
+             id="tspan50">Proposal</tspan></text>
+      </g>
+    </g>
+    <path
+       d="m 362.0387,320.15164 h 28.95604 v 28.95604 H 362.0387 Z"
+       style="fill:#000000;fill-opacity:0;fill-rule:nonzero;stroke:none"
+       id="path54" />
+  </g>
+</svg>
