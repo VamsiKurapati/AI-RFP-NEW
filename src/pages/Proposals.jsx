@@ -63,23 +63,23 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
             <div>
                 <button
                     onClick={onGenerate}
-                    disabled={userRole === "Viewer" || (buttonText === "Continue" && !isCurrentEditor)}
+                    disabled={userRole === "Viewer" || (buttonText === "Generate PDF" && !isCurrentEditor)}
                     aria-label={`${buttonText.toLowerCase()} proposal`}
-                    className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Continue" && !isCurrentEditor)
+                    className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Generate PDF" && !isCurrentEditor)
                         ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
                         : 'bg-[#2563EB] text-white hover:bg-[#1d4ed8]'
                         }`}
                     title={
                         userRole === "Viewer"
                             ? "Viewer cannot generate/edit proposals"
-                            : buttonText === "Continue" && !isCurrentEditor
-                                ? "Only the current editor can continue this proposal"
+                            : buttonText === "Generate PDF" && !isCurrentEditor
+                                ? "Only the current editor can generate PDF for this proposal"
                                 : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
                     {buttonText}
                 </button>
-                {buttonText === "Continue" && !isCurrentEditor && (
+                {buttonText === "Generate PDF" && !isCurrentEditor && (
                     <div className="text-xs text-gray-500 mt-1 text-center">
                         Current editor: {proposal_info.currentEditor?.fullName || proposal_info.currentEditor?.email || 'Unknown'}
                     </div>
@@ -164,23 +164,23 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
             <div>
                 <button
                     onClick={onGenerate}
-                    disabled={userRole === "Viewer" || (buttonText === "Continue" && !isCurrentEditor)}
+                    disabled={userRole === "Viewer" || (buttonText === "Generate PDF" && !isCurrentEditor)}
                     aria-label={`${buttonText.toLowerCase()} grant proposal`}
-                    className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Continue" && !isCurrentEditor)
+                    className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Generate PDF" && !isCurrentEditor)
                         ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
                         : 'bg-[#2563EB] text-white hover:bg-[#1d4ed8]'
                         }`}
                     title={
                         userRole === "Viewer"
                             ? "Viewer cannot generate/edit grant proposals"
-                            : buttonText === "Continue" && !isCurrentEditor
-                                ? "Only the current editor can continue this grant proposal"
+                            : buttonText === "Generate PDF" && !isCurrentEditor
+                                ? "Only the current editor can generate PDF for this grant proposal"
                                 : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
                     {buttonText}
                 </button>
-                {buttonText === "Continue" && !isCurrentEditor && (
+                {buttonText === "Generate PDF" && !isCurrentEditor && (
                     <div className="text-xs text-gray-500 mt-1 text-center">
                         Current editor: {grant_info.currentEditor?.fullName || grant_info.currentEditor?.email || 'Unknown'}
                     </div>
@@ -935,7 +935,7 @@ const Proposals = () => {
                                                 onShare={() => handleShare(proposal.link)}
                                                 onGenerate={() => handleContinue(proposal)}
                                                 userRole={role}
-                                                buttonText="Continue"
+                                                buttonText="Generate PDF"
                                                 isCurrentEditor={proposal.currentEditor?.email === userEmail || role === "company"}
                                                 isLoading={savingStates[proposal._id] || false}
                                             />
@@ -1014,7 +1014,7 @@ const Proposals = () => {
                                             onShare={() => handleShare(grant.OPPORTUNITY_NUMBER_LINK || '#')}
                                             onGenerate={() => handleContinueGrant(grant)}
                                             userRole={role}
-                                            buttonText="Continue"
+                                            buttonText="Generate PDF"
                                             isCurrentEditor={grant.currentEditor?.email === userEmail || role === "company"}
                                             isLoading={savingStates[grant._id] || false}
                                         />
