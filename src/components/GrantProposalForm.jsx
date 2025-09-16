@@ -3,6 +3,7 @@ import { FaSpinner } from 'react-icons/fa';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import handlePDFGeneration from './Generate_PDF';
 
 const GrantProposalForm = ({
     selectedGrant,
@@ -74,11 +75,10 @@ const GrantProposalForm = ({
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
-                        text: res.data.message || 'Grant proposal generated successfully.',
+                        text: res.data.message || 'Grant proposal generated successfully. Downloading proposal...',
                     });
                     setTimeout(() => {
-                        localStorage.setItem('proposalType', "GRANT");
-                        navigate('/editor', { state: { jsonData: res.data.proposal, proposalId: res.data.proposalId } });
+                        handlePDFGeneration(res.data.proposal);
                     }, 1000);
                 } else if (res.data.message === "Grant Proposal Generation is still in Progress. Please wait for it to complete.") {
                     Swal.fire({

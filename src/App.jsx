@@ -1,8 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-import { lazy, Suspense, useEffect } from "react";
-import CanvaApp from './pages/CanvaApp';
-// import { useUser } from './context/UserContext';
+import { lazy, Suspense } from "react";
+
 const ProtectedRoutes = lazy(() => import('./pages/ProtectedRoutes'));
 
 const Home = lazy(() => import("./pages/HomePage"));
@@ -34,11 +33,8 @@ const SupportTicket = lazy(() => import("./pages/SupportTicket"));
 const StripePaymentPage = lazy(() => import("./pages/StripePaymentPage"));
 
 const App = () => {
-  // const { role } = useUser();
-
   return (
     <>
-
       <Suspense fallback={<></>}>
         <Routes>
           <Route path="/" element={<><Home /></>} />
@@ -79,7 +75,6 @@ const App = () => {
               <Dashboard />
             </ProtectedRoutes>
           } />
-          {/* <Route path="/dashboard" element={ Dashboard } /> */}
 
           <Route path="/company_profile_dashboard" element={
             <ProtectedRoutes allowedRoles={["company"]}>
@@ -103,11 +98,6 @@ const App = () => {
             </ProtectedRoutes>
           } />
 
-          <Route path="/editor" element={
-            <ProtectedRoutes allowedRoles={["company", "Editor"]}>
-              <CanvaApp />
-            </ProtectedRoutes>
-          } />
 
           <Route path="/admin" element={
             <ProtectedRoutes allowedRoles={["SuperAdmin"]}>

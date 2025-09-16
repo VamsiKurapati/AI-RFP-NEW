@@ -12,12 +12,10 @@ A modern, full-stack web application designed to streamline the Request for Prop
 - **Real-time Proposal Monitoring**: Monitor all your proposals in one place
 - **Team Collaboration Tools**: Work together seamlessly with your team
 - **Performance Analytics**: Data-driven insights for better decisions
-- **PDF Editor**: Advanced PDF editing and generation capabilities
 
 ### Key Benefits
 - **DISCOVER**: AI-powered search and personalized RFP recommendations
 - **GENERATE**: Build compelling proposals with dynamic templates and AI enhancements
-- **COLLABORATE**: Live co-editing, threaded comments, and version control
 - **ANALYZE**: Instant compliance checks and error detection
 - **MANAGE**: Real-time proposal tracking and lifecycle management
 
@@ -34,13 +32,6 @@ A modern, full-stack web application designed to streamline the Request for Prop
 - **React PDF** - PDF viewing and manipulation
 - **Lucide React** - Modern icon library
 - **Axios** - HTTP client for API calls
-
-### PDF & Document Processing
-- **Fabric.js** - Canvas manipulation for PDF editing
-- **PDF-lib** - PDF creation and manipulation
-- **jsPDF** - PDF generation
-- **html2pdf.js** - HTML to PDF conversion
-- **PDF.js** - PDF rendering and parsing
 
 ### Development Tools
 - **ESLint** - Code linting and formatting

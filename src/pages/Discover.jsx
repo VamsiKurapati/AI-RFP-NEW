@@ -1497,16 +1497,11 @@ const Discover = () => {
           Swal.fire({
             icon: 'success',
             title: 'Success!',
-            text: res.data.message || 'Grant proposal generated successfully!',
+            text: res.data.message || 'Grant proposal generated successfully. Downloading proposal...',
             confirmButtonColor: '#2563EB'
           });
           setTimeout(() => {
-            localStorage.setItem('proposalType', "GRANT");
-            navigate('/editor', {
-              state: {
-                jsonData: res.data.proposal, proposalId: res.data.proposalId
-              }
-            });
+            handlePDFGeneration(res.data.proposal);
           }, 1000);
         } else if (res.data.message === "Grant Proposal Generation is in Progress. Please visit again after some time.") {
           Swal.fire({

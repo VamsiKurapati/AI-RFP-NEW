@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import Swal from 'sweetalert2';
 import GrantProposalForm from '../components/GrantProposalForm';
+import handlePDFGeneration from '../components/Generate_PDF';
 
 // Constants
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}`;
@@ -557,9 +558,7 @@ const Proposals = () => {
     };
 
     const handleContinue = (proposal) => {
-        localStorage.setItem('proposalId', proposal.proposalId);
-        localStorage.setItem('proposalType', "RFP");
-        navigate('/editor', { state: { jsonData: proposal.generatedProposal || null } });
+        handlePDFGeneration(proposal.generatedProposal);
     };
 
     const isSaved = (rfpId) => {
@@ -660,9 +659,7 @@ const Proposals = () => {
     };
 
     const handleContinueGrant = (grant) => {
-        localStorage.setItem('proposalId', grant.proposalId);
-        localStorage.setItem('proposalType', "GRANT");
-        navigate('/editor', { state: { jsonData: grant.generatedProposal || null } });
+        handlePDFGeneration(grant.generatedProposal);
     };
 
     const handleSubmitGrantProposal = async (proposalData) => {
@@ -775,16 +772,11 @@ const Proposals = () => {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
-                        text: res.data.message || 'Grant proposal generated successfully!',
+                        text: res.data.message || 'Grant proposal generated successfully. Downloading proposal...',
                         confirmButtonColor: '#2563EB'
                     });
                     setTimeout(() => {
-                        localStorage.setItem('proposalType', "GRANT");
-                        navigate('/editor', {
-                            state: {
-                                jsonData: res.data.proposal, proposalId: res.data.proposalId
-                            }
-                        });
+                        handlePDFGeneration(res.data.proposal);
                     }, 1000);
                 } else if (res.data.message === "Grant Proposal Generation is in Progress. Please visit again after some time.") {
                     Swal.fire({

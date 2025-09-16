@@ -7,6 +7,7 @@ import { useUser } from '../context/UserContext';
 import { AddTeamMemberModal, AddCaseStudyModal } from './CompanyProfileDashboard';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import handlePDFGeneration from '../components/Generate_PDF';
 
 const GenerateProposalPage = () => {
   const location = useLocation();
@@ -40,15 +41,10 @@ const GenerateProposalPage = () => {
           Swal.fire({
             icon: 'success',
             title: 'Success',
-            text: res.data.message || 'Proposal generated successfully. Redirecting to editor.',
+            text: res.data.message || 'Proposal generated successfully. Downloading proposal...',
           });
           setTimeout(() => {
-            localStorage.setItem('proposalType', "RFP");
-            navigate('/editor', {
-              state: {
-                jsonData: res.data.proposal, proposalId: res.data.proposalId
-              }
-            });
+            handlePDFGeneration(res.data.proposal);
           }, 1500);
         } else if (res.data.message === "Proposal Generation is in Progress. Please visit again after some time.") {
           Swal.fire({
