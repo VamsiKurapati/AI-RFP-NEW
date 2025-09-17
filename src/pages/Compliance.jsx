@@ -294,7 +294,7 @@ const Compliance = () => {
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
                         <h2 className="text-xl font-semibold mb-4 text-gray-900">RFP Data</h2>
                         <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 flex-1 min-w-0">
                                 <button
                                     className="text-[#2563EB] hover:text-[#2563EB] rounded-full p-1 shrink-0 transition-colors"
                                     onClick={() => window.open(data.link, '_blank')}
