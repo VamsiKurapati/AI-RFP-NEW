@@ -295,11 +295,19 @@ const Compliance = () => {
                         <h2 className="text-xl font-semibold mb-4 text-gray-900">RFP Data</h2>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <button className="text-[#2563EB] hover:text-[#2563EB] rounded-full p-1 shrink-0 transition-colors" onClick={() => window.open(data.link, '_blank')}>
+                                <button
+                                    className="text-[#2563EB] hover:text-[#2563EB] rounded-full p-1 shrink-0 transition-colors"
+                                    onClick={() => window.open(data.link, '_blank')}
+                                >
                                     <FiFile className="text-2xl text-[#2563EB] shrink-0" />
                                 </button>
-                                <div className="flex flex-col truncate">
-                                    <p className="font-medium text-[#111827] truncate max-w-[300px] sm:max-w-[500px] md:max-w-full">{data.title}</p>
+
+                                <div className="flex flex-col truncate flex-1 min-w-0">
+                                    <p className="font-medium text-[#111827] truncate"
+                                        title={data.title}
+                                    >
+                                        {data.title}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -365,21 +373,40 @@ const Compliance = () => {
                     ) : (
                         <div className="border border-gray-200 rounded-lg p-4">
                             <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
+
+                                <div className="flex items-center gap-3 flex-1 min-w-0">
                                     <FiFile className="text-2xl text-[#2563EB] shrink-0" />
-                                    <div className="flex flex-col truncate">
-                                        <p className="font-medium text-[#111827] truncate max-w-[300px] sm:max-w-[500px] md:max-w-full">{uploadedFile.name}</p>
-                                        <p className="text-sm text-gray-500">
-                                            {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+
+                                    <div className="flex flex-col truncate min-w-0">
+                                        <p
+                                            className="font-medium text-[#111827] truncate"
+                                            title={uploadedFile.name}  // Native browser tooltip
+                                        >
+                                            {uploadedFile.name}
+                                        </p>
+
+                                        <p
+                                            className="text-sm text-gray-500 truncate"
+                                            title={
+                                                (uploadedFile.size / 1024 > 1024)
+                                                    ? ((uploadedFile.size / 1024 / 1024).toFixed(2) + " MB")
+                                                    : ((uploadedFile.size / 1024).toFixed(2) + " KB")
+                                            }
+                                        >
+                                            {(uploadedFile.size / 1024 > 1024)
+                                                ? ((uploadedFile.size / 1024 / 1024).toFixed(2) + " MB")
+                                                : ((uploadedFile.size / 1024).toFixed(2) + " KB")}
                                         </p>
                                     </div>
                                 </div>
+
                                 <button
                                     onClick={removeFile}
                                     className="text-red-500 hover:text-red-700 p-1"
                                 >
                                     <FiX className="text-xl" />
                                 </button>
+
                             </div>
                         </div>
                     )}
