@@ -147,38 +147,38 @@ const AdvancedComplianceCheck = () => {
                     {/* Compliance Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                         {/* Requested Information */}
-                        <div className="bg-[#FEF2F2] border-2 border-[#FECACA] rounded-lg p-6">
-                            <h2 className="text-[16px] font-semibold text-[#7F1D1D]">Requested Information</h2>
-                            <p className="text-[#B91C1C] text-[14px] mb-4">As specified in the RFP</p>
+                        <div className="bg-[#FEFCE8] border-2 border-[#FEF0C7] rounded-lg p-6">
+                            <h2 className="text-[16px] font-semibold text-[#713F12]">Requested Information</h2>
+                            <p className="text-[#713F12] text-[14px] mb-4">As specified in the RFP</p>
                             <ul className="space-y-3">
                                 {advancedComplianceCheck && advancedComplianceCheck.requested_information && advancedComplianceCheck.requested_information.map((item, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
-                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
+                                        <IoMdCloseCircle className="text-[20px] text-[#EAB308]" />
                                         <span className="text-[#111827] text-[16px]">{item}</span>
                                     </li>
                                 ))}
                                 {advancedComplianceCheck && advancedComplianceCheck.requested_information && advancedComplianceCheck.requested_information.length === 0 && (
                                     <li className="flex items-center justify-start gap-2">
-                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
+                                        <IoMdCloseCircle className="text-[20px] text-[#EAB308]" />
                                         <span className="text-[#111827] text-[16px]">No items specified</span>
                                     </li>
                                 )}
                             </ul>
                         </div>
                         {/* Present Information */}
-                        <div className="bg-[#FEFCE8] border-2 border-[#FEF0C7] rounded-lg p-6">
-                            <h2 className="text-[16px] font-semibold text-[#713F12]">Present Information</h2>
-                            <p className="text-[#713F12] text-[14px] mb-4">Information detected in the proposal</p>
+                        <div className="bg-[#F0FDF4] border-2 border-[#BBF7D0] rounded-lg p-6">
+                            <h2 className="text-[16px] font-semibold text-[#14532D]">Present Information</h2>
+                            <p className="text-[#14532D] text-[14px] mb-4">Information detected in the proposal</p>
                             <ul className="space-y-3">
                                 {advancedComplianceCheck && advancedComplianceCheck.present_information && advancedComplianceCheck.present_information.map((item, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
-                                        <BsFillCheckCircleFill className="text-[20px] text-[#EAB308]" />
+                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A]" />
                                         <span className="text-[#111827] text-[16px]">{item}</span>
                                     </li>
                                 ))}
                                 {advancedComplianceCheck && advancedComplianceCheck.present_information && advancedComplianceCheck.present_information.length === 0 && (
                                     <li className="flex items-center justify-start gap-2">
-                                        <BsFillCheckCircleFill className="text-[20px] text-[#EAB308]" />
+                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A]" />
                                         <span className="text-[#111827] text-[16px]">No present information found</span>
                                     </li>
                                 )}

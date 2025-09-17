@@ -302,7 +302,7 @@ const Compliance = () => {
                                     <FiFile className="text-2xl text-[#2563EB] shrink-0" />
                                 </button>
 
-                                <div className="flex flex-col truncate flex-1 min-w-0">
+                                <div className="flex flex-col flex-1 min-w-0">
                                     <p className="font-medium text-[#111827] truncate w-full overflow-hidden"
                                         title={data.title}
                                     >
@@ -377,7 +377,7 @@ const Compliance = () => {
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
                                     <FiFile className="text-2xl text-[#2563EB] shrink-0" />
 
-                                    <div className="flex flex-col truncate min-w-0">
+                                    <div className="flex flex-col flex-1 min-w-0">
                                         <p
                                             className="font-medium text-[#111827] truncate w-full overflow-hidden"
                                             title={uploadedFile.name}  // Native browser tooltip
