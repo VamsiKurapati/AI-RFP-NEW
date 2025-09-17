@@ -206,7 +206,7 @@ const Compliance = () => {
 
                 const formData = new FormData();
                 formData.append('file', uploadedFile);
-                formData.append('rfpId', data.rfpId);
+                formData.append('rfpId', data.rfpId || data._id);
 
                 const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, formData, {
                     headers: {
