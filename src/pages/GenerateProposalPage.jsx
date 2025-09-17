@@ -257,6 +257,8 @@ const GenerateProposalPage = () => {
 
         {/* Save & Next Button */}
         <div className="flex justify-end">
+          {/* Button to go to compliance page */}
+          <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8]" onClick={() => navigate('/compliance-check', { state: { data: proposal } })}>Check Compliance</button>
           <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8]" onClick={handleSaveAndNext}>Save & Next</button>
         </div>
       </div>

@@ -18,6 +18,7 @@ const Proposals = lazy(() => import("./pages/Proposals"));
 const GenerateProposalPage = lazy(() => import("./pages/GenerateProposalPage"));
 const BasicComplianceCheck = lazy(() => import("./pages/BasicComplianceCheck"));
 const AdvancedComplianceCheck = lazy(() => import("./pages/AdvancedComplianceCheck"));
+const Compliance = lazy(() => import("./pages/Compliance"));
 
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 
@@ -62,6 +63,9 @@ const App = () => {
               <GenerateProposalPage />
             </ProtectedRoutes>
           } />
+          <Route path="/compliance-check" element={<ProtectedRoutes allowedRoles={["company", "Editor"]}>
+            <Compliance />
+          </ProtectedRoutes>} />
           <Route path="/basic-compliance-check" element={<ProtectedRoutes allowedRoles={["company", "Editor", "Viewer"]}>
             <BasicComplianceCheck />
           </ProtectedRoutes>} />
