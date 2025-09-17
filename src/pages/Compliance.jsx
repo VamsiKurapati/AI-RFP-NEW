@@ -103,13 +103,13 @@ const Compliance = () => {
 
         //Based on the plan send the request to the API
         if (userSubscription?.plan_name === "Basic") {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/basicComplianceCheckPdf`, {
-                uploadedFile,
-            }, {
+            const formData = new FormData();
+            formData.append('file', uploadedFile);
+            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/basicComplianceCheckPdf`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
+                }
             });
             if (res.status === 200) {
                 Swal.fire({
@@ -292,7 +292,7 @@ const Compliance = () => {
                                     <FiFile className="text-2xl text-[#2563EB] shrink-0" />
                                 </button>
                                 <div className="flex flex-col truncate">
-                                    <p className="font-medium text-[#111827]">{data.title}</p>
+                                    <p className="font-medium text-[#111827] truncate max-w-[200px]">{data.title}</p>
                                 </div>
                             </div>
                         </div>
@@ -345,7 +345,7 @@ const Compliance = () => {
                                 <div className="flex items-center gap-3">
                                     <FiFile className="text-2xl text-[#2563EB] shrink-0" />
                                     <div className="flex flex-col truncate">
-                                        <p className="font-medium text-[#111827]">{uploadedFile.name}</p>
+                                        <p className="font-medium text-[#111827] truncate max-w-[200px]">{uploadedFile.name}</p>
                                         <p className="text-sm text-gray-500">
                                             {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
                                         </p>
