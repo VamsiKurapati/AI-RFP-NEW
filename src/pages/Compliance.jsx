@@ -303,7 +303,7 @@ const Compliance = () => {
                                 </button>
 
                                 <div className="flex flex-col truncate flex-1 min-w-0">
-                                    <p className="font-medium text-[#111827] truncate max-w-[90%]"
+                                    <p className="font-medium text-[#111827] truncate w-full overflow-hidden"
                                         title={data.title}
                                     >
                                         {data.title}
@@ -379,14 +379,14 @@ const Compliance = () => {
 
                                     <div className="flex flex-col truncate min-w-0">
                                         <p
-                                            className="font-medium text-[#111827] truncate max-w-[90%]"
+                                            className="font-medium text-[#111827] truncate w-full overflow-hidden"
                                             title={uploadedFile.name}  // Native browser tooltip
                                         >
                                             {uploadedFile.name}
                                         </p>
 
                                         <p
-                                            className="text-sm text-gray-500 truncate"
+                                            className="text-sm text-gray-500 truncate w-full overflow-hidden"
                                             title={
                                                 (uploadedFile.size / 1024 > 1024)
                                                     ? ((uploadedFile.size / 1024 / 1024).toFixed(2) + " MB")
