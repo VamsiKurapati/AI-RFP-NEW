@@ -108,7 +108,7 @@ const Compliance = () => {
 
         //Based on the plan send the request to the API
         if (userSubscription?.plan_name === "Basic") {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/basicComplianceCheck`, {
+            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/basicComplianceCheckPdf`, {
                 rfpData,
                 uploadedFile,
             }, {
@@ -140,7 +140,7 @@ const Compliance = () => {
             }
             return;
         } else if (userSubscription?.plan_name === "Pro") {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheck`, {
+            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
                 rfpData,
                 uploadedFile,
             }, {
@@ -172,7 +172,7 @@ const Compliance = () => {
             }
             return;
         } else if (userSubscription?.plan_name === "Enterprise") {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheck`, {
+            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
                 rfpData,
                 uploadedFile,
             }, {
@@ -205,7 +205,7 @@ const Compliance = () => {
             return;
         }
         else if (userSubscription?.plan_name === "Custom Enterprise Plan") {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheck`, {
+            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
                 rfpData,
                 uploadedFile,
             }, {
