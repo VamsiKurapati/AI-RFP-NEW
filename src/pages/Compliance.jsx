@@ -181,6 +181,7 @@ const Compliance = () => {
 
                 const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/basicComplianceCheckPdf`, formData, {
                     headers: {
+                        'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
                     }
                 });
@@ -205,11 +206,11 @@ const Compliance = () => {
 
                 const formData = new FormData();
                 formData.append('file', uploadedFile);
-                console.log("Data", data);
-                formData.append('data', JSON.stringify(data));
+                formData.append('rfpId', data.rfpId);
 
                 const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, formData, {
                     headers: {
+                        'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
                     }
                 });
