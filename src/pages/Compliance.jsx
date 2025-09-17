@@ -105,34 +105,47 @@ const Compliance = () => {
         if (userSubscription?.plan_name === "Basic") {
             const formData = new FormData();
             formData.append('file', uploadedFile);
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/basicComplianceCheckPdf`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                }
-            });
-            if (res.status === 200) {
-                Swal.fire({
-                    title: "Success",
-                    text: "Compliance check completed successfully.",
-                    icon: "success",
-                    timer: 1500,
-                    showConfirmButton: false,
-                    showCancelButton: false,
+            try {
+                const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/basicComplianceCheckPdf`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    }
                 });
-                setTimeout(() => {
-                    navigate('/basic-compliance-check', { state: { data: res.data } });
-                }, 1500);
-            } else {
+                if (res.status === 200) {
+                    Swal.fire({
+                        title: "Success",
+                        text: "Compliance check completed successfully.",
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false,
+                        showCancelButton: false,
+                    });
+                    setTimeout(() => {
+                        navigate('/basic-compliance-check', { state: { data: res.data } });
+                    }, 1500);
+                } else {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to check compliance.",
+                        icon: "error",
+                        timer: 1500,
+                        showConfirmButton: false,
+                        showCancelButton: false,
+                    });
+                }
+            } catch (error) {
                 Swal.fire({
                     title: "Error",
                     text: "Failed to check compliance.",
                     icon: "error",
                     timer: 1500,
+                    showConfirmButton: false,
+                    showCancelButton: false,
                 });
+            } finally {
                 return;
             }
-            return;
         } else if (userSubscription?.plan_name === "Pro") {
             const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
                 data,
@@ -292,7 +305,7 @@ const Compliance = () => {
                                     <FiFile className="text-2xl text-[#2563EB] shrink-0" />
                                 </button>
                                 <div className="flex flex-col truncate">
-                                    <p className="font-medium text-[#111827] truncate max-w-[200px]">{data.title}</p>
+                                    <p className="font-medium text-[#111827] truncate max-w-[300px] sm:max-w-[500px] md:max-w-full">{data.title}</p>
                                 </div>
                             </div>
                         </div>
@@ -345,7 +358,7 @@ const Compliance = () => {
                                 <div className="flex items-center gap-3">
                                     <FiFile className="text-2xl text-[#2563EB] shrink-0" />
                                     <div className="flex flex-col truncate">
-                                        <p className="font-medium text-[#111827] truncate max-w-[200px]">{uploadedFile.name}</p>
+                                        <p className="font-medium text-[#111827] truncate max-w-[300px] sm:max-w-[500px] md:max-w-full">{uploadedFile.name}</p>
                                         <p className="text-sm text-gray-500">
                                             {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
                                         </p>
