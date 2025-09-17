@@ -363,15 +363,15 @@ const Compliance = () => {
                 </div>
 
                 {/* Buttons Section */}
-                <div className="flex flex-col sm:flex-row justify-end gap-4">
+                <div className="flex flex-col sm:flex-row justify-between gap-4">
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors w-auto"
+                        className="flex items-center gap-2 border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors w-auto mx-auto"
                     >
                         <IoIosArrowBack className="text-xl" />
                         Back
                     </button>
-                    <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto" onClick={() => handleCheckCompliance()}>Check Compliance</button>
+                    <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto mx-auto" onClick={() => handleCheckCompliance()}>Check Compliance</button>
                 </div>
             </div>
         </div>
