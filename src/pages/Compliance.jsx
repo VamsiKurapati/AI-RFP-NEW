@@ -6,6 +6,66 @@ import { FiUpload, FiFile, FiX, FiLoader } from "react-icons/fi";
 import axios from "axios";
 import Swal from "sweetalert2";
 
+// SweetAlert configurations
+const ALERT_CONFIGS = {
+    invalidFileType: {
+        title: "Invalid File Type",
+        text: "Please upload a PDF file.",
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+        showCancelButton: false,
+    },
+    fileTooLarge: {
+        title: "File Too Large",
+        text: "Please upload a file smaller than 5MB.",
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+        showCancelButton: false,
+    },
+    missingRequirements: {
+        title: "Error",
+        text: "Please upload a proposal document and select an RFP.",
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+        showCancelButton: false,
+    },
+    success: {
+        title: "Success",
+        text: "Compliance check completed successfully.",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+        showCancelButton: false,
+    },
+    error: {
+        title: "Error",
+        text: "Failed to check compliance.",
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+        showCancelButton: false,
+    },
+    upgradeRequired: {
+        title: "Error",
+        text: "Please upgrade your plan to check compliance.",
+        icon: "error",
+        timer: 1500,
+        showConfirmButton: false,
+        showCancelButton: false,
+    },
+    fileUploadSuccess: {
+        title: "Success",
+        text: "File uploaded successfully.",
+        icon: "success",
+        timer: 1000,
+        showConfirmButton: false,
+        showCancelButton: false,
+    }
+};
+
 const Compliance = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -14,8 +74,10 @@ const Compliance = () => {
     // State for file upload
     const [uploadedFile, setUploadedFile] = useState(null);
     const [dragActive, setDragActive] = useState(false);
+    const [fileUploading, setFileUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
 
-    const [complianceCheck, setComplianceCheck] = useState(null);
+    const [complianceCheck, setComplianceCheck] = useState(false);
 
     const userSubscription = localStorage.getItem('subscription') ? JSON.parse(localStorage.getItem('subscription')) : null;
 
@@ -53,37 +115,51 @@ const Compliance = () => {
         }
     };
 
-    const handleFileUpload = (file) => {
+    const handleFileUpload = async (file) => {
         // Validate file type
         const allowedTypes = ['.pdf'];
         const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
 
         if (!allowedTypes.includes(fileExtension)) {
-            Swal.fire({
-                title: "Invalid File Type",
-                text: "Please upload a PDF file.",
-                icon: "error",
-                timer: 1500,
-                showConfirmButton: false,
-                showCancelButton: false,
-            });
+            Swal.fire(ALERT_CONFIGS.invalidFileType);
             return;
         }
 
-        // Check file size (max 10MB)
-        if (file.size > 10 * 1024 * 1024) {
-            Swal.fire({
-                title: "File Too Large",
-                text: "Please upload a file smaller than 10MB.",
-                icon: "error",
-                timer: 1500,
-                showConfirmButton: false,
-                showCancelButton: false,
-            });
+        // Check file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            Swal.fire(ALERT_CONFIGS.fileTooLarge);
             return;
         }
 
-        setUploadedFile(file);
+        // Simulate file processing with progress for larger files (>1MB)
+        if (file.size > 1 * 1024 * 1024) {
+            setFileUploading(true);
+            setUploadProgress(0);
+
+            // Simulate upload progress
+            const progressInterval = setInterval(() => {
+                setUploadProgress(prev => {
+                    if (prev >= 90) {
+                        clearInterval(progressInterval);
+                        return 90;
+                    }
+                    return prev + Math.random() * 15;
+                });
+            }, 100);
+
+            // Simulate processing time
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            setUploadProgress(100);
+            setTimeout(() => {
+                setFileUploading(false);
+                setUploadProgress(0);
+                setUploadedFile(file);
+                Swal.fire(ALERT_CONFIGS.fileUploadSuccess);
+            }, 300);
+        } else {
+            setUploadedFile(file);
+        }
     };
 
     const removeFile = () => {
@@ -92,14 +168,7 @@ const Compliance = () => {
 
     const handleCheckCompliance = async () => {
         if (!data || !uploadedFile) {
-            Swal.fire({
-                title: "Error",
-                text: "Please upload a proposal document and select an RFP.",
-                icon: "error",
-                timer: 1500,
-                showConfirmButton: false,
-                showCancelButton: false,
-            });
+            Swal.fire(ALERT_CONFIGS.missingRequirements);
             return;
         }
 
@@ -109,43 +178,23 @@ const Compliance = () => {
             formData.append('file', uploadedFile);
             try {
                 setComplianceCheck(true);
+
                 const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/basicComplianceCheckPdf`, formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
                     }
                 });
+
                 if (res.status === 200) {
-                    Swal.fire({
-                        title: "Success",
-                        text: "Compliance check completed successfully.",
-                        icon: "success",
-                        timer: 1500,
-                        showConfirmButton: false,
-                        showCancelButton: false,
-                    });
+                    Swal.fire(ALERT_CONFIGS.success);
                     setTimeout(() => {
                         navigate('/basic-compliance-check', { state: { data: res.data } });
                     }, 1500);
                 } else {
-                    Swal.fire({
-                        title: "Error",
-                        text: "Failed to check compliance.",
-                        icon: "error",
-                        timer: 1500,
-                        showConfirmButton: false,
-                        showCancelButton: false,
-                    });
+                    Swal.fire(ALERT_CONFIGS.error);
                 }
             } catch (error) {
-                Swal.fire({
-                    title: "Error",
-                    text: "Failed to check compliance.",
-                    icon: "error",
-                    timer: 1500,
-                    showConfirmButton: false,
-                    showCancelButton: false,
-                });
+                Swal.fire(ALERT_CONFIGS.error);
             } finally {
                 setComplianceCheck(false);
                 return;
@@ -153,59 +202,34 @@ const Compliance = () => {
         } else if (userSubscription?.plan_name === "Pro" || userSubscription?.plan_name === "Enterprise" || userSubscription?.plan_name === "Custom Enterprise Plan") {
             try {
                 setComplianceCheck(true);
-                const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
-                    data,
-                    uploadedFile,
-                }, {
+
+                const formData = new FormData();
+                formData.append('file', uploadedFile);
+                console.log("Data", data);
+                formData.append('data', JSON.stringify(data));
+
+                const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
+                    }
                 });
+
                 if (res.status === 200) {
-                    Swal.fire({
-                        title: "Success",
-                        text: "Compliance check completed successfully.",
-                        icon: "success",
-                        timer: 1500,
-                        showConfirmButton: false,
-                        showCancelButton: false,
-                    });
+                    Swal.fire(ALERT_CONFIGS.success);
                     setTimeout(() => {
                         navigate('/advanced-compliance-check', { state: { data: res.data } });
                     }, 1500);
                 } else {
-                    Swal.fire({
-                        title: "Error",
-                        text: "Failed to check compliance.",
-                        icon: "error",
-                        timer: 1500,
-                        showConfirmButton: false,
-                        showCancelButton: false,
-                    });
+                    Swal.fire(ALERT_CONFIGS.error);
                 }
             } catch (error) {
-                Swal.fire({
-                    title: "Error",
-                    text: "Failed to check compliance.",
-                    icon: "error",
-                    timer: 1500,
-                    showConfirmButton: false,
-                    showCancelButton: false,
-                });
+                Swal.fire(ALERT_CONFIGS.error);
             } finally {
                 setComplianceCheck(false);
                 return;
             }
         } else {
-            Swal.fire({
-                title: "Error",
-                text: "Please upgrade your plan to check compliance.",
-                icon: "error",
-                timer: 1500,
-                showConfirmButton: false,
-                showCancelButton: false,
-            });
+            Swal.fire(ALERT_CONFIGS.upgradeRequired);
             return;
         }
     };
@@ -269,7 +293,7 @@ const Compliance = () => {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
                     <h2 className="text-xl font-semibold mb-4 text-gray-900">Upload Proposal Document</h2>
 
-                    {!uploadedFile ? (
+                    {!uploadedFile && !fileUploading ? (
                         <div
                             className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${dragActive
                                 ? 'border-blue-500 bg-blue-50'
@@ -302,7 +326,23 @@ const Compliance = () => {
                                 Choose File
                             </label>
                             <p className="text-sm text-gray-500 mt-4">
-                                Supported formats: PDF (Max 10MB)
+                                Supported formats: PDF (Max 5MB)
+                            </p>
+                        </div>
+                    ) : fileUploading ? (
+                        <div className="border border-gray-200 rounded-lg p-8 text-center">
+                            <FiLoader className="text-4xl text-blue-600 mx-auto mb-4 animate-spin" />
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                Processing File...
+                            </h3>
+                            <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                                <div
+                                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                    style={{ width: `${uploadProgress}%` }}
+                                ></div>
+                            </div>
+                            <p className="text-sm text-gray-600">
+                                {Math.round(uploadProgress)}% complete
                             </p>
                         </div>
                     ) : (
@@ -337,13 +377,15 @@ const Compliance = () => {
                         <IoIosArrowBack className="text-xl" />
                         Back
                     </button>
-                    <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto mx-auto" onClick={() => handleCheckCompliance()} disabled={complianceCheck}>
+                    <button
+                        className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                        onClick={() => handleCheckCompliance()}
+                        disabled={complianceCheck || fileUploading}
+                    >
                         {complianceCheck ? (
                             <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 bg-blue-500 rounded-full animate-spin">
-                                    <FiLoader className="text-xl" />
-                                </div>
-                                <span className="text-gray-500">Checking Compliance...</span>
+                                <FiLoader className="text-xl animate-spin" />
+                                <span>Checking Compliance...</span>
                             </div>
                         ) : (
                             "Check Compliance"
