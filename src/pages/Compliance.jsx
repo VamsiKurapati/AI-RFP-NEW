@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import NavbarComponent from "./NavbarComponent";
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoIosArrowBack, IoMdCloudUpload } from "react-icons/io";
-import { FiUpload, FiFile, FiX } from "react-icons/fi";
+import { FiUpload, FiFile, FiX, FiLoader } from "react-icons/fi";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -14,6 +14,8 @@ const Compliance = () => {
     // State for file upload
     const [uploadedFile, setUploadedFile] = useState(null);
     const [dragActive, setDragActive] = useState(false);
+
+    const [complianceCheck, setComplianceCheck] = useState(null);
 
     const userSubscription = localStorage.getItem('subscription') ? JSON.parse(localStorage.getItem('subscription')) : null;
 
@@ -106,6 +108,7 @@ const Compliance = () => {
             const formData = new FormData();
             formData.append('file', uploadedFile);
             try {
+                setComplianceCheck(true);
                 const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/basicComplianceCheckPdf`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -144,107 +147,57 @@ const Compliance = () => {
                     showCancelButton: false,
                 });
             } finally {
+                setComplianceCheck(false);
                 return;
             }
-        } else if (userSubscription?.plan_name === "Pro") {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
-                data,
-                uploadedFile,
-            }, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
-            if (res.status === 200) {
-                Swal.fire({
-                    title: "Success",
-                    text: "Compliance check completed successfully.",
-                    icon: "success",
-                    timer: 1500,
-                    showConfirmButton: false,
-                    showCancelButton: false,
+        } else if (userSubscription?.plan_name === "Pro" || userSubscription?.plan_name === "Enterprise" || userSubscription?.plan_name === "Custom Enterprise Plan") {
+            try {
+                setComplianceCheck(true);
+                const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
+                    data,
+                    uploadedFile,
+                }, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
                 });
-                setTimeout(() => {
-                    navigate('/advanced-compliance-check', { state: { data: res.data } });
-                }, 1500);
-            } else {
+                if (res.status === 200) {
+                    Swal.fire({
+                        title: "Success",
+                        text: "Compliance check completed successfully.",
+                        icon: "success",
+                        timer: 1500,
+                        showConfirmButton: false,
+                        showCancelButton: false,
+                    });
+                    setTimeout(() => {
+                        navigate('/advanced-compliance-check', { state: { data: res.data } });
+                    }, 1500);
+                } else {
+                    Swal.fire({
+                        title: "Error",
+                        text: "Failed to check compliance.",
+                        icon: "error",
+                        timer: 1500,
+                        showConfirmButton: false,
+                        showCancelButton: false,
+                    });
+                }
+            } catch (error) {
                 Swal.fire({
                     title: "Error",
                     text: "Failed to check compliance.",
                     icon: "error",
                     timer: 1500,
-                });
-                return;
-            }
-            return;
-        } else if (userSubscription?.plan_name === "Enterprise") {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
-                data,
-                uploadedFile,
-            }, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
-            if (res.status === 200) {
-                Swal.fire({
-                    title: "Success",
-                    text: "Compliance check completed successfully.",
-                    icon: "success",
-                    timer: 1500,
                     showConfirmButton: false,
                     showCancelButton: false,
                 });
-                setTimeout(() => {
-                    navigate('/advanced-compliance-check', { state: { data: res.data } });
-                }, 1500);
-            } else {
-                Swal.fire({
-                    title: "Error",
-                    text: "Failed to check compliance.",
-                    icon: "error",
-                    timer: 1500,
-                });
+            } finally {
+                setComplianceCheck(false);
                 return;
             }
-            return;
-        }
-        else if (userSubscription?.plan_name === "Custom Enterprise Plan") {
-            const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
-                data,
-                uploadedFile,
-            }, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
-            if (res.status === 200) {
-                Swal.fire({
-                    title: "Success",
-                    text: "Compliance check completed successfully.",
-                    icon: "success",
-                    timer: 1500,
-                    showConfirmButton: false,
-                    showCancelButton: false,
-                });
-                setTimeout(() => {
-                    navigate('/advanced-compliance-check', { state: { data: res.data } });
-                }, 1500);
-            } else {
-                Swal.fire({
-                    title: "Error",
-                    text: "Failed to check compliance.",
-                    icon: "error",
-                    timer: 1500,
-                });
-                return;
-            }
-            return;
-        }
-        else {
+        } else {
             Swal.fire({
                 title: "Error",
                 text: "Please upgrade your plan to check compliance.",
@@ -384,7 +337,19 @@ const Compliance = () => {
                         <IoIosArrowBack className="text-xl" />
                         Back
                     </button>
-                    <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto mx-auto" onClick={() => handleCheckCompliance()}>Check Compliance</button>
+                    <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto mx-auto" onClick={() => handleCheckCompliance()} disabled={complianceCheck}>
+                        {complianceCheck ? (
+                            <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 bg-blue-500 rounded-full animate-spin">
+                                    <FiLoader className="text-xl" />
+                                </div>
+                                <span className="text-gray-500">Checking Compliance...</span>
+                            </div>
+                        ) : (
+                            "Check Compliance"
+                        )}
+                    </button>
+
                 </div>
             </div>
         </div>
