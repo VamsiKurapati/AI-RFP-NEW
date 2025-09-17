@@ -294,8 +294,8 @@ const Compliance = () => {
                         <h2 className="text-xl font-semibold mb-4 text-gray-900">RFP Data</h2>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <FiFile className="text-2xl text-[#2563EB]" />
-                                <div>
+                                <FiFile className="text-2xl text-[#2563EB] shrink-0" href={rfpData.link} />
+                                <div className="flex flex-col truncate">
                                     <p className="font-medium text-[#111827]">{rfpData.title}</p>
                                 </div>
                             </div>
@@ -347,8 +347,8 @@ const Compliance = () => {
                         <div className="border border-gray-200 rounded-lg p-4">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <FiFile className="text-2xl text-[#2563EB]" />
-                                    <div>
+                                    <FiFile className="text-2xl text-[#2563EB] shrink-0" />
+                                    <div className="flex flex-col truncate">
                                         <p className="font-medium text-[#111827]">{uploadedFile.name}</p>
                                         <p className="text-sm text-gray-500">
                                             {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
@@ -367,15 +367,15 @@ const Compliance = () => {
                 </div>
 
                 {/* Buttons Section */}
-                <div className="flex flex-col md:flex-row justify-end gap-4">
+                <div className="flex flex-col sm:flex-row justify-end gap-4">
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors w-full md:w-auto"
+                        className="flex items-center gap-2 border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors w-auto"
                     >
                         <IoIosArrowBack className="text-xl" />
                         Back
                     </button>
-                    <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-full md:w-auto" onClick={() => handleCheckCompliance()}>Check Compliance</button>
+                    <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto" onClick={() => handleCheckCompliance()}>Check Compliance</button>
                 </div>
             </div>
         </div>
