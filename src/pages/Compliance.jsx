@@ -240,6 +240,22 @@ const Compliance = () => {
     return (
         <div className="min-h-screen overflow-y-auto bg-gray-50">
             <NavbarComponent />
+
+            {complianceCheck && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl">
+                        <div className="flex justify-center mb-6 space-x-2">
+                            <span className="w-3 h-3 bg-[#2563EB] rounded-full animate-bounce"></span>
+                            <span className="w-3 h-3 bg-[#2563EB] rounded-full animate-bounce delay-150"></span>
+                            <span className="w-3 h-3 bg-[#2563EB] rounded-full animate-bounce delay-300"></span>
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-3">Checking Compliance</h3>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                            Please wait while we check the compliance of your proposal document. It may take a few minutes.
+                        </p>
+                    </div>
+                </div>
+            )}
             <div className="w-full max-w-6xl mx-auto p-8 mt-16">
                 {/* Header */}
                 <div className="text-center mb-8">
@@ -373,7 +389,8 @@ const Compliance = () => {
                 <div className="flex flex-col sm:flex-row justify-between gap-4">
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors w-auto mx-auto"
+                        className="flex items-center gap-2 border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors w-auto mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={complianceCheck || fileUploading}
                     >
                         <IoIosArrowBack className="text-xl" />
                         Back
