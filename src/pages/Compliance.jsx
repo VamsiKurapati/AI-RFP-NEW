@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import NavbarComponent from "./NavbarComponent";
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoIosArrowBack, IoMdCloudUpload } from "react-icons/io";
-import { MdCheckCircle } from "react-icons/md";
 import { FiUpload, FiFile, FiX } from "react-icons/fi";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -10,22 +9,18 @@ import Swal from "sweetalert2";
 const Compliance = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const [data, setData] = useState(null);
 
     // State for file upload
     const [uploadedFile, setUploadedFile] = useState(null);
     const [dragActive, setDragActive] = useState(false);
 
-    // State for RFP data and user subscription
-    const [rfpData, setRfpData] = useState(null);
-
     const userSubscription = localStorage.getItem('subscription') ? JSON.parse(localStorage.getItem('subscription')) : null;
-    console.log("userSubscription", userSubscription);
 
     useEffect(() => {
         // Get RFP data from location state (from Generate Proposal page)
         if (location.state && location.state.data) {
-            setRfpData(location.state.data);
-            console.log("location.state.data", location.state.data);
+            setData(location.state.data);
         }
     }, []);
 
@@ -94,7 +89,7 @@ const Compliance = () => {
     };
 
     const handleCheckCompliance = async () => {
-        if (!rfpData || !uploadedFile) {
+        if (!data || !uploadedFile) {
             Swal.fire({
                 title: "Error",
                 text: "Please upload a proposal document and select an RFP.",
@@ -109,11 +104,10 @@ const Compliance = () => {
         //Based on the plan send the request to the API
         if (userSubscription?.plan_name === "Basic") {
             const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/basicComplianceCheckPdf`, {
-                rfpData,
                 uploadedFile,
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             });
@@ -141,11 +135,11 @@ const Compliance = () => {
             return;
         } else if (userSubscription?.plan_name === "Pro") {
             const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
-                rfpData,
+                data,
                 uploadedFile,
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             });
@@ -173,11 +167,11 @@ const Compliance = () => {
             return;
         } else if (userSubscription?.plan_name === "Enterprise") {
             const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
-                rfpData,
+                data,
                 uploadedFile,
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             });
@@ -206,11 +200,11 @@ const Compliance = () => {
         }
         else if (userSubscription?.plan_name === "Custom Enterprise Plan") {
             const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/proposals/advancedComplianceCheckPdf`, {
-                rfpData,
+                data,
                 uploadedFile,
             }, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             });
@@ -289,14 +283,16 @@ const Compliance = () => {
                 </div>
 
                 {/* RFP Data Section */}
-                {rfpData && (
+                {data && (
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
                         <h2 className="text-xl font-semibold mb-4 text-gray-900">RFP Data</h2>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <FiFile className="text-2xl text-[#2563EB] shrink-0" href={rfpData.link} />
+                                <button className="text-[#2563EB] hover:text-[#2563EB] rounded-full p-1 shrink-0 transition-colors" onClick={() => window.open(data.link, '_blank')}>
+                                    <FiFile className="text-2xl text-[#2563EB] shrink-0" />
+                                </button>
                                 <div className="flex flex-col truncate">
-                                    <p className="font-medium text-[#111827]">{rfpData.title}</p>
+                                    <p className="font-medium text-[#111827]">{data.title}</p>
                                 </div>
                             </div>
                         </div>
