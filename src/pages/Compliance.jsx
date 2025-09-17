@@ -303,7 +303,7 @@ const Compliance = () => {
                                 </button>
 
                                 <div className="flex flex-col truncate flex-1 min-w-0">
-                                    <p className="font-medium text-[#111827] truncate"
+                                    <p className="font-medium text-[#111827] truncate max-w-[90%]"
                                         title={data.title}
                                     >
                                         {data.title}
@@ -379,7 +379,7 @@ const Compliance = () => {
 
                                     <div className="flex flex-col truncate min-w-0">
                                         <p
-                                            className="font-medium text-[#111827] truncate"
+                                            className="font-medium text-[#111827] truncate max-w-[90%]"
                                             title={uploadedFile.name}  // Native browser tooltip
                                         >
                                             {uploadedFile.name}

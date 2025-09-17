@@ -1044,7 +1044,7 @@ const Dashboard = () => {
                             <p className="text-[#8300AB] font-medium mb-3">
                                 Current plan: {subscriptionData ? subscriptionData.plan_name : 'Loading...'}
                             </p>
-                            {subscriptionData && subscriptionData.plan_name !== "Enterprise" && (
+                            {subscriptionData && (subscriptionData.plan_name !== "Enterprise" || subscriptionData.plan_name !== "Custom Enterprise Plan") && (
                                 <PaymentButton
                                     variant="primary"
                                     size="sm"
