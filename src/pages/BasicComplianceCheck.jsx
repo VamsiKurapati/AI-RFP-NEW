@@ -4,7 +4,6 @@ import { IoIosArrowBack, IoMdCloseCircle } from "react-icons/io";
 import { MdOutlineError, MdOutlineLock } from "react-icons/md";
 import { BsFillCheckCircleFill } from "react-icons/bs";
 import { useLocation, useNavigate } from "react-router-dom";
-import handlePDFGeneration from "../components/Generate_PDF";
 
 const BasicComplianceCheck = () => {
     const location = useLocation();
@@ -29,10 +28,6 @@ const BasicComplianceCheck = () => {
             });
         }
     }, []);
-
-    const handleGeneratePDF = async () => {
-        await handlePDFGeneration();
-    };
 
     return (
         <div className="min-h-screen overflow-y-auto">
@@ -166,15 +161,15 @@ const BasicComplianceCheck = () => {
                 </div>
 
                 {/* Navigation Buttons */}
-                <div className="flex flex-col md:flex-row items-center justify-between mt-8 gap-4">
+                <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
                     <button className="border border-[#4B5563] text-[#4B5563] px-6 py-2 rounded transition text-[16px] flex items-center gap-2"
                         onClick={() => navigate(-1)}>
                         <IoIosArrowBack className="text-[20px] text-[#4B5563]" />
                         Back
                     </button>
                     <button className="bg-[#2563EB] text-white px-8 py-2 rounded transition text-[16px]"
-                        onClick={() => handleGeneratePDF()}>
-                        Generate PDF
+                        onClick={() => navigate('/dashboard')}>
+                        Continue
                     </button>
                 </div>
             </div>
