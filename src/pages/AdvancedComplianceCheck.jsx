@@ -14,6 +14,13 @@ const AdvancedComplianceCheck = () => {
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
+    const formatSection = (str) =>
+        str
+            .split(/[_\s]+/) // split by underscore OR whitespace
+            .filter(Boolean) // remove empty strings
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(" ");
+
     useEffect(() => {
         const incoming = location.state && location.state.data;
         if (incoming) {
@@ -74,7 +81,7 @@ const AdvancedComplianceCheck = () => {
                                 {basicComplianceCheck && basicComplianceCheck.missing_sections && basicComplianceCheck.missing_sections.map((section, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
                                         <MdOutlineError className="text-[20px] text-[#EAB308]" />
-                                        <span className="text-[#111827] text-[16px]">{capitalize(section)}</span>
+                                        <span className="text-[#111827] text-[16px]">{formatSection(section)}</span>
                                     </li>
                                 ))}
                                 {basicComplianceCheck && basicComplianceCheck.missing_sections && basicComplianceCheck.missing_sections.length === 0 && (
@@ -96,7 +103,7 @@ const AdvancedComplianceCheck = () => {
                                         <li key={idx} className="flex items-start justify-start gap-2">
                                             <MdOutlineError className="text-[20px] text-[#EAB308] mt-1 flex-shrink-0" />
                                             <div className="flex flex-col">
-                                                <span className="text-[#111827] text-[16px] font-medium">{capitalize(section)}</span>
+                                                <span className="text-[#111827] text-[16px] font-medium">{formatSection(section)}</span>
                                                 {issues.map((issue, issueIdx) => (
                                                     <span key={issueIdx} className="text-[#713F12] text-[14px] ml-2">• {capitalize(issue)}</span>
                                                 ))}
@@ -120,7 +127,7 @@ const AdvancedComplianceCheck = () => {
                                 {basicComplianceCheck && basicComplianceCheck.empty_sections && basicComplianceCheck.empty_sections.map((section, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
                                         <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
-                                        <span className="text-[#111827] text-[16px]">{capitalize(section)}</span>
+                                        <span className="text-[#111827] text-[16px]">{formatSection(section)}</span>
                                     </li>
                                 ))}
                                 {basicComplianceCheck && basicComplianceCheck.empty_sections && basicComplianceCheck.empty_sections.length === 0 && (
@@ -155,7 +162,7 @@ const AdvancedComplianceCheck = () => {
                                 {advancedComplianceCheck && advancedComplianceCheck.requested_information && advancedComplianceCheck.requested_information.map((item, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
                                         <MdOutlineError className="text-[20px] text-[#EAB308]" />
-                                        <span className="text-[#111827] text-[16px]">{capitalize(item)}</span>
+                                        <span className="text-[#111827] text-[16px]">{formatSection(item)}</span>
                                     </li>
                                 ))}
                                 {advancedComplianceCheck && advancedComplianceCheck.requested_information && advancedComplianceCheck.requested_information.length === 0 && (
@@ -174,7 +181,7 @@ const AdvancedComplianceCheck = () => {
                                 {advancedComplianceCheck && advancedComplianceCheck.present_information && advancedComplianceCheck.present_information.map((item, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
                                         <BsFillCheckCircleFill className="text-[20px] text-[#16A34A]" />
-                                        <span className="text-[#111827] text-[16px]">{capitalize(item)}</span>
+                                        <span className="text-[#111827] text-[16px]">{formatSection(item)}</span>
                                     </li>
                                 ))}
                                 {advancedComplianceCheck && advancedComplianceCheck.present_information && advancedComplianceCheck.present_information.length === 0 && (
@@ -193,7 +200,7 @@ const AdvancedComplianceCheck = () => {
                                 {advancedComplianceCheck && advancedComplianceCheck.missing_information && advancedComplianceCheck.missing_information.map((item, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
                                         <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
-                                        <span className="text-[#111827] text-[16px]">{capitalize(item)}</span>
+                                        <span className="text-[#111827] text-[16px]">{formatSection(item)}</span>
                                     </li>
                                 ))}
                                 {advancedComplianceCheck && advancedComplianceCheck.missing_information && advancedComplianceCheck.missing_information.length === 0 && (
