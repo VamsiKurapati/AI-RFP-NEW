@@ -327,7 +327,7 @@ const EmployeeProfileDashboard = () => {
                     <MdOutlineCalendarToday className="w-4 h-4 shrink-0" />
                     <span>{proposal.deadline || "Not Disclosed"}</span>
                   </div>
-                  <div className="flex justify-end">
+                  {/* <div className="flex justify-end">
                     <button
                       className="text-[#2563EB] text-[14px] font-medium hover:text-[#1d4ed8] transition-colors flex items-center gap-1 cursor-pointer"
                       title="View Details"
@@ -335,7 +335,7 @@ const EmployeeProfileDashboard = () => {
                       <MdOutlineVisibility className="w-4 h-4 shrink-0" title="View Details" />
                       View
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               ))
             ) : (
