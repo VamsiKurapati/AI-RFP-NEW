@@ -96,7 +96,7 @@ const AdvancedComplianceCheck = () => {
                                         <li key={idx} className="flex items-start justify-start gap-2">
                                             <MdOutlineError className="text-[20px] text-[#EAB308] mt-1 flex-shrink-0" />
                                             <div className="flex flex-col">
-                                                <span className="text-[#111827] text-[16px] font-medium">{section}</span>
+                                                <span className="text-[#111827] text-[16px] font-medium">{capitalize(section)}</span>
                                                 {issues.map((issue, issueIdx) => (
                                                     <span key={issueIdx} className="text-[#713F12] text-[14px] ml-2">• {capitalize(issue)}</span>
                                                 ))}
@@ -106,7 +106,7 @@ const AdvancedComplianceCheck = () => {
                                 ) : (
                                     <li className="flex items-center justify-start gap-2">
                                         <MdOutlineError className="text-[20px] text-[#EAB308]" />
-                                        <span className="text-[#111827] text-[16px]">No format issues found</span>
+                                        <span className="text-[#111827] text-[16px]">No format issues</span>
                                     </li>
                                 )}
                             </ul>
@@ -126,7 +126,7 @@ const AdvancedComplianceCheck = () => {
                                 {basicComplianceCheck && basicComplianceCheck.empty_sections && basicComplianceCheck.empty_sections.length === 0 && (
                                     <li className="flex items-center justify-start gap-2">
                                         <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
-                                        <span className="text-[#111827] text-[16px]">No empty sections found</span>
+                                        <span className="text-[#111827] text-[16px]">No empty sections</span>
                                     </li>
                                 )}
                             </ul>
@@ -180,7 +180,7 @@ const AdvancedComplianceCheck = () => {
                                 {advancedComplianceCheck && advancedComplianceCheck.present_information && advancedComplianceCheck.present_information.length === 0 && (
                                     <li className="flex items-center justify-start gap-2">
                                         <BsFillCheckCircleFill className="text-[20px] text-[#16A34A]" />
-                                        <span className="text-[#111827] text-[16px]">No present information found</span>
+                                        <span className="text-[#111827] text-[16px]">No present information</span>
                                     </li>
                                 )}
                             </ul>
