@@ -12,6 +12,7 @@ const AdvancedComplianceCheck = () => {
     const [basicComplianceCheck, setBasicComplianceCheck] = useState(null);
     const [advancedComplianceCheck, setAdvancedComplianceCheck] = useState(null);
 
+    const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
     useEffect(() => {
         const incoming = location.state && location.state.data;
