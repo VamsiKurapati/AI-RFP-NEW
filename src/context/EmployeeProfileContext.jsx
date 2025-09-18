@@ -191,14 +191,14 @@ export const EmployeeProfileProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    }, [role, hasInitialized, employeeData, getMockEmployeeData, fetchedEmployeeData]);
+    }, [role, hasInitialized, employeeData, getMockEmployeeData]);
 
     useEffect(() => {
         if (!fetchedEmployeeData) {
             fetchEmployeeData();
             setFetchedEmployeeData(true);
         }
-    }, [fetchEmployeeData]);
+    }, [fetchedEmployeeData]);
 
     const refreshEmployeeProfile = fetchEmployeeData;
 

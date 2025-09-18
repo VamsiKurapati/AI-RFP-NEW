@@ -13,7 +13,7 @@ const baseUrl = `${import.meta.env.VITE_API_BASE_URL}/profile`;
 const EmployeeProfileDashboard = () => {
   const navigate = useNavigate();
   // Use context
-  const { employeeData, loading, error, refreshProfile, proposalsInProgress, completedProposals, refreshProposals } = useEmployeeProfile();
+  const { employeeData, loading, error, refreshEmployeeProfile, proposalsInProgress, completedProposals, refreshProposals } = useEmployeeProfile();
   const { role } = useUser();
   // Logo upload state and ref
   const [logoUrl, setLogoUrl] = useState(null);
@@ -68,7 +68,7 @@ const EmployeeProfileDashboard = () => {
           <p className="text-red-600 mb-4">Error loading company profile: {error}</p>
           <button
             onClick={() => {
-              refreshProfile();
+              refreshEmployeeProfile();
               refreshProposals();
             }}
             className="bg-[#2563EB] text-white px-4 py-2 rounded-lg"
@@ -289,7 +289,7 @@ const EmployeeProfileDashboard = () => {
                     <MdOutlineCalendarToday className="w-4 h-4 shrink-0" />
                     <span>{proposal.deadline || "Not Disclosed"}</span>
                   </div>
-                  <div className="flex justify-end">
+                  {/* <div className="flex justify-end">
                     <button
                       className="text-[#2563EB] text-[14px] font-medium hover:text-[#1d4ed8] transition-colors flex items-center gap-1 cursor-pointer disabled:cursor-not-allowed"
                       disabled={role === "Viewer" || (role !== "company" && !(proposal.currentEditor && proposal.currentEditor.email === employeeData.email))}
@@ -298,7 +298,7 @@ const EmployeeProfileDashboard = () => {
                       <MdOutlineEdit className="w-4 h-4 shrink-0" title="Edit Details" />
                       Edit
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               ))
             ) : (
