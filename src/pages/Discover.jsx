@@ -1766,24 +1766,24 @@ const Discover = () => {
             </span>
           )}
         </div>
-        <h3 className="font-semibold text-[#111827] text-[18px] mb-1 line-clamp-2">{grant.OPPORTUNITY_TITLE}</h3>
+        <h3 className="font-semibold text-[#111827] text-[18px] mb-1 line-clamp-2">{grant.OPPORTUNITY_TITLE || "Not Disclosed"}</h3>
         <p className="text-[16px] text-[#4B5563] mb-2 line-clamp-3">{grant.FUNDING_DESCRIPTION}</p>
         <div className="text-[14px] text-[#4B5563CC] space-y-1">
           <div className="flex items-center gap-2">
             <MdOutlinePayments className="text-[16px] text-[#4B5563]" />
-            {grant.AWARD_CEILING === "Not Provided" ? "Not Disclosed" : grant.AWARD_CEILING}
+            {grant.AWARD_CEILING === "Not Provided" ? "Not Disclosed" : grant.AWARD_CEILING || "Not Disclosed"}
           </div>
           <div className="flex items-center gap-2">
             <MdOutlineCalendarMonth className="text-[16px] text-[#4B5563]" />
-            Deadline: {grant.ESTIMATED_APPLICATION_DUE_DATE === "Not Provided" ? "Not Disclosed" : grant.ESTIMATED_APPLICATION_DUE_DATE}
+            Deadline: {grant.ESTIMATED_APPLICATION_DUE_DATE === "Not Provided" ? "Not Disclosed" : grant.ESTIMATED_APPLICATION_DUE_DATE || "Not Disclosed"}
           </div>
           <div className="flex items-center gap-2">
             <MdOutlineAccountBalance className="text-[16px] text-[#4B5563] shrink-0" />
-            <p className="truncate overflow-hidden whitespace-nowrap"> {grant.AGENCY_NAME} </p>
+            <p className="truncate overflow-hidden whitespace-nowrap"> {grant.AGENCY_NAME || "Not Disclosed"} </p>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[12px] text-[#6B7280] bg-[#F3F4F6] px-2 py-1 rounded">
-              {grant.CATEGORY_OF_FUNDING_ACTIVITY}
+              {grant.CATEGORY_OF_FUNDING_ACTIVITY || "Not Disclosed"}
             </span>
           </div>
         </div>
@@ -1863,7 +1863,7 @@ const Discover = () => {
         <div className="text-[14px] text-[#6B7280] mb-4 space-y-1">
           <div className="flex items-center gap-2">
             <MdOutlineCalendarMonth className="text-[16px] shrink-0" />
-            <span>Deadline: {grant.ESTIMATED_APPLICATION_DUE_DATE === "Not Provided" ? "Not Disclosed" : grant.ESTIMATED_APPLICATION_DUE_DATE}</span>
+            <span>Deadline: {grant.ESTIMATED_APPLICATION_DUE_DATE === "Not Provided" ? "Not Disclosed" : grant.ESTIMATED_APPLICATION_DUE_DATE || "Not Disclosed"}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-[12px] text-[#6B7280] bg-[#F3F4F6] px-2 py-1 rounded">
@@ -1879,7 +1879,7 @@ const Discover = () => {
       </div>
 
       <div className="flex justify-between items-center">
-        <span className="font-semibold text-[#111827]">{grant.AWARD_CEILING === "none" ? "Not Disclosed" : `$${grant.AWARD_CEILING}`}</span>
+        <span className="font-semibold text-[#111827]">{grant.AWARD_CEILING === "none" ? "Not Disclosed" : `$${grant.AWARD_CEILING}` || "Not Disclosed"}</span>
         <div className="flex gap-2">
           <button
             onClick={() => handleGenerateGrantProposal(grant)}
@@ -1905,22 +1905,22 @@ const Discover = () => {
       <tr className="border-b last:border-none hover:bg-gray-50">
         <td className="px-4 py-3 text-left">
           <div className="font-medium text-[#111827] text-[14px] max-w-[200px] truncate" title={grant.OPPORTUNITY_TITLE}>
-            {grant.OPPORTUNITY_TITLE}
+            {grant.OPPORTUNITY_TITLE || "Not Disclosed"}
           </div>
         </td>
         <td className="px-4 py-3 text-left">
           <div className="text-[#4B5563] text-[14px] max-w-[150px] truncate" title={grant.AGENCY_NAME}>
-            {grant.AGENCY_NAME}
+            {grant.AGENCY_NAME || "Not Disclosed"}
           </div>
         </td>
         <td className="px-4 py-3 text-left">
           <span className="text-[#2563EB] text-[14px] font-semibold">
-            {grant.AWARD_CEILING === "none" ? "Not Disclosed" : `$${grant.AWARD_CEILING}`}
+            {grant.AWARD_CEILING === "none" ? "Not Disclosed" : `$${grant.AWARD_CEILING}` || "Not Disclosed"}
           </span>
         </td>
         <td className="px-4 py-3 text-left">
           <div className="text-[#4B5563] text-[14px]">
-            {grant.ESTIMATED_APPLICATION_DUE_DATE === "Not Provided" ? "Not Disclosed" : grant.ESTIMATED_APPLICATION_DUE_DATE}
+            {grant.ESTIMATED_APPLICATION_DUE_DATE === "Not Provided" ? "Not Disclosed" : grant.ESTIMATED_APPLICATION_DUE_DATE || "Not Disclosed"}
           </div>
         </td>
         <td className="px-4 py-3 text-center">
