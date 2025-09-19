@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { FaSpinner } from 'react-icons/fa';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
-import handlePDFGeneration from './Generate_PDF';
+import handleWordGeneration from './Generate_Word';
 
 const GrantProposalForm = ({
     selectedGrant,
@@ -13,7 +12,6 @@ const GrantProposalForm = ({
     isGenerating = false,
     initialData = null
 }) => {
-    const navigate = useNavigate();
     const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/rfp`;
     const [grantProposalData, setGrantProposalData] = useState(initialData || {
         summary: "",
@@ -78,7 +76,7 @@ const GrantProposalForm = ({
                         text: res.data.message || 'Grant proposal generated successfully. Downloading proposal...',
                     });
                     setTimeout(() => {
-                        handlePDFGeneration(res.data.proposal);
+                        handleWordGeneration(res.data.proposal);
                     }, 1000);
                 } else if (res.data.message === "Grant Proposal Generation is still in Progress. Please wait for it to complete.") {
                     Swal.fire({
@@ -106,7 +104,6 @@ const GrantProposalForm = ({
                 title: 'Error',
                 text: err.response?.data?.message || 'Failed to fetch Grant proposal.',
             });
-            // console.error("Error fetching Grant proposal:", err);
         }
     };
 
