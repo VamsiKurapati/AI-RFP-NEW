@@ -23,8 +23,8 @@ const handleWordGeneration = async (proposal) => {
     loadingDiv.innerHTML = 'Preparing Word export...';
     document.body.appendChild(loadingDiv);
     //Proposal is a base64 string. Convert it as downloadable .docx file
-    const proposal = atob(project);
-    const proposalData = JSON.parse(proposal);
+    const proposal_base64 = atob(project);
+    const proposalData = JSON.parse(proposal_base64);
     console.log(proposalData);
     const docxBlob = new Blob([proposalData], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
     const docxUrl = URL.createObjectURL(docxBlob);
