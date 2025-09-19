@@ -28,9 +28,9 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
                     <button
                         title={proposal_info.bookmarked ? (userRole === "Viewer" ? "Viewer cannot unsave" : "Unsave") : "Save"}
                         onClick={proposal_info.bookmarked && userRole === "Viewer" ? undefined : onBookmark}
-                        disabled={isLoading || (proposal_info.bookmarked && userRole === "Viewer") || buttonText === "Download"}
+                        disabled={isLoading || (proposal_info.bookmarked && userRole === "Viewer")}
                         aria-label={proposal_info.bookmarked ? (userRole === "Viewer" ? "Viewer cannot unsave" : "Unsave proposal") : "Save proposal"}
-                        className={`${proposal_info.bookmarked && userRole === "Viewer" ? "cursor-not-allowed opacity-50" : isLoading ? "cursor-wait opacity-75" : "cursor-pointer"} text-[#111827]`}
+                        className={`${buttonText === "Download" ? "hidden opacity-0 pointer-events-none" : proposal_info.bookmarked && userRole === "Viewer" ? "cursor-not-allowed opacity-50" : isLoading ? "cursor-wait opacity-75" : "cursor-pointer"} text-[#111827]`}
                     >
                         {isLoading ? (
                             <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-[#111827]" aria-hidden="true"></div>
@@ -44,7 +44,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
                         title="Share"
                         onClick={onShare}
                         aria-label="Share proposal"
-                        className="text-[#111827]"
+                        className={`${buttonText === "Download" ? "hidden opacity-0 pointer-events-none" : "text-[#111827]"}`}
                     >
                         <MdOutlineShare className="w-5 h-5 shrink-0" />
                     </button>
@@ -99,9 +99,9 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
                     <button
                         title={grant_info.bookmarked ? (userRole === "Viewer" ? "Viewer cannot unsave" : "Unsave") : "Save"}
                         onClick={grant_info.bookmarked && userRole === "Viewer" ? undefined : onBookmark}
-                        disabled={isLoading || (grant_info.bookmarked && userRole === "Viewer") || buttonText === "Download"}
+                        disabled={isLoading || (grant_info.bookmarked && userRole === "Viewer")}
                         aria-label={grant_info.bookmarked ? (userRole === "Viewer" ? "Viewer cannot unsave" : "Unsave grant") : "Save grant"}
-                        className={`${grant_info.bookmarked && userRole === "Viewer" ? "cursor-not-allowed opacity-50" : isLoading ? "cursor-wait opacity-75" : "cursor-pointer"} text-[#111827]`}
+                        className={`${buttonText === "Download" ? "hidden opacity-0 pointer-events-none" : grant_info.bookmarked && userRole === "Viewer" ? "cursor-not-allowed opacity-50" : isLoading ? "cursor-wait opacity-75" : "cursor-pointer"} text-[#111827]`}
                     >
                         {isLoading ? (
                             <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-[#111827]" aria-hidden="true"></div>
@@ -115,7 +115,7 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
                         title="Share"
                         onClick={onShare}
                         aria-label="Share grant"
-                        className="text-[#111827]"
+                        className={`${buttonText === "Download" ? "hidden opacity-0 pointer-events-none" : "text-[#111827]"}`}
                     >
                         <MdOutlineShare className="w-5 h-5 shrink-0" />
                     </button>
