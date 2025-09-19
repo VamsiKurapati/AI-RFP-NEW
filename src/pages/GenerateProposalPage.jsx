@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import NavbarComponent from './NavbarComponent';
 import { MdOutlineEdit, MdOutlineAdd, MdOutlineAssignment, MdOutlineArrowBack } from 'react-icons/md';
@@ -252,7 +252,7 @@ const GenerateProposalPage = () => {
         </div>
 
         {/* Save & Next Button */}
-        <div className="flex flex-col sm:flex-row justify-between gap-4">
+        <div className="flex flex-col sm:flex-row justify-end gap-4">
           {/* Button to go to compliance page */}
           <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto mx-auto" onClick={() => navigate('/compliance-check', { state: { data: proposal } })}>Check Compliance</button>
           <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto mx-auto" onClick={handleSaveAndNext}>Save & Next</button>
