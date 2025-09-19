@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { MdOutlineEdit, MdOutlineAddAPhoto, MdOutlineBusinessCenter, MdOutlineLocationOn, MdOutlineMail, MdOutlineCall, MdOutlineClose, MdOutlineCheck, MdOutlineCalendarToday, MdOutlineVisibility } from "react-icons/md";
+import { MdOutlineEdit, MdOutlineAddAPhoto, MdOutlineBusinessCenter, MdOutlineLocationOn, MdOutlineMail, MdOutlineCall, MdOutlineClose, MdOutlineCheck, MdOutlineCalendarToday } from "react-icons/md";
 import NavbarComponent from "./NavbarComponent";
 import { useEmployeeProfile } from "../context/EmployeeProfileContext";
-import { useUser } from "../context/UserContext";
-import handlePDFGeneration from "../components/Generate_PDF";
 
 const baseUrl = `${import.meta.env.VITE_API_BASE_URL}/profile`;
 
@@ -14,7 +12,6 @@ const EmployeeProfileDashboard = () => {
   const navigate = useNavigate();
   // Use context
   const { employeeData, loading, error, refreshEmployeeProfile, proposalsInProgress, completedProposals, refreshProposals } = useEmployeeProfile();
-  const { role } = useUser();
   // Logo upload state and ref
   const [logoUrl, setLogoUrl] = useState(null);
   const fileInputRef = useRef(null);
@@ -22,9 +19,6 @@ const EmployeeProfileDashboard = () => {
   const [editMode, setEditMode] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-
-  // console.log("Completed Proposals : ", completedProposals);
-  // console.log("Proposals In Progress : ", proposalsInProgress);
 
   // Set logoUrl from employeeData
   useEffect(() => {
@@ -34,10 +28,6 @@ const EmployeeProfileDashboard = () => {
       setLogoUrl(employeeData.logoUrl);
     }
   }, [employeeData]);
-
-  const handleGeneratePDF = async (proposal) => {
-    await handlePDFGeneration(proposal);
-  };
 
   // Updated Button handlers
   const handleEditProfile = () => {
@@ -105,7 +95,6 @@ const EmployeeProfileDashboard = () => {
         }
       );
       setLogoUrl(`${baseUrl}/getProfileImage/file/${response.data.logoUrl}`);
-      // //console.log(logoUrl);
       setEditMode(false);
       setSelectedFile(null);
       setPreviewUrl(null);
@@ -289,16 +278,6 @@ const EmployeeProfileDashboard = () => {
                     <MdOutlineCalendarToday className="w-4 h-4 shrink-0" />
                     <span>{proposal.deadline || "Not Disclosed"}</span>
                   </div>
-                  {/* <div className="flex justify-end">
-                    <button
-                      className="text-[#2563EB] text-[14px] font-medium hover:text-[#1d4ed8] transition-colors flex items-center gap-1 cursor-pointer disabled:cursor-not-allowed"
-                      disabled={role === "Viewer" || (role !== "company" && !(proposal.currentEditor && proposal.currentEditor.email === employeeData.email))}
-                      title={role === "Viewer" ? "Viewer cannot edit proposals" : (role !== "company" && !(proposal.currentEditor && proposal.currentEditor.email === employeeData.email)) ? "Only current editor can edit this proposal" : "Edit Details"}
-                      onClick={() => navigate('/proposal_page', { state: { proposal: proposal.generatedProposal, proposalType: `${proposal.rfpId ? "RFP" : proposal.grantId ? "GRANT" : "No"}`, proposalId: proposal._id } })}>
-                      <MdOutlineEdit className="w-4 h-4 shrink-0" title="Edit Details" />
-                      Edit
-                    </button>
-                  </div> */}
                 </div>
               ))
             ) : (
@@ -327,15 +306,6 @@ const EmployeeProfileDashboard = () => {
                     <MdOutlineCalendarToday className="w-4 h-4 shrink-0" />
                     <span>{proposal.deadline || "Not Disclosed"}</span>
                   </div>
-                  {/* <div className="flex justify-end">
-                    <button
-                      className="text-[#2563EB] text-[14px] font-medium hover:text-[#1d4ed8] transition-colors flex items-center gap-1 cursor-pointer"
-                      title="View Details"
-                      onClick={() => handleGeneratePDF(proposal.generatedProposal)}>
-                      <MdOutlineVisibility className="w-4 h-4 shrink-0" title="View Details" />
-                      View
-                    </button>
-                  </div> */}
                 </div>
               ))
             ) : (

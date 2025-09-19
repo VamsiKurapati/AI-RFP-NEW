@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
 import Swal from 'sweetalert2';
 import GrantProposalForm from '../components/GrantProposalForm';
-import handlePDFGeneration from '../components/Generate_PDF';
+import handleWordGeneration from '../components/Generate_Word';
 
 // Constants
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}`;
@@ -63,7 +63,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
             <div>
                 <button
                     onClick={onGenerate}
-                    disabled={userRole === "Viewer" || (buttonText === "Generate PDF" && !isCurrentEditor)}
+                    disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)}
                     aria-label={`${buttonText.toLowerCase()} proposal`}
                     className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Generate PDF" && !isCurrentEditor)
                         ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
@@ -72,14 +72,14 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
                     title={
                         userRole === "Viewer"
                             ? "Viewer cannot generate/edit proposals"
-                            : buttonText === "Generate PDF" && !isCurrentEditor
+                            : buttonText === "Download" && !isCurrentEditor
                                 ? "Only the current editor can generate PDF for this proposal"
                                 : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
                     {buttonText}
                 </button>
-                {buttonText === "Generate PDF" && !isCurrentEditor && (
+                {buttonText === "Download" && !isCurrentEditor && (
                     <div className="text-xs text-gray-500 mt-1 text-center">
                         Current editor: {proposal_info.currentEditor?.fullName || proposal_info.currentEditor?.email || 'Unknown'}
                     </div>
@@ -164,7 +164,7 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
             <div>
                 <button
                     onClick={onGenerate}
-                    disabled={userRole === "Viewer" || (buttonText === "Generate PDF" && !isCurrentEditor)}
+                    disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)}
                     aria-label={`${buttonText.toLowerCase()} grant proposal`}
                     className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Generate PDF" && !isCurrentEditor)
                         ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
@@ -173,14 +173,14 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
                     title={
                         userRole === "Viewer"
                             ? "Viewer cannot generate/edit grant proposals"
-                            : buttonText === "Generate PDF" && !isCurrentEditor
+                            : buttonText === "Download" && !isCurrentEditor
                                 ? "Only the current editor can generate PDF for this grant proposal"
                                 : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
                     {buttonText}
                 </button>
-                {buttonText === "Generate PDF" && !isCurrentEditor && (
+                {buttonText === "Download" && !isCurrentEditor && (
                     <div className="text-xs text-gray-500 mt-1 text-center">
                         Current editor: {grant_info.currentEditor?.fullName || grant_info.currentEditor?.email || 'Unknown'}
                     </div>
@@ -558,7 +558,7 @@ const Proposals = () => {
     };
 
     const handleContinue = (proposal) => {
-        handlePDFGeneration(proposal.generatedProposal);
+        handleWordGeneration(proposal.docx_base64);
     };
 
     const isSaved = (rfpId) => {
@@ -659,7 +659,7 @@ const Proposals = () => {
     };
 
     const handleContinueGrant = (grant) => {
-        handlePDFGeneration(grant.generatedProposal);
+        handleWordGeneration(grant.docx_base64);
     };
 
     const handleSubmitGrantProposal = async (proposalData) => {
@@ -776,7 +776,7 @@ const Proposals = () => {
                         confirmButtonColor: '#2563EB'
                     });
                     setTimeout(() => {
-                        handlePDFGeneration(res.data.proposal);
+                        handleWordGeneration(res.data.proposal);
                     }, 1000);
                 } else if (res.data.message === "Grant Proposal Generation is in Progress. Please visit again after some time.") {
                     Swal.fire({
@@ -935,7 +935,7 @@ const Proposals = () => {
                                                 onShare={() => handleShare(proposal.link)}
                                                 onGenerate={() => handleContinue(proposal)}
                                                 userRole={role}
-                                                buttonText="Generate PDF"
+                                                buttonText="Download"
                                                 isCurrentEditor={proposal.currentEditor?.email === userEmail || role === "company"}
                                                 isLoading={savingStates[proposal._id] || false}
                                             />
@@ -1014,7 +1014,7 @@ const Proposals = () => {
                                             onShare={() => handleShare(grant.OPPORTUNITY_NUMBER_LINK || '#')}
                                             onGenerate={() => handleContinueGrant(grant)}
                                             userRole={role}
-                                            buttonText="Generate PDF"
+                                            buttonText="Download"
                                             isCurrentEditor={grant.currentEditor?.email === userEmail || role === "company"}
                                             isLoading={savingStates[grant._id] || false}
                                         />

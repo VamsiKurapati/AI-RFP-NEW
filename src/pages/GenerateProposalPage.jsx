@@ -3,18 +3,16 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import NavbarComponent from './NavbarComponent';
 import { MdOutlineEdit, MdOutlineAdd, MdOutlineAssignment, MdOutlineArrowBack } from 'react-icons/md';
 import { useProfile } from '../context/ProfileContext';
-import { useUser } from '../context/UserContext';
 import { AddTeamMemberModal, AddCaseStudyModal } from './CompanyProfileDashboard';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import handlePDFGeneration from '../components/Generate_PDF';
+import handleWordGeneration from '../components/Generate_Word';
 
 const GenerateProposalPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const proposal = location.state?.proposal;
-  const { companyData, loading, error, setCompanyData } = useProfile();
-  const { role } = useUser();
+  const { companyData, loading, error } = useProfile();
 
   const [showAddTeam, setShowAddTeam] = useState(false);
   const [showViewAllTeam, setShowViewAllTeam] = useState(false);
@@ -35,7 +33,6 @@ const GenerateProposalPage = () => {
       });
 
       if (res.status === 200) {
-        //console.log(res.data);
         setIsGeneratingProposal(false);
         if (res.data.message === "Proposal Generation completed successfully.") {
           Swal.fire({
@@ -44,7 +41,7 @@ const GenerateProposalPage = () => {
             text: res.data.message || 'Proposal generated successfully. Downloading proposal...',
           });
           setTimeout(() => {
-            handlePDFGeneration(res.data.proposal);
+            handleWordGeneration(res.data.proposal);
           }, 1500);
         } else if (res.data.message === "Proposal Generation is in Progress. Please visit again after some time.") {
           Swal.fire({
@@ -79,7 +76,6 @@ const GenerateProposalPage = () => {
         });
       }
     } catch (error) {
-      // console.error("Error generating proposal:", error);
       setIsGeneratingProposal(false);
       Swal.fire({
         icon: 'warning',

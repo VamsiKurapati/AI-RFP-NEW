@@ -1501,7 +1501,7 @@ const Discover = () => {
             confirmButtonColor: '#2563EB'
           });
           setTimeout(() => {
-            handlePDFGeneration(res.data.proposal);
+            handleWordGeneration(res.data.proposal);
           }, 1000);
         } else if (res.data.message === "Grant Proposal Generation is in Progress. Please visit again after some time.") {
           Swal.fire({
