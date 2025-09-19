@@ -1384,7 +1384,7 @@ const CompanyProfileDashboard = () => {
         </head>
         <body>
           <div class="invoice-header">
-            <img src="/vite.svg" alt="Company Logo" class="logo">
+            <img src="/Logo.png" alt="Company Logo" class="logo">
             <div>
               <h1 class="company-name">RFP2GRANTS</h1>
               <p class="company-tagline">Professional Proposal Management</p>

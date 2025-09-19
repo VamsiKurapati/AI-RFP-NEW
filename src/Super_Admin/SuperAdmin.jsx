@@ -3997,7 +3997,7 @@ const SuperAdmin = () => {
             invoiceDiv.innerHTML = `
                 <div style="font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto;">
                     <div style="display: flex; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #2563eb; padding-bottom: 20px;">
-                        <img src="/vite.svg" alt="Company Logo" style="width: 60px; height: 60px; margin-right: 20px;">
+                        <img src="/Logo.png" alt="Company Logo" style="width: 60px; height: 60px; margin-right: 20px;">
                         <div>
                             <h1 style="color: #2563eb; margin: 0; font-size: 28px; font-weight: bold;">RFP2GRANTS</h1>
                             <p style="color: #6b7280; margin: 5px 0 0 0; font-size: 16px;">Professional Proposal Management</p>
@@ -4113,7 +4113,7 @@ const SuperAdmin = () => {
                 </head>
                 <body>
                     <div class="invoice-header">
-                        <img src="/vite.svg" alt="Company Logo" class="logo">
+                        <img src="/Logo.png" alt="Company Logo" class="logo">
                         <div>
                             <h1 class="company-name">RFP App</h1>
                             <p class="company-tagline">Professional Proposal Management</p>
@@ -4226,7 +4226,7 @@ const SuperAdmin = () => {
 
                         {/* Logo and Company Header */}
                         <div className="flex items-center mb-6 p-4 bg-gray-50 rounded-lg">
-                            <img src="/vite.svg" alt="Company Logo" className="w-12 h-12 mr-4" />
+                            <img src="/Logo.png" alt="Company Logo" className="w-12 h-12 mr-4" />
                             <div>
                                 <h4 className="text-xl font-bold text-[#2563eb]">RFP2GRANTS</h4>
                                 <p className="text-sm text-[#6b7280]">Professional Proposal Management</p>
