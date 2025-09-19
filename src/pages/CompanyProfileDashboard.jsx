@@ -124,29 +124,22 @@ const RightSidebar = ({ deadlines, activity, isMobile, onClose }) => {
       <div className="min-h-[80vh] lg:min-h-[125vh]">
         <h4 className="font-semibold text-[16px] mb-4">Upcoming Deadlines</h4>
         {deadlines && deadlines.length > 0 ? (deadlines.map((deadline, i) => (
-          <div key={i} className="flex justify-between rounded-lg items-center bg-[#F9FAFB] p-2 mb-2">
-            <div className="flex flex-col">
-              <span className="text-[14px] text-[#111827]">{deadline.title}</span>
-              <span className="text-[11px] text-[#9CA3AF]">{deadline.endDate}</span>
+          <div key={i} className="flex flex-col justify-between rounded-lg items-center bg-[#F9FAFB] p-2 mb-2 w-full">
+            <div className="flex items-center justify-end gap-2 w-full">
+              <StatusBadge status={deadline.status} />
             </div>
-            <StatusBadge status={deadline.status} />
+            <span className="text-[14px] text-[#111827] w-full">
+              {deadline.title}
+            </span>
+            <span className="text-[11px] text-[#9CA3AF] w-full">
+              {(new Date(deadline.endDate)).toLocaleDateString()}
+            </span>
           </div>
         ))) : (
           <div className="flex justify-center items-center h-full">
             <span className="text-[14px] text-[#9CA3AF]">No upcoming deadlines</span>
           </div>
         )}
-        {/* <div className="mt-8">
-          <h4 className="font-semibold text-[16px] mb-4">Recent Activity</h4>
-          {activity.map((act, i) => (
-            <div key={i} className="flex justify-between rounded-lg items-center bg-[#F9FAFB] p-2 mb-2">
-              <div className="flex flex-col">
-                <span className="text-[14px] text-[#111827]">{act.title}</span>
-                <span className="text-[11px] text-[#9CA3AF]">{act.date}</span>
-              </div>
-            </div>
-          ))}
-        </div> */}
       </div>
     </div>
   );
