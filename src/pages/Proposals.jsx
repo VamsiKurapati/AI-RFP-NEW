@@ -28,7 +28,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
                     <button
                         title={proposal_info.bookmarked ? (userRole === "Viewer" ? "Viewer cannot unsave" : "Unsave") : "Save"}
                         onClick={proposal_info.bookmarked && userRole === "Viewer" ? undefined : onBookmark}
-                        disabled={isLoading || (proposal_info.bookmarked && userRole === "Viewer")}
+                        disabled={isLoading || (proposal_info.bookmarked && userRole === "Viewer") || buttonText === "Download"}
                         aria-label={proposal_info.bookmarked ? (userRole === "Viewer" ? "Viewer cannot unsave" : "Unsave proposal") : "Save proposal"}
                         className={`${proposal_info.bookmarked && userRole === "Viewer" ? "cursor-not-allowed opacity-50" : isLoading ? "cursor-wait opacity-75" : "cursor-pointer"} text-[#111827]`}
                     >
@@ -99,7 +99,7 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
                     <button
                         title={grant_info.bookmarked ? (userRole === "Viewer" ? "Viewer cannot unsave" : "Unsave") : "Save"}
                         onClick={grant_info.bookmarked && userRole === "Viewer" ? undefined : onBookmark}
-                        disabled={isLoading || (grant_info.bookmarked && userRole === "Viewer")}
+                        disabled={isLoading || (grant_info.bookmarked && userRole === "Viewer") || buttonText === "Download"}
                         aria-label={grant_info.bookmarked ? (userRole === "Viewer" ? "Viewer cannot unsave" : "Unsave grant") : "Save grant"}
                         className={`${grant_info.bookmarked && userRole === "Viewer" ? "cursor-not-allowed opacity-50" : isLoading ? "cursor-wait opacity-75" : "cursor-pointer"} text-[#111827]`}
                     >
