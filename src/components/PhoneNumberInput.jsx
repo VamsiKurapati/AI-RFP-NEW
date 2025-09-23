@@ -135,7 +135,7 @@ export const validatePhoneNumber = (phone, required = true) => {
         const phoneNumber = parsePhoneNumberFromString(cleanPhone);
 
         if (!phoneNumber) {
-            return 'Please enter a valid phone number';
+            return 'Please enter a phone number';
         }
 
         if (!phoneNumber.isValid()) {
@@ -148,7 +148,7 @@ export const validatePhoneNumber = (phone, required = true) => {
 
         return '';
     } catch (error) {
-        return 'Please enter a valid phone number';
+        return 'Error: Please enter a valid phone number';
     }
 };
 
