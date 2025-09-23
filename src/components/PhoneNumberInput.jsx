@@ -130,9 +130,12 @@ export const validatePhoneNumber = (phone, required = true) => {
     }
 
     try {
+        console.log(phone);
         // Clean the phone number by removing common formatting characters
         const cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
+        console.log("cleanPhone", cleanPhone);
         const phoneNumber = parsePhoneNumberFromString(cleanPhone);
+        console.log("phoneNumber", phoneNumber);
 
         if (!phoneNumber) {
             return 'Please enter a phone number';
