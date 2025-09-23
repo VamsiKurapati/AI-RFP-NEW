@@ -1439,7 +1439,7 @@ const Discover = () => {
         Swal.fire({
           icon: 'error',
           title: 'Invalid Budget',
-          text: err.response?.data?.message || err.response?.data?.error || 'Total project cost must be a positive number.',
+          text: 'Total project cost must be a positive number.',
           confirmButtonColor: '#2563EB'
         });
         return;
@@ -1450,7 +1450,7 @@ const Discover = () => {
         Swal.fire({
           icon: 'error',
           title: 'Invalid Budget',
-          text: err.response?.data?.message || err.response?.data?.error || 'Total requested amount must be a positive number.',
+          text: 'Total requested amount must be a positive number.',
           confirmButtonColor: '#2563EB'
         });
         return;
@@ -1464,7 +1464,7 @@ const Discover = () => {
           Swal.fire({
             icon: 'error',
             title: 'Budget Exceeds Limit',
-            text: err.response?.data?.message || err.response?.data?.error || `Total requested amount (${totalRequestedAmount}) cannot exceed the grant award ceiling (${awardCeiling}).`,
+            text: `Total requested amount (${totalRequestedAmount}) cannot exceed the grant award ceiling (${awardCeiling}).`,
             confirmButtonColor: '#2563EB'
           });
           return;
@@ -1476,7 +1476,7 @@ const Discover = () => {
         Swal.fire({
           icon: 'error',
           title: 'Invalid Budget',
-          text: err.response?.data?.message || err.response?.data?.error || 'Total requested amount cannot exceed total project cost.',
+          text: 'Total requested amount cannot exceed total project cost.',
           confirmButtonColor: '#2563EB'
         });
         return;
