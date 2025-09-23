@@ -1,6 +1,6 @@
 import React from 'react';
 import PhoneInput from 'react-phone-input-2';
-import { parsePhoneNumberFromString, isValidPhoneNumber } from 'libphonenumber-js';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import 'react-phone-input-2/lib/style.css';
 
 const PhoneNumberInput = ({
@@ -24,35 +24,6 @@ const PhoneNumberInput = ({
 }) => {
     const handlePhoneChange = (phone) => {
         onChange(phone);
-    };
-
-    const validatePhoneNumber = (phone) => {
-        if (!phone || phone.length === 0) {
-            return required ? 'Phone number is required' : '';
-        }
-
-        try {
-            // Clean the phone number by removing common formatting characters
-            const cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
-            const phoneNumber = parsePhoneNumberFromString(cleanPhone);
-
-            if (!phoneNumber) {
-                return 'Please enter a valid phone number';
-            }
-
-            if (!phoneNumber.isValid()) {
-                return 'Please enter a valid phone number';
-            }
-
-            // Additional validation for length
-            if (phoneNumber.nationalNumber.length < 7 || phoneNumber.nationalNumber.length > 15) {
-                return 'Phone number must be between 7-15 digits';
-            }
-
-            return '';
-        } catch (error) {
-            return 'Please enter a valid phone number';
-        }
     };
 
     const defaultInputStyle = {
@@ -130,13 +101,10 @@ export const validatePhoneNumber = (phone, required = true) => {
     }
 
     try {
-        console.log(phone);
-        console.log("Type of phone", typeof phone);
         // Clean the phone number by removing common formatting characters
-        const cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
-        console.log("cleanPhone", cleanPhone);
+        let cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
+        cleanPhone = "+" + cleanPhone;
         const phoneNumber = parsePhoneNumberFromString(cleanPhone);
-        console.log("phoneNumber", phoneNumber);
 
         if (!phoneNumber) {
             return 'Please enter a phone number';
