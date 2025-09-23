@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, ArrowLeft, EyeOff, Eye } from "lucide-react";
-import 'react-phone-input-2/lib/style.css';
-import PhoneInput from 'react-phone-input-2';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import PhoneNumberInput, { validatePhoneNumber } from '../components/PhoneNumberInput';
 import Swal from "sweetalert2";
 
 const SignupForm = () => {
@@ -40,8 +38,8 @@ const SignupForm = () => {
 
   const validateStepTwo = () => {
     const newErrors = {};
-    const phoneNumber = parsePhoneNumberFromString(form.mobile.startsWith('+') ? form.mobile : `+${form.mobile}`);
-    if (!phoneNumber || !phoneNumber.isValid()) newErrors.mobile = "Enter a valid phone number (7-15 digits, numbers only)";
+    const phoneError = validatePhoneNumber(form.mobile, true);
+    if (phoneError) newErrors.mobile = phoneError;
     if (!form.organization.trim()) newErrors.organization = "Organization is required";
     return newErrors;
   };
@@ -193,49 +191,20 @@ const SignupForm = () => {
                     <ArrowLeft /> Back
                   </button>
 
-                  <div>
-                    <label className="text-lg font-medium text-gray-800 mb-1 block">
-                      Mobile Number
-                    </label>
-                    <PhoneInput
-                      country={'in'}
-                      value={form.mobile}
-                      onChange={mobile => setForm({ ...form, mobile })}
-                      inputProps={{
-                        name: 'mobile',
-                        required: true,
-                        autoFocus: true,
-                        placeholder: "Enter your mobile number"
-                      }}
-                      inputStyle={{
-                        width: "100%",
-                        paddingLeft: "56px",
-                        height: "40px",
-                        backgroundColor: "#D9D9D966",
-                        fontSize: "20px",
-                        color: "#000000",
-                        // border: "2px solid #000000B2",
-                        // borderRadius: "10px",
-                        boxSizing: "border-box"
-                      }}
-                      containerStyle={{
-                        width: "100%"
-                      }}
-                      dropdownStyle={{
-                        maxHeight: "200px",
-                        overflowY: "auto",
-                        zIndex: 99999
-                      }}
-                      buttonStyle={{
-                        height: "40px",
-                        // border: "2px solid #000000B2",
-                        // borderRadius: "10px 0 0 10px",
-                        boxSizing: "border-box"
-                      }}
-                      containerClass="w-full md:w-[436px] mt-1"
-                    />
-                    {errors.mobile && <p className="text-red-500 text-sm">{errors.mobile}</p>}
-                  </div>
+                  <PhoneNumberInput
+                    label="Mobile Number"
+                    value={form.mobile}
+                    onChange={mobile => setForm({ ...form, mobile })}
+                    error={errors.mobile}
+                    required={true}
+                    placeholder="Enter your mobile number"
+                    country="in"
+                    inputStyle={{
+                      backgroundColor: "#D9D9D966",
+                      fontSize: "20px",
+                    }}
+                    containerClass="w-full md:w-[436px]"
+                  />
 
                   <div>
                     <label className="text-lg font-medium text-gray-800 mb-1 block">

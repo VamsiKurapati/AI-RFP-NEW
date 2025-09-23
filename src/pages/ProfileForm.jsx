@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import 'react-phone-input-2/lib/style.css';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
-import PhoneInput from 'react-phone-input-2';
+import PhoneNumberInput, { validatePhoneNumber } from '../components/PhoneNumberInput';
 import Swal from "sweetalert2";
 
 // Reusable input component
@@ -36,58 +34,28 @@ const FormInput = ({
   </div>
 );
 
-// Phone input component to reduce duplication
+// Phone input component - now using the reusable PhoneNumberInput
 const PhoneInputField = ({
   value,
   onChange,
   error,
   disabled = false
 }) => (
-  <div className="mb-2">
-    <label htmlFor="phone" className="text-[18px] md:text-[24px] font-medium text-[#111827]">
-      Phone *
-    </label>
-    <PhoneInput
-      country={'in'}
-      value={value}
-      onChange={onChange}
-      disabled={disabled}
-      inputProps={{
-        name: 'phone',
-        required: true,
-        autoFocus: true,
-        placeholder: "Enter your mobile number",
-        disabled: disabled
-      }}
-      inputStyle={{
-        width: "100%",
-        paddingLeft: "56px",
-        height: "40px",
-        backgroundColor: "#D9D9D966",
-        fontSize: "20px",
-        color: "#000000",
-        opacity: disabled ? 0.5 : 1,
-        cursor: disabled ? "not-allowed" : "text",
-        boxSizing: "border-box"
-      }}
-      containerStyle={{
-        width: "100%",
-      }}
-      dropdownStyle={{
-        maxHeight: "200px",
-        overflowY: "auto",
-        zIndex: 99999
-      }}
-      buttonStyle={{
-        height: "40px",
-        opacity: disabled ? 0.5 : 1,
-        cursor: disabled ? "not-allowed" : "pointer",
-        boxSizing: "border-box"
-      }}
-      containerClass="w-full md:w-[436px] mt-1"
-    />
-    {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
-  </div>
+  <PhoneNumberInput
+    label="Phone"
+    value={value}
+    onChange={onChange}
+    error={error}
+    disabled={disabled}
+    required={true}
+    placeholder="Enter your mobile number"
+    country="in"
+    inputStyle={{
+      backgroundColor: "#D9D9D966",
+      fontSize: "20px",
+    }}
+    containerClass="w-full md:w-[436px]"
+  />
 );
 
 const INDUSTRY_OPTIONS = [
@@ -172,7 +140,7 @@ const CreateProfile = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    const phoneNumber = parsePhoneNumberFromString(form.phone.startsWith('+') ? form.phone : `+${form.phone}`);
+    const phoneError = validatePhoneNumber(form.phone, true);
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (role === "company") {
       if (!form.companyName.trim()) newErrors.companyName = "Company Name is required";
@@ -190,8 +158,7 @@ const CreateProfile = () => {
       if (!form.website.trim()) newErrors.website = "Website is required";
       else if (!isValidUrl(form.website)) newErrors.website = "Please enter a valid URL (e.g., https://example.com)";
 
-      if (!form.phone.trim()) newErrors.phone = "Phone number is required";
-      else if (!phoneNumber || !phoneNumber.isValid()) newErrors.phone = "Enter a valid phone number (7-15 digits, numbers only)";
+      if (phoneError) newErrors.phone = phoneError;
 
       if (!form.email.trim()) newErrors.email = "Email is required";
       else if (!email || !emailRegex.test(form.email)) newErrors.email = "Enter a valid Email address";
@@ -213,8 +180,7 @@ const CreateProfile = () => {
 
       if (!form.jobTitle.trim()) newErrors.jobTitle = "Job title is required";
 
-      if (!form.phone.trim()) newErrors.phone = "Phone number is required";
-      else if (!phoneNumber || !phoneNumber.isValid()) newErrors.phone = "Enter a valid phone number (7-15 digits, numbers only)";
+      if (phoneError) newErrors.phone = phoneError;
 
       if (!form.linkedIn.trim()) newErrors.linkedIn = "LinkedIn is required";
       else if (!isValidUrl(form.linkedIn)) newErrors.linkedIn = "Please enter a valid URL (e.g., https://linkedin.com/username)";

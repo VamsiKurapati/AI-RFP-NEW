@@ -4,7 +4,7 @@ import axios from "axios";
 import { MdOutlineEdit, MdOutlineSearch, MdOutlineAddAPhoto, MdOutlineBusinessCenter, MdOutlineHome, MdOutlineLocationOn, MdOutlineMail, MdOutlineCall, MdOutlineLanguage, MdOutlineGroups, MdOutlineDocumentScanner, MdOutlineFolder, MdOutlineAssignment, MdOutlineVerifiedUser, MdOutlineDownload, MdOutlineOpenInNew, MdOutlineGroup, MdOutlineCalendarToday, MdOutlineAdd, MdOutlineClose, MdOutlinePhone, MdOutlineEmail, MdOutlineCheck, MdOutlinePayments, MdOutlineDelete } from "react-icons/md";
 import NavbarComponent from "./NavbarComponent";
 import { useProfile } from "../context/ProfileContext";
-import { parsePhoneNumberFromString } from "libphonenumber-js";
+import PhoneNumberInput, { validatePhoneNumber } from '../components/PhoneNumberInput';
 import Swal from "sweetalert2";
 
 // Unified Badge Styles
@@ -281,7 +281,7 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
     setAddingTeamMember(true);
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const phoneNumber = parsePhoneNumberFromString(formData.phone.startsWith('+') ? formData.phone : `+${formData.phone}`);
+    const phoneError = validatePhoneNumber(formData.phone, true);
 
     if (!formData.name || !formData.shortDesc || !formData.highestQualification || !formData.skills || !formData.jobTitle || !formData.phone || !formData.accessLevel || !formData.email) {
       Swal.fire({
@@ -295,9 +295,9 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
       return;
     }
 
-    if (!phoneNumber || !phoneNumber.isValid()) {
+    if (phoneError) {
       Swal.fire({
-        title: 'Please enter a valid phone number.',
+        title: phoneError,
         icon: 'error',
         timer: 1500,
         showConfirmButton: false,
@@ -439,16 +439,15 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone<span className="text-red-500">*</span></label>
-            <input
-              type="tel"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-              required
-            />
-          </div>
+          <PhoneNumberInput
+            label="Phone"
+            value={formData.phone}
+            onChange={phone => setFormData({ ...formData, phone })}
+            required={true}
+            placeholder="Enter phone number"
+            country="in"
+            className="mb-4"
+          />
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Access Level<span className="text-red-500">*</span></label>

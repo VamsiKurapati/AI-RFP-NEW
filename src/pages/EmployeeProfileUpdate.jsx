@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MdOutlineSave, MdOutlineBusinessCenter, MdOutlineDomain } from "react-icons/md";
-import 'react-phone-input-2/lib/style.css';
-import PhoneInput from 'react-phone-input-2';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import PhoneNumberInput, { validatePhoneNumber } from '../components/PhoneNumberInput';
 import { useEmployeeProfile } from "../context/EmployeeProfileContext";
 import Swal from "sweetalert2";
 
@@ -77,58 +75,28 @@ const FormInput = ({
     </div>
 );
 
-// Phone input component
+// Phone input component - now using the reusable PhoneNumberInput
 const PhoneInputField = ({
     value,
     onChange,
     error,
     disabled = false
 }) => (
-    <div className="mb-4">
-        <label htmlFor="phone" className="text-[18px] md:text-[24px] font-medium text-[#111827]">
-            Phone *
-        </label>
-        <PhoneInput
-            country={'in'}
-            value={value}
-            onChange={onChange}
-            disabled={disabled}
-            inputProps={{
-                name: 'phone',
-                required: true,
-                autoFocus: true,
-                placeholder: "Enter your mobile number",
-                disabled: disabled
-            }}
-            inputStyle={{
-                width: "100%",
-                paddingLeft: "56px",
-                height: "40px",
-                backgroundColor: "#D9D9D966",
-                fontSize: "20px",
-                color: "#000000",
-                opacity: disabled ? 0.5 : 1,
-                cursor: disabled ? "not-allowed" : "text",
-                boxSizing: "border-box"
-            }}
-            containerStyle={{
-                width: "100%",
-            }}
-            dropdownStyle={{
-                maxHeight: "200px",
-                overflowY: "auto",
-                zIndex: 99999
-            }}
-            buttonStyle={{
-                height: "40px",
-                opacity: disabled ? 0.5 : 1,
-                cursor: disabled ? "not-allowed" : "pointer",
-                boxSizing: "border-box"
-            }}
-            containerClass="w-full md:w-[436px] mt-1"
-        />
-        {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
-    </div>
+    <PhoneNumberInput
+        label="Phone"
+        value={value}
+        onChange={onChange}
+        error={error}
+        disabled={disabled}
+        required={true}
+        placeholder="Enter your mobile number"
+        country="in"
+        inputStyle={{
+            backgroundColor: "#D9D9D966",
+            fontSize: "20px",
+        }}
+        containerClass="w-full md:w-[436px]"
+    />
 );
 
 const EmployeeProfileUpdate = () => {
@@ -155,7 +123,7 @@ const EmployeeProfileUpdate = () => {
 
     const validateForm = () => {
         const newErrors = {};
-        const phoneNumber = parsePhoneNumberFromString(form.phone.startsWith('+') ? form.phone : `+${form.phone}`);
+        const phoneError = validatePhoneNumber(form.phone, true);
 
         if (!form.name.trim()) newErrors.name = "Employee name is required";
         if (!form.location.trim()) newErrors.location = "Location is required";
@@ -163,8 +131,7 @@ const EmployeeProfileUpdate = () => {
         if (!form.skills.trim()) newErrors.skills = "Skills are required";
         if (!form.email.trim()) newErrors.email = "Email is required";
 
-        if (!form.phone.trim()) newErrors.phone = "Phone number is required";
-        else if (!phoneNumber || !phoneNumber.isValid()) newErrors.phone = "Enter a valid phone number (7-15 digits, numbers only)";
+        if (phoneError) newErrors.phone = phoneError;
 
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
