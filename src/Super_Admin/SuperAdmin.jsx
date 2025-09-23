@@ -646,7 +646,7 @@ const SuperAdmin = () => {
             case 'Re-Opened':
                 return 'bg-[#FEE2E2] text-[#DC2626]';
             case 'Withdrawn':
-                return 'bg-[#4B5563] text-[#111827]';
+                return 'bg-[#4B5563] text-[#FFFFF]';
             case 'Cancelled':
                 return 'bg-[#F3F4F6] text-[#6B7280]';
             case 'Connected':
@@ -1240,13 +1240,16 @@ const SuperAdmin = () => {
             <div className="flex flex-row gap-4">
                 {/* Card-1 - Total Revenue */}
 
-                <div className="h-[242px] rounded-2xl bg-gradient-to-b from-[#413B99] to-[#6C63FF] p-6 flex justify-between shadow-lg w-full">
+                <div className="h-[242px] rounded-2xl bg-gradient-to-b from-[#413B99] to-[#6C63FF] p-4 flex justify-between shadow-lg w-full">
                     {/* Left Section */}
                     <div>
-                        <h2 className="text-white text-2xl font-bold">Total Revenue</h2>
-                        <p className="text-white text-4xl font-bold mt-2">
-                            {paymentsStats["Total Revenue"]}
-                        </p>
+                        <div>
+
+                            <h2 className="text-white text-2xl font-bold">Total Revenue</h2>
+                            <p className="text-white text-4xl font-bold mt-2 overflow-hidden">
+                                $ {paymentsStats["Total Revenue"]}
+                            </p>
+                        </div>
 
                         <div className="flex gap-4 mt-4">
                             {/* Successful Payments */}
@@ -1275,7 +1278,18 @@ const SuperAdmin = () => {
 
                     {/* Right Illustration */}
                     <div className="flex items-center">
-                        <img src={revenue} alt="Users" className="mt-[92px] w-[192px] h-[150px]" />
+                        <div className="flex flex-col gap-4">
+
+                            <div className=" mt-2 bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
+                                <p className="text-white text-[14px]">Revenue This Month</p>
+                                <p className="flex text-lg font-bold">
+                                    <span className="text-white text-4xl font-bold">
+                                        $ {paymentsStats["Revenue This Month"]}
+                                    </span>
+                                </p>
+                            </div>
+                            <img src={revenue} alt="Users" className=" w-[192px] h-[140px]" />
+                        </div>
                     </div>
                 </div>
 
