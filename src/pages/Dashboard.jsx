@@ -132,7 +132,6 @@ const Dashboard = () => {
     const [calendarMonth, setCalendarMonth] = useState(moment().month());
     const [calendarYear, setCalendarYear] = useState(moment().year());
     const [openDropdownDate, setOpenDropdownDate] = useState(null);
-    const [addEventModalOpen, setAddEventModalOpen] = useState(false);
     const [calendarEvents, setCalendarEvents] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [fetchedDashboardData, setFetchedDashboardData] = useState(false);
@@ -756,130 +755,6 @@ const Dashboard = () => {
                 );
             }
         }
-    };
-
-    const AddEventModal = ({ isOpen, onClose }) => {
-        const [formData, setFormData] = useState({
-            title: '',
-            start: '',
-            end: '',
-        });
-
-        const [errors, setErrors] = useState({});
-        const [calendarError, setCalendarError] = useState('');
-
-        const handleChange = (e) => {
-            const { name, value } = e.target;
-            setFormData(prev => ({ ...prev, [name]: value }));
-        };
-
-        const handleSubmit = async (e) => {
-            e.preventDefault();
-            // Handle form submission logic here
-            // console.log('Event Data:', formData);
-            if (!formData.title) {
-                setErrors({ title: 'Title is required' });
-                return;
-            }
-            if (!formData.start) {
-                setErrors({ start: 'Start date is required' });
-                return;
-            }
-            if (!formData.end) {
-                setErrors({ end: 'End date is required' });
-                return;
-            }
-            setErrors({});
-            // console.log('Event Data:', formData);
-            try {
-                const token = localStorage.getItem('token');
-
-                const res = await axios.post(`${BASE_URL}/addCalendarEvent`, formData, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                if (res.status === 201) {
-                    setFormData({ title: '', start: '', end: '' });
-                    setCalendarError('');
-                    setErrors({});
-                    Swal.fire(
-                        'Success!',
-                        'Event added successfully',
-                        'success'
-                    );
-                    setCalendarEvents(prev => [...prev, res.data.event]);
-                    onClose();
-                } else {
-                    setCalendarError('Failed to add event');
-                }
-            } catch (error) {
-                setCalendarError('Failed to add event');
-            }
-        };
-
-        if (!isOpen) return null;
-
-        return (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-semibold">Add Event</h3>
-                        <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-                            <MdOutlineClose className="w-6 h-6" />
-                        </button>
-                    </div>
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">Title</label>
-                            <input
-                                type="text"
-                                placeholder="Event Title"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                className="border border-gray-300 rounded-lg p-2 w-full"
-                            />
-                            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">Start Date</label>
-                            <input
-                                type="date"
-                                name="start"
-                                value={formData.start}
-                                onChange={handleChange}
-                                className="border border-gray-300 rounded-lg p-2 w-full"
-                            />
-                            {errors.start && <p className="text-red-500 text-sm">{errors.start}</p>}
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-2">End Date</label>
-                            <input
-                                type="date"
-                                name="end"
-                                value={formData.end}
-                                min={formData.start}
-                                onChange={handleChange}
-                                className="border border-gray-300 rounded-lg p-2 w-full"
-                            />
-                            {errors.end && <p className="text-red-500 text-sm">{errors.end}</p>}
-                        </div>
-                        <button
-                            type="submit"
-                            className="bg-[#2563EB] text-white px-4 py-2 rounded-lg hover:bg-[#1D4ED8] transition"
-                        >
-                            Add Event
-                        </button>
-                    </form>
-                    {calendarError && <p className="text-red-500 mt-4">{calendarError}</p>}
-                </div>
-            </div>
-        );
-    };
-
-    const handleAddEvent = () => {
-        setAddEventModalOpen(true);
     };
 
     // Pagination logic for proposals
@@ -1684,16 +1559,6 @@ const Dashboard = () => {
                                 ))}
                             </select>
                         </div>
-                        <div className="flex gap-2 mb-4">
-                            <button
-                                className="flex items-center gap-1 px-2 py-1 border rounded text-[#2563EB] border-[#2563EB] text-[14px] md:text-[16px] hover:bg-[#2563EB] hover:text-white"
-                                onClick={() => handleAddEvent()}
-                                disabled={role === "Viewer" || paginatedProposals.length === 0}
-                                title={role === "Viewer" || paginatedProposals.length === 0 ? "Viewer cannot add events" : "Add event"}
-                            >
-                                <MdOutlineEdit className="w-5 h-5" /> Add Event
-                            </button>
-                        </div>
                     </div>
 
                     <div className="w-[600px] sm:w-full">
@@ -1865,12 +1730,6 @@ const Dashboard = () => {
                         >Next</button>
                     </div>
                 </div>
-
-                {/* Add Event Modal */}
-                <AddEventModal
-                    isOpen={addEventModalOpen}
-                    onClose={() => setAddEventModalOpen(false)}
-                />
             </main>
         </div>
     );
