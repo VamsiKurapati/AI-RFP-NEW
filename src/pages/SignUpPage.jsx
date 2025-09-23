@@ -26,6 +26,17 @@ const SignupForm = () => {
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
+  const validatePassword = (password) => {
+    const validation = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
+      specialChar: /[!@#$%^&*]/.test(password)
+    };
+    return validation;
+  };
+
   const validateStepOne = () => {
     const newErrors = {};
     if (!form.fullName.trim()) newErrors.fullName = "Full name is required";
@@ -33,6 +44,12 @@ const SignupForm = () => {
     if (!emailRegex.test(form.email)) newErrors.email = "Enter a valid email address";
     if (form.password.length < 8) newErrors.password = "Password must be at least 8 characters";
     if (form.password !== form.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
+    const passwordValidation = validatePassword(form.password);
+    if (!passwordValidation.length) newErrors.password = "Password must be at least 8 characters";
+    if (!passwordValidation.uppercase) newErrors.password = "Password must contain at least one uppercase letter";
+    if (!passwordValidation.lowercase) newErrors.password = "Password must contain at least one lowercase letter";
+    if (!passwordValidation.number) newErrors.password = "Password must contain at least one number";
+    if (!passwordValidation.specialChar) newErrors.password = "Password must contain at least one special character";
     return newErrors;
   };
 
