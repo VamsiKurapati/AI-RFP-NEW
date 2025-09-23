@@ -132,11 +132,11 @@ export const validatePhoneNumber = (phone, required = true) => {
         const phoneNumber = parsePhoneNumberFromString(phone);
 
         if (!phoneNumber) {
-            return 'Please enter a valid phone number';
+            return 'Please enter a valid phone number. No numbers found';
         }
 
         if (!phoneNumber.isValid()) {
-            return 'Please enter a valid phone number';
+            return 'Please enter a valid phone number. Invalid phone number';
         }
 
         if (phoneNumber.nationalNumber.length < 7 || phoneNumber.nationalNumber.length > 15) {
