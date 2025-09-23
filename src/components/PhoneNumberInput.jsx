@@ -32,8 +32,9 @@ const PhoneNumberInput = ({
         }
 
         try {
-            // Parse the phone number with country code
-            const phoneNumber = parsePhoneNumberFromString(phone);
+            // Clean the phone number by removing common formatting characters
+            const cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
+            const phoneNumber = parsePhoneNumberFromString(cleanPhone);
 
             if (!phoneNumber) {
                 return 'Please enter a valid phone number';
@@ -129,14 +130,16 @@ export const validatePhoneNumber = (phone, required = true) => {
     }
 
     try {
-        const phoneNumber = parsePhoneNumberFromString(phone);
+        // Clean the phone number by removing common formatting characters
+        const cleanPhone = phone.replace(/[\s\-\(\)\.]/g, '');
+        const phoneNumber = parsePhoneNumberFromString(cleanPhone);
 
         if (!phoneNumber) {
-            return 'Please enter a valid phone number. No numbers found';
+            return 'Please enter a valid phone number';
         }
 
         if (!phoneNumber.isValid()) {
-            return 'Please enter a valid phone number. Invalid phone number';
+            return 'Please enter a valid phone number';
         }
 
         if (phoneNumber.nationalNumber.length < 7 || phoneNumber.nationalNumber.length > 15) {
