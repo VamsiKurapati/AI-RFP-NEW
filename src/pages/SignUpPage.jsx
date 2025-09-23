@@ -85,7 +85,7 @@ const SignupForm = () => {
                 setRole("company");
                 setStep(1);
               }}
-              className="bg-[#2563EB] text-white py-2 rounded-md font-semibold"
+              className="bg-[#2563EB] text-white py-2 px-4 rounded-md font-semibold"
             >
               Company
             </button>
@@ -94,7 +94,7 @@ const SignupForm = () => {
                 setRole("freelancer");
                 setStep(1);
               }}
-              className="border border-1 border-[#2563EB] text-[#2563EB] py-2 rounded-md font-semibold"
+              className="border border-1 border-[#2563EB] text-[#2563EB] py-2 px-4 rounded-md font-semibold"
             >
               Freelancer
             </button>
@@ -254,7 +254,7 @@ const SignupForm = () => {
                 </div>
 
                 <button
-                  className="w-full mt-6 bg-[#2563EB] text-white py-3 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50"
+                  className="w-full mt-6 bg-[#2563EB] text-white py-3 px-4 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
                 >
@@ -279,7 +279,7 @@ const SignupForm = () => {
           <p className="text-[16px] text-[#6B7280] mb-6">
             We are working on this feature and it will be available soon.
           </p>
-          <button className="bg-[#2563EB] text-white py-2 rounded-md font-semibold" onClick={() => navigate("/")}>
+          <button className="bg-[#2563EB] text-white py-2 px-4 rounded-md font-semibold" onClick={() => navigate("/")}>
             Go to Home
           </button>
         </div>
