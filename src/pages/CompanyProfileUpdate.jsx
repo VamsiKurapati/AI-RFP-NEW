@@ -217,7 +217,7 @@ const PhoneInputField = ({
 
 const CompanyProfileUpdate = () => {
     const navigate = useNavigate();
-    const { companyData, loading } = useProfile();
+    const { companyData } = useProfile();
 
     const [form, setForm] = useState({
         companyName: companyData?.companyName || "",
@@ -238,7 +238,7 @@ const CompanyProfileUpdate = () => {
     });
 
     const [errors, setErrors] = useState({});
-    // const [loading, setLoading] = useState(false); // This line is removed
+    const [isLoading, setIsLoading] = useState(false);
 
     // Helper to check valid URL
     function isValidUrl(url) {
@@ -256,63 +256,6 @@ const CompanyProfileUpdate = () => {
             setErrors(prev => ({ ...prev, [field]: "" }));
         }
     };
-
-    // const handleServiceChange = (index, value) => {
-    //     const newServices = [...form.services];
-    //     newServices[index] = value;
-    //     setForm(prev => ({ ...prev, services: newServices }));
-    // };
-
-    // const handleAwardChange = (index, value) => {
-    //     const newAwards = [...form.awards];
-    //     newAwards[index] = value;
-    //     setForm(prev => ({ ...prev, awards: newAwards }));
-    // };
-
-    // const handleClientChange = (index, value) => {
-    //     const newClients = [...form.clients];
-    //     newClients[index] = value;
-    //     setForm(prev => ({ ...prev, clients: newClients }));
-    // };
-
-    // const addService = () => {
-    //     if (form.services.length < 10) {
-    //         setForm(prev => ({ ...prev, services: [...prev.services, ""] }));
-    //     }
-    // };
-
-    // const removeService = (index) => {
-    //     if (form.services.length > 1) {
-    //         const newServices = form.services.filter((_, i) => i !== index);
-    //         setForm(prev => ({ ...prev, services: newServices }));
-    //     }
-    // };
-
-    // const addAward = () => {
-    //     if (form.awards.length < 10) {
-    //         setForm(prev => ({ ...prev, awards: [...prev.awards, ""] }));
-    //     }
-    // };
-
-    // const removeAward = (index) => {
-    //     if (form.awards.length > 1) {
-    //         const newAwards = form.awards.filter((_, i) => i !== index);
-    //         setForm(prev => ({ ...prev, awards: newAwards }));
-    //     }
-    // };
-
-    // const addClient = () => {
-    //     if (form.clients.length < 10) {
-    //         setForm(prev => ({ ...prev, clients: [...prev.clients, ""] }));
-    //     }
-    // };
-
-    // const removeClient = (index) => {
-    //     if (form.clients.length > 1) {
-    //         const newClients = form.clients.filter((_, i) => i !== index);
-    //         setForm(prev => ({ ...prev, clients: newClients }));
-    //     }
-    // };
 
     const handleChange = (type, index, value) => {
         if (type === "service") {
@@ -359,8 +302,6 @@ const CompanyProfileUpdate = () => {
         }
     }
 
-
-
     const validateForm = () => {
         const newErrors = {};
         const phoneError = validatePhoneNumber(form.phone, true);
@@ -399,7 +340,7 @@ const CompanyProfileUpdate = () => {
             return;
         }
 
-        // setLoading(true); // This line is removed
+        setIsLoading(true);
         try {
             const formData = new FormData();
             formData.append("companyName", form.companyName);
@@ -412,7 +353,6 @@ const CompanyProfileUpdate = () => {
             formData.append("linkedIn", form.linkedIn);
             formData.append("bio", form.bio);
             formData.append("preferredIndustries", JSON.stringify(form.preferredIndustries));
-            // const filteredPreferredIndustries = form.preferredIndustries.filter(industry => industry.trim());
             const filteredServices = form.services.filter(service => service.trim());
             formData.append("services", JSON.stringify(filteredServices));
             const filteredAwards = form.awards.filter(award => award.trim());
@@ -459,7 +399,7 @@ const CompanyProfileUpdate = () => {
                 dangerMode: true,
             });
         } finally {
-            // setLoading(false); // This line is removed
+            setIsLoading(false);
         }
     };
 
@@ -506,7 +446,7 @@ const CompanyProfileUpdate = () => {
                                     onChange={(e) => handleInputChange('companyName', e.target.value)}
                                     error={errors.companyName}
                                     required
-                                    disabled={loading}
+                                    disabled={isLoading}
                                     placeholder="Enter company name"
                                 />
                             </div>
@@ -519,7 +459,7 @@ const CompanyProfileUpdate = () => {
                                     onChange={(e) => handleInputChange('adminName', e.target.value)}
                                     error={errors.adminName}
                                     required
-                                    disabled={loading}
+                                    disabled={isLoading}
                                     placeholder="Enter admin name"
                                 />
                             </div>
@@ -532,8 +472,8 @@ const CompanyProfileUpdate = () => {
                                     id="industry"
                                     value={form.industry}
                                     onChange={e => handleInputChange('industry', e.target.value)}
-                                    disabled={loading}
-                                    className={`w-full border rounded-md mt-1 p-2 bg-[#F0F0F0] ${errors.industry ? "border-red-500" : ""} ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    disabled={isLoading}
+                                    className={`w-full border rounded-md mt-1 p-2 bg-[#F0F0F0] ${errors.industry ? "border-red-500" : ""} ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                                     required
                                 >
                                     <option value="">Select Industry</option>
@@ -552,7 +492,7 @@ const CompanyProfileUpdate = () => {
                                     onChange={(e) => handleInputChange('location', e.target.value)}
                                     error={errors.location}
                                     required
-                                    disabled={loading}
+                                    disabled={isLoading}
                                     placeholder="e.g., San Francisco, CA"
                                 />
                             </div>
@@ -576,7 +516,7 @@ const CompanyProfileUpdate = () => {
                                     value={form.phone}
                                     onChange={phone => handleInputChange('phone', phone)}
                                     error={errors.phone}
-                                    disabled={loading}
+                                    disabled={isLoading}
                                 />
                             </div>
 
@@ -588,7 +528,7 @@ const CompanyProfileUpdate = () => {
                                     value={form.website}
                                     onChange={(e) => handleInputChange('website', e.target.value)}
                                     error={errors.website}
-                                    disabled={loading}
+                                    disabled={isLoading}
                                     placeholder="https://www.company.com"
                                 />
                             </div>
@@ -602,7 +542,7 @@ const CompanyProfileUpdate = () => {
                                     onChange={(e) => handleInputChange('linkedIn', e.target.value)}
                                     error={errors.linkedIn}
                                     required
-                                    disabled={loading}
+                                    disabled={isLoading}
                                     placeholder="https://linkedin.com/company/yourcompany"
                                 />
                             </div>
@@ -625,8 +565,8 @@ const CompanyProfileUpdate = () => {
                                 value={form.bio}
                                 onChange={(e) => handleInputChange('bio', e.target.value)}
                                 rows={4}
-                                disabled={loading}
-                                className={`w-full border rounded-md mt-1 p-2 bg-[#F0F0F0] ${errors.bio ? "border-red-500" : ""} ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                                disabled={isLoading}
+                                className={`w-full border rounded-md mt-1 p-2 bg-[#F0F0F0] ${errors.bio ? "border-red-500" : ""} ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                                 placeholder="Describe your company, its mission, and what makes it unique..."
                             />
                             {errors.bio && <div className="text-red-500 text-sm mt-1">{errors.bio}</div>}
@@ -643,15 +583,15 @@ const CompanyProfileUpdate = () => {
                                             type="text"
                                             value={service}
                                             onChange={(e) => handleChange("service", index, e.target.value)}
-                                            disabled={loading}
-                                            className={`flex-1 border rounded-md p-2 bg-[#F0F0F0] ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                                            disabled={isLoading}
+                                            className={`flex-1 border rounded-md p-2 bg-[#F0F0F0] ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                                             placeholder={`Service ${index + 1}`}
                                         />
                                         {form.services.length > 1 && (
                                             <button
                                                 type="button"
                                                 onClick={() => remove("service", index)}
-                                                disabled={loading}
+                                                disabled={isLoading}
                                                 className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 Remove
@@ -663,7 +603,7 @@ const CompanyProfileUpdate = () => {
                                     <button
                                         type="button"
                                         onClick={() => add("service")}
-                                        disabled={loading}
+                                        disabled={isLoading}
                                         className="text-[#2563EB] hover:text-[#1d4ed8] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         + Add Service
@@ -683,15 +623,15 @@ const CompanyProfileUpdate = () => {
                                             type="text"
                                             value={award}
                                             onChange={(e) => handleChange("award", index, e.target.value)}
-                                            disabled={loading}
-                                            className={`flex-1 border rounded-md p-2 bg-[#F0F0F0] ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                                            disabled={isLoading}
+                                            className={`flex-1 border rounded-md p-2 bg-[#F0F0F0] ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                                             placeholder={`Award ${index + 1}`}
                                         />
                                         {form.awards.length > 1 && (
                                             <button
                                                 type="button"
                                                 onClick={() => remove("award", index)}
-                                                disabled={loading}
+                                                disabled={isLoading}
                                                 className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 Remove
@@ -703,7 +643,7 @@ const CompanyProfileUpdate = () => {
                                     <button
                                         type="button"
                                         onClick={() => add("award")}
-                                        disabled={loading}
+                                        disabled={isLoading}
                                         className="text-[#2563EB] hover:text-[#1d4ed8] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         + Add Award
@@ -723,15 +663,15 @@ const CompanyProfileUpdate = () => {
                                             type="text"
                                             value={client}
                                             onChange={(e) => handleChange("client", index, e.target.value)}
-                                            disabled={loading}
-                                            className={`flex-1 border rounded-md p-2 bg-[#F0F0F0] ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                                            disabled={isLoading}
+                                            className={`flex-1 border rounded-md p-2 bg-[#F0F0F0] ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                                             placeholder={`Client ${index + 1}`}
                                         />
                                         {form.clients.length > 1 && (
                                             <button
                                                 type="button"
                                                 onClick={() => remove("client", index)}
-                                                disabled={loading}
+                                                disabled={isLoading}
                                                 className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                             >
                                                 Remove
@@ -743,7 +683,7 @@ const CompanyProfileUpdate = () => {
                                     <button
                                         type="button"
                                         onClick={() => add("client")}
-                                        disabled={loading}
+                                        disabled={isLoading}
                                         className="text-[#2563EB] hover:text-[#1d4ed8] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         + Add Client
@@ -762,7 +702,7 @@ const CompanyProfileUpdate = () => {
                                 value={form.preferredIndustries}
                                 onChange={(newValue) => setForm(prev => ({ ...prev, preferredIndustries: newValue }))}
                                 placeholder="Select preferred industries"
-                                disabled={loading}
+                                disabled={isLoading}
                             />
                         </div>
                     </div>
@@ -782,8 +722,8 @@ const CompanyProfileUpdate = () => {
                                         id="numberOfEmployees"
                                         value={form.numberOfEmployees}
                                         onChange={e => handleInputChange('numberOfEmployees', e.target.value)}
-                                        disabled={loading}
-                                        className={`w-full border rounded-md p-2 bg-[#F0F0F0] ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                                        disabled={isLoading}
+                                        className={`w-full border rounded-md p-2 bg-[#F0F0F0] ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                                     >
                                         <option value="">Select Range</option>
                                         {EMPLOYEE_OPTIONS.map(opt => (
@@ -802,8 +742,8 @@ const CompanyProfileUpdate = () => {
                                         id="founded"
                                         value={form.founded}
                                         onChange={e => handleInputChange('founded', e.target.value)}
-                                        disabled={loading}
-                                        className={`w-full border rounded-md p-2 bg-[#F0F0F0] ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                                        disabled={isLoading}
+                                        className={`w-full border rounded-md p-2 bg-[#F0F0F0] ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                                     >
                                         <option value="">Select Year</option>
                                         {getYearOptions().map(y => (
@@ -820,18 +760,18 @@ const CompanyProfileUpdate = () => {
             <div className="flex gap-3 justify-center items-center w-full mx-auto pb-8 px-4 sm:px-8 md:px-12">
                 <button
                     onClick={handleCancel}
-                    disabled={loading}
+                    disabled={isLoading}
                     className="px-4 py-2 border border-[#E5E7EB] rounded-lg text-[#6B7280] hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     Cancel
                 </button>
                 <button
                     onClick={handleSubmit}
-                    disabled={loading}
+                    disabled={isLoading}
                     className="px-4 py-2 bg-[#2563EB] text-white rounded-lg hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                     <MdOutlineSave className="w-4 h-4" />
-                    {loading ? "Saving..." : "Save Changes"}
+                    {isLoading ? "Saving..." : "Save Changes"}
                 </button>
             </div>
         </div>

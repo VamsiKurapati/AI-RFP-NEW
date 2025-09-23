@@ -585,7 +585,7 @@ const Discover = () => {
   // Grant proposal modal state
   const [showGrantProposalModal, setShowGrantProposalModal] = useState(false);
   const [selectedGrant, setSelectedGrant] = useState(null);
-  const [isGeneratingProposal, setIsGeneratingProposal] = useState(false);
+  const [isGeneratingGrantProposal, setIsGeneratingGrantProposal] = useState(false);
 
 
   // Pagination state variables
@@ -608,9 +608,6 @@ const Discover = () => {
     opportunityStatus: [],
     deadlineRange: []
   });
-
-  //Generating State
-  const [isGeneratingGrantProposal, setIsGeneratingGrantProposal] = useState(false);
 
   // Pagination functions
   const getCurrentPageItems = (items, currentPage, itemsPerPage) => {
@@ -2396,27 +2393,23 @@ const Discover = () => {
 
       <div className="min-h-screen bg-[#FFFFFF]">
         {/* Loading Overlay */}
-        {isGeneratingProposal && (
+        {isGeneratingGrantProposal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl">
               <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-[#2563EB] mx-auto mb-6"></div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Generating Your Proposal</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Generating Grant Proposal</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                Please wait while we generate your proposal. This process may take a few moments as we analyze your data and generate a proposal.
-              </p>
-              <br />
-              <p className="text-[#EF4444] text-sm leading-relaxed">
-                Note: Do not refresh the page while the proposal is generating.
+                Please wait while we generate your grant proposal. This process may take a few moments as we analyze your data and generate a proposal.
               </p>
             </div>
           </div>
         )}
 
-        {error && !isGeneratingProposal && (
+        {error && !isGeneratingGrantProposal && (
           Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: error.message || 'Failed to generate proposal. Please try again.',
+            text: error.message || 'Failed to generate grant proposal. Please try again.',
             confirmButtonColor: '#2563EB'
           }).then(() => {
             setError(null);
@@ -2929,7 +2922,7 @@ const Discover = () => {
           isOpen={showGrantProposalModal}
           onClose={() => setShowGrantProposalModal(false)}
           onSubmit={handleSubmitGrantProposal}
-          isGenerating={isGeneratingProposal}
+          isGenerating={isGeneratingGrantProposal}
         />
 
       </div>

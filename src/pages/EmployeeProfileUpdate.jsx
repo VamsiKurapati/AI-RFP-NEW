@@ -101,7 +101,7 @@ const PhoneInputField = ({
 
 const EmployeeProfileUpdate = () => {
     const navigate = useNavigate();
-    const { employeeData, loading } = useEmployeeProfile();
+    const { employeeData } = useEmployeeProfile();
 
     const [form, setForm] = useState({
         location: employeeData?.location || "",
@@ -113,7 +113,7 @@ const EmployeeProfileUpdate = () => {
     });
 
     const [errors, setErrors] = useState({});
-
+    const [isLoading, setIsLoading] = useState(false);
     const handleInputChange = (field, value) => {
         setForm(prev => ({ ...prev, [field]: value }));
         if (errors[field]) {
@@ -144,6 +144,7 @@ const EmployeeProfileUpdate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         setErrors({});
         const validationErrors = validateForm();
 
@@ -204,7 +205,7 @@ const EmployeeProfileUpdate = () => {
                 dangerMode: true,
             });
         } finally {
-            // setLoading(false); // This line is removed
+            setIsLoading(false);
         }
     };
 
@@ -244,7 +245,7 @@ const EmployeeProfileUpdate = () => {
                                     onChange={(e) => handleInputChange('name', e.target.value)}
                                     error={errors.name}
                                     required
-                                    disabled={loading}
+                                    disabled={isLoading}
                                     placeholder="Enter Your Name"
                                 />
                             </div>
@@ -257,7 +258,7 @@ const EmployeeProfileUpdate = () => {
                                     onChange={(e) => handleInputChange('location', e.target.value)}
                                     error={errors.location}
                                     required
-                                    disabled={loading}
+                                    disabled={isLoading}
                                     placeholder="e.g., San Francisco, CA"
                                 />
                             </div>
@@ -281,7 +282,7 @@ const EmployeeProfileUpdate = () => {
                                     value={form.phone}
                                     onChange={phone => handleInputChange('phone', phone)}
                                     error={errors.phone}
-                                    disabled={loading}
+                                    disabled={isLoading}
                                 />
                             </div>
                         </div>
@@ -300,7 +301,7 @@ const EmployeeProfileUpdate = () => {
                                     onChange={(e) => handleInputChange('highestQualification', e.target.value)}
                                     error={errors.highestQualification}
                                     required
-                                    disabled={loading}
+                                    disabled={isLoading}
                                     placeholder="e.g., Bachelor's in Computer Science"
                                 />
                             </div>
@@ -313,7 +314,7 @@ const EmployeeProfileUpdate = () => {
                                     onChange={(e) => handleInputChange('skills', e.target.value)}
                                     error={errors.skills}
                                     required
-                                    disabled={loading}
+                                    disabled={isLoading}
                                     placeholder="e.g., JavaScript, React"
                                 />
                                 <span className="text-[16px] font-light text-[#111827]">
@@ -328,18 +329,18 @@ const EmployeeProfileUpdate = () => {
             <div className="flex gap-3 justify-center items-center w-full mx-auto pb-8 px-8 md:px-12">
                 <button
                     onClick={handleCancel}
-                    disabled={loading}
+                    disabled={isLoading}
                     className="px-4 py-2 border border-[#E5E7EB] rounded-lg text-[#6B7280] hover:bg-[#F9FAFB] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     Cancel
                 </button>
                 <button
                     onClick={handleSubmit}
-                    disabled={loading}
+                    disabled={isLoading}
                     className="px-4 py-2 bg-[#2563EB] text-white rounded-lg hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                     <MdOutlineSave className="w-4 h-4" />
-                    {loading ? "Saving..." : "Save Changes"}
+                    {isLoading ? "Saving..." : "Save Changes"}
                 </button>
             </div>
         </div>
