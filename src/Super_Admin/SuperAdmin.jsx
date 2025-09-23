@@ -646,7 +646,7 @@ const SuperAdmin = () => {
             case 'Re-Opened':
                 return 'bg-[#FEE2E2] text-[#DC2626]';
             case 'Withdrawn':
-                return 'bg-[#4B5563] text-[#FFFFF]';
+                return 'bg-[#4B5563] text-[#FFFFFF]';
             case 'Cancelled':
                 return 'bg-[#F3F4F6] text-[#6B7280]';
             case 'Connected':
@@ -2367,48 +2367,6 @@ const SuperAdmin = () => {
 
     const renderPlanManagement = () => (
         <div className="h-full">
-
-            <div className="flex flex-row gap-4">
-                {/* Card-1 - Total Revenue */}
-
-                <div className="h-[139px] rounded-2xl bg-gradient-to-b from-[#413B99] to-[#6C63FF] p-6 flex justify-between shadow-lg w-full">
-                    {/* Left Section */}
-                    <div>
-                        <h2 className="text-white text-2xl font-bold">Active Users</h2>
-                        <p className="text-white text-4xl font-bold mt-2">
-                            {planManagementStats["Active Users"]}
-                        </p>
-
-                    </div>
-
-                    {/* Right Illustration */}
-                    <div className="flex items-center">
-                        <img src={user} alt="Users" className="mt-[20px] w-[180px] h-[120px]" />
-                    </div>
-                </div>
-
-                {/* Card-2 - Total Users */}
-
-
-                <div className="h-[139px] rounded-2xl bg-gradient-to-b from-[#413B99] to-[#6C63FF] p-6 flex justify-between shadow-lg w-full">
-                    {/* Left Section */}
-                    <div>
-
-                        <h2 className="text-white text-2xl font-bold">Revenue This Month</h2>
-                        <p className="text-white text-4xl font-bold mt-2">
-                            {planManagementStats["Revenue This Month"]}
-                        </p>
-
-                    </div>
-
-                    {/* Right Illustration */}
-                    <div className="flex items-center">
-                        <img src={revenue} alt="Users" className="mt-[20px] w-[180px] h-[120px]" />
-                    </div>
-                </div>
-
-            </div>
-            {/* Card-3 - Total Users */}
 
             <div className="flex flex-col lg:flex-row w-full gap-6 justify-center items-start mt-10">
                 {getPlanSection("Basic")}
@@ -4600,9 +4558,9 @@ const SuperAdmin = () => {
                                         <span className="absolute top-[1px] right-2 w-2 h-2 bg-red-500 rounded-full"></span>
                                     )}
                                 </button>
-                                <div className="w-8 h-8 bg-[#2563eb] rounded-full flex items-center justify-center transition-colors cursor-pointer">
+                                {/* <div className="w-8 h-8 bg-[#2563eb] rounded-full flex items-center justify-center transition-colors cursor-pointer">
                                     <MdOutlinePerson className="w-5 h-5 text-white" />
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>
