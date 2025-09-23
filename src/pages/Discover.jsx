@@ -1353,33 +1353,10 @@ const Discover = () => {
   };
 
   const handleGenerateGrantProposal = (grant) => {
-    //console.log("Generating grant proposal for:", grant.OPPORTUNITY_TITLE);
     // Open the grant proposal modal
     setSelectedGrant(grant);
-
-    // // Reset form data to empty
-    // setGrantProposalData({
-    //   summary: "",
-    //   objectives: "",
-    //   activities: "",
-    //   beneficiaries: "",
-    //   geography: "",
-    //   start_date: "",
-    //   estimated_duration: "",
-    //   budget: {
-    //     total_project_cost: "",
-    //     total_requested_amount: "",
-    //     cost_share_required: "",
-    //     budget_breakdown: ""
-    //   },
-    //   methods_for_measuring_success: ""
-    // });
-
     setShowGrantProposalModal(true);
   };
-
-
-
 
 
   const handleSubmitGrantProposal = async (proposalData) => {
@@ -1542,11 +1519,6 @@ const Discover = () => {
       setShowGrantProposalModal(false);
       setSelectedGrant(null);
 
-      // You can add navigation or other logic here
-      // navigate("/grant_proposal_page", { state: { grant: selectedGrant, proposalData: proposalData } });
-      // console.log("Grant proposal Data:", proposalData);
-      // console.log("Selected Grant:", selectedGrant);
-
     } catch (error) {
       // console.error("Error generating Grant proposal:", error);
       Swal.fire({
@@ -1609,6 +1581,9 @@ const Discover = () => {
           <div className="flex justify-center mt-3 gap-2">
             <button
               onClick={() => handleGenerateProposal(rfp)}
+              disabled={role === "Viewer"}
+              aria-disabled={role === "Viewer"}
+              aria-label={role === "Viewer" ? "Viewer cannot generate proposal" : "Generate Proposal"}
               className="text-[#2563EB] text-[14px] font-medium hover:underline"
             >
               Generate
@@ -1749,81 +1724,6 @@ const Discover = () => {
     );
   };
 
-  // Grant Card Components
-  const GrantCard = ({ grant, isSaved, handleGenerateProposal }) => (
-    <div className="bg-[#F8FAFC] rounded-xl p-4 shadow w-[355px] mr-4 flex flex-col justify-between">
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <div className="w-8 h-8 bg-[#15803D] rounded-full flex items-center justify-center">
-            <span className="text-white font-bold text-lg">G</span>
-          </div>
-          {grant.matchScore && (
-            <span className="text-[10px] text-[#15803D] bg-[#DCFCE7] px-2 py-1 rounded-full">
-              {grant.matchScore}% Match
-            </span>
-          )}
-        </div>
-        <h3 className="font-semibold text-[#111827] text-[18px] mb-1 line-clamp-2">{grant.OPPORTUNITY_TITLE || "Not Disclosed"}</h3>
-        <p className="text-[16px] text-[#4B5563] mb-2 line-clamp-3">{grant.FUNDING_DESCRIPTION}</p>
-        <div className="text-[14px] text-[#4B5563CC] space-y-1">
-          <div className="flex items-center gap-2">
-            <MdOutlinePayments className="text-[16px] text-[#4B5563]" />
-            {grant.AWARD_CEILING === "Not Provided" ? "Not Disclosed" : grant.AWARD_CEILING || "Not Disclosed"}
-          </div>
-          <div className="flex items-center gap-2">
-            <MdOutlineCalendarMonth className="text-[16px] text-[#4B5563]" />
-            Deadline: {grant.ESTIMATED_APPLICATION_DUE_DATE === "Not Provided" ? "Not Disclosed" : grant.ESTIMATED_APPLICATION_DUE_DATE || "Not Disclosed"}
-          </div>
-          <div className="flex items-center gap-2">
-            <MdOutlineAccountBalance className="text-[16px] text-[#4B5563] shrink-0" />
-            <p className="truncate overflow-hidden whitespace-nowrap"> {grant.AGENCY_NAME || "Not Disclosed"} </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] text-[#6B7280] bg-[#F3F4F6] px-2 py-1 rounded">
-              {grant.CATEGORY_OF_FUNDING_ACTIVITY || "Not Disclosed"}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-auto">
-        <div className="flex justify-between items-center mt-4">
-          <div className="flex gap-3 text-[#111827] text-lg">
-            {loadingSaveGrant[grant._id] ? (
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#111827] shrink-0"></div>
-            ) : isSaved ? (
-              <MdOutlineBookmark
-                onClick={role === "Viewer" ? undefined : () => handleUnsaveGrant(grant._id)}
-                className={`${role === "Viewer" ? "cursor-not-allowed opacity-50" : "cursor-pointer"} text-[#111827] shrink-0`}
-                title={role === "Viewer" ? "Viewer cannot unsave" : "Unsave"}
-              />
-            ) : (
-              <FaRegBookmark onClick={() => handleSaveGrant(grant)} className="cursor-pointer shrink-0" title="Save" />
-            )}
-            <MdOutlineShare onClick={() => handleShare(grant.OPPORTUNITY_NUMBER_LINK)} className="cursor-pointer text-[#111827] shrink-0" title="Share" />
-          </div>
-
-          <div className="flex justify-center mt-3 gap-2">
-            <button
-              onClick={() => handleGenerateGrantProposal(grant)}
-              className="text-[#2563EB] text-[14px] font-medium hover:underline"
-            >
-              Generate
-            </button>
-
-            <a href={grant.OPPORTUNITY_NUMBER_LINK}
-              className="text-[14px] text-white bg-[#2563EB] px-2 py-1 rounded-md"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   const RecentGrantCard = ({ grant, isSaved, width }) => (
     <div className={`bg-white rounded-xl p-4 shadow-sm ${width === "355px" ? "w-[355px]" : "w-full"} mr-4 flex flex-col justify-between border border-[#E5E7EB] flex-shrink-0`}>
       <div>
@@ -1881,6 +1781,9 @@ const Discover = () => {
           <button
             onClick={() => handleGenerateGrantProposal(grant)}
             className="text-[#2563EB] text-[14px] font-medium hover:underline"
+            disabled={role === "Viewer"}
+            aria-disabled={role === "Viewer"}
+            aria-label={role === "Viewer" ? "Viewer cannot generate proposal" : "Generate Proposal"}
           >
             Generate
           </button>

@@ -1,9 +1,3 @@
-// Page to handle change password
-
-//We will use the same form as the login page
-// We will accept the old password, new password and confirm new password
-// We will also use show and hide password functionality
-
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
