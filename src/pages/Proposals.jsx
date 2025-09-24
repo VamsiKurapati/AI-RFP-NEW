@@ -23,7 +23,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
     <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 flex flex-col justify-between relative">
         <div>
             <div className="flex items-start justify-between">
-                <h3 className="font-semibold text-[18px] mb-1 text-[#111827]">{proposal_info.title}</h3>
+                <h3 className="font-semibold text-[18px] mb-1 text-[#111827] line-clamp-2">{proposal_info.title}</h3>
                 <div className="flex gap-2">
                     <button
                         title={proposal_info.bookmarked ? (userRole === "Viewer" ? "Viewer cannot unsave" : "Unsave") : "Save"}
@@ -50,7 +50,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
                     </button>
                 </div>
             </div>
-            <p className="text-[#4B5563] text-[16px] mb-2">{proposal_info.description}</p>
+            <p className="text-[#4B5563] text-[16px] mb-2 line-clamp-4">{proposal_info.description}</p>
             <div className="flex items-center text-[14px] text-[#4B5563CC] mb-2">
                 <MdOutlineCalendarMonth className="w-4 h-4 mr-1 text-[#4B5563] shrink-0" />
                 Deadline: {proposal_info.deadline}
@@ -65,7 +65,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
                     onClick={onGenerate}
                     disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)}
                     aria-label={`${buttonText.toLowerCase()} proposal`}
-                    className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Generate PDF" && !isCurrentEditor)
+                    className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)
                         ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
                         : 'bg-[#2563EB] text-white hover:bg-[#1d4ed8]'
                         }`}
@@ -73,7 +73,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
                         userRole === "Viewer"
                             ? "Viewer cannot generate/edit proposals"
                             : buttonText === "Download" && !isCurrentEditor
-                                ? "Only the current editor can generate PDF for this proposal"
+                                ? "Only the current editor can download this proposal"
                                 : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
@@ -94,7 +94,7 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
     <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 flex flex-col justify-between relative">
         <div>
             <div className="flex items-start justify-between">
-                <h3 className="font-semibold text-[18px] mb-1 text-[#111827]">{grant_info.OPPORTUNITY_TITLE || "Untitled Grant"}</h3>
+                <h3 className="font-semibold text-[18px] mb-1 text-[#111827] line-clamp-2">{grant_info.OPPORTUNITY_TITLE || "Untitled Grant"}</h3>
                 <div className="flex gap-2">
                     <button
                         title={grant_info.bookmarked ? (userRole === "Viewer" ? "Viewer cannot unsave" : "Unsave") : "Save"}
@@ -151,12 +151,12 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
         <div className="flex justify-between items-center mt-2">
             <div className="flex flex-col">
                 <span className="text-[#2563EB] text-[14px] font-semibold">
-                    {grant_info.AWARD_CEILING ? `Up to $${grant_info.AWARD_CEILING}` :
-                        grant_info.ESTIMATED_TOTAL_FUNDING ? `Total: $${grant_info.ESTIMATED_TOTAL_FUNDING}` :
+                    {grant_info.AWARD_CEILING ? grant_info.AWARD_CEILING === "none" ? "Not Specified" : `Up to $${grant_info.AWARD_CEILING}` :
+                        grant_info.ESTIMATED_TOTAL_FUNDING ? grant_info.ESTIMATED_TOTAL_FUNDING === "none" ? "Not Specified" : `Total: $${grant_info.ESTIMATED_TOTAL_FUNDING}` :
                             "Funding: Not Specified"}
                 </span>
                 {grant_info.EXPECTED_NUMBER_OF_AWARDS && (
-                    <span className="text-[#6B7280] text-[12px]">
+                    <span className="text-[#6B7280] text-[12px] line-clamp-2">
                         Expected Awards: {grant_info.EXPECTED_NUMBER_OF_AWARDS}
                     </span>
                 )}
@@ -166,7 +166,7 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
                     onClick={onGenerate}
                     disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)}
                     aria-label={`${buttonText.toLowerCase()} grant proposal`}
-                    className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Generate PDF" && !isCurrentEditor)
+                    className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)
                         ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
                         : 'bg-[#2563EB] text-white hover:bg-[#1d4ed8]'
                         }`}
@@ -174,7 +174,7 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
                         userRole === "Viewer"
                             ? "Viewer cannot generate/edit grant proposals"
                             : buttonText === "Download" && !isCurrentEditor
-                                ? "Only the current editor can generate PDF for this grant proposal"
+                                ? "Only the current editor can download this grant proposal"
                                 : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
@@ -314,6 +314,38 @@ const Proposals = () => {
         if (itemsPerPage === 2) return "grid-cols-1 md:grid-cols-2";
         return "grid-cols-1 md:grid-cols-2";
     };
+
+    // Inject CSS styles for line-clamp and custom scrollbars
+    useEffect(() => {
+        const style = document.createElement('style');
+        style.textContent = `
+            .line-clamp-2 {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+            
+            .line-clamp-3 {
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .line-clamp-4 {
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+        `;
+        document.head.appendChild(style);
+
+        return () => {
+            document.head.removeChild(style);
+        };
+    }, []);
 
     // Calculate pagination for saved proposals
     const savedProposalsStartIndex = (currentSavedPage - 1) * itemsPerPage;
