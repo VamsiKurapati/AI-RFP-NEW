@@ -273,7 +273,7 @@ const SuperAdmin = () => {
 
     const openSupportModal = async (support) => {
         try {
-            if (support.status !== "In Progress" && support.status !== "Completed") {
+            if (support.status !== "In Progress" && support.status !== "Completed" && support.status !== "Withdrawn") {
                 // Always set status to "In Progress" when opening modal
                 const res = await axios.put(`${baseUrl}/admin/updateSupportTicket/${support._id}`, {
                     status: 'In Progress'
@@ -3752,7 +3752,7 @@ const SuperAdmin = () => {
                                                     >
                                                         <div className="space-y-2">
                                                             <a
-                                                                href={`${import.meta.env.VITE_API_BASE_URL}/image/get_image/${attachment.fileUrl}`}
+                                                                href={`${import.meta.env.VITE_API_BASE_URL}/image/get_image_by_id/${attachment.fileUrl}`}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 className="text-white  hover:underline text-sm"
