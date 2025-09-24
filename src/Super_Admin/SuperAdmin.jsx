@@ -1243,6 +1243,7 @@ const SuperAdmin = () => {
                 <div className="h-[242px] rounded-2xl bg-gradient-to-b from-[#413B99] to-[#6C63FF] p-4 flex justify-between shadow-lg w-full">
                     {/* Left Section */}
                     <div>
+
                         <div>
 
                             <h2 className="text-white text-2xl font-bold">Total Revenue</h2>
@@ -1251,9 +1252,11 @@ const SuperAdmin = () => {
                             </p>
                         </div>
 
+
+
                         <div className="flex gap-4 mt-4">
                             {/* Successful Payments */}
-                            <div className="w-[129px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
+                            {/* <div className="w-[129px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
                                 <p className="text-black text-[14px]">Successful</p>
                                 <p className="flex text-lg font-bold">
                                     <span className="text-white text-4xl font-bold">
@@ -1261,10 +1264,10 @@ const SuperAdmin = () => {
                                     </span>
                                     <img src={bluearrow} alt="trend" className="w-[56px] h-[56px]" />
                                 </p>
-                            </div>
+                            </div> */}
 
                             {/* Failed Payments */}
-                            <div className="w-[129px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
+                            {/* <div className="w-[129px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
                                 <p className="text-black text-[14px]">Failed</p>
                                 <p className="flex text-lg font-bold">
                                     <span className="text-white text-4xl font-bold">
@@ -1272,13 +1275,7 @@ const SuperAdmin = () => {
                                     </span>
                                     <img src={redarrow} alt="trend" className="w-[50px] h-[50px]" />
                                 </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Illustration */}
-                    <div className="flex items-center">
-                        <div className="flex flex-col gap-4">
+                            </div> */}
 
                             <div className=" mt-2 bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
                                 <p className="text-white text-[14px]">Revenue This Month</p>
@@ -1288,8 +1285,13 @@ const SuperAdmin = () => {
                                     </span>
                                 </p>
                             </div>
-                            <img src={revenue} alt="Users" className=" w-[192px] h-[140px]" />
+
                         </div>
+                    </div>
+
+                    {/* Right Illustration */}
+                    <div className="flex items-center">
+                        <img src={revenue} alt="Users" className="mt-[92px] w-[192px] h-[150px]" />
                     </div>
                 </div>
 
@@ -1307,7 +1309,7 @@ const SuperAdmin = () => {
 
                         <div className="flex gap-4 mt-4">
                             {/* Successful Payments */}
-                            <div className="w-[135px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
+                            {/* <div className="w-[135px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
                                 <p className="text-black text-[14px]">Total Refunds</p>
                                 <p className="flex text-lg font-bold">
                                     <span className="text-white text-4xl font-bold">
@@ -1315,10 +1317,10 @@ const SuperAdmin = () => {
                                     </span>
                                     <img src={bluearrow} alt="trend" className="w-[56px] h-[56px]" />
                                 </p>
-                            </div>
+                            </div> */}
 
                             {/* Failed Payments */}
-                            <div className="w-[140px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
+                            {/* <div className="w-[140px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
                                 <p className="text-black text-[14px]">Pending Refunds</p>
                                 <p className="flex text-lg font-bold">
                                     <span className="text-white text-4xl font-bold">
@@ -1326,7 +1328,17 @@ const SuperAdmin = () => {
                                     </span>
                                     <img src={redarrow} alt="trend" className="w-[50px] h-[50px]" />
                                 </p>
+                            </div> */}
+
+                            <div className=" mt-2 bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
+                                <p className="text-white text-[14px]">Inactive Subscriptions</p>
+                                <p className="flex text-lg font-bold">
+                                    <span className="text-white text-4xl font-bold">
+                                        {paymentsStats["Inactive Subscriptions"]}
+                                    </span>
+                                </p>
                             </div>
+
                         </div>
                     </div>
 

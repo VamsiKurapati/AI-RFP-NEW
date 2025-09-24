@@ -81,7 +81,7 @@ const GrantProposalForm = ({
                     setTimeout(() => {
                         handleWordGeneration(res.data.proposal);
                     }, 1000);
-                } else if (res.data.message === "Grant Proposal Generation is still in Progress. Please wait for it to complete.") {
+                } else if (res.data.message === "Grant Proposal Generation is still in progress. Please wait for it to complete.") {
                     Swal.fire({
                         icon: 'info',
                         title: 'In Progress',
