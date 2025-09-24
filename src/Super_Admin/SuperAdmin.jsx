@@ -1062,7 +1062,7 @@ const SuperAdmin = () => {
                                     setSearchTerm(e.target.value);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[90%] sm:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[100%] sm:w-[530px] md:w-[480px] lg:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
 
@@ -1245,7 +1245,7 @@ const SuperAdmin = () => {
                     <div>
                         <div>
                             <h2 className="text-white text-2xl font-bold">Total Revenue</h2>
-                            <p className="text-white text-4xl font-bold mt-2 overflow-hidden">
+                            <p className="text-white text-3xl font-bold mt-2 overflow-hidden">
                                 $ {paymentsStats["Total Revenue"] ? paymentsStats["Total Revenue"] : "N/A"}
                             </p>
                         </div>
@@ -1254,7 +1254,7 @@ const SuperAdmin = () => {
                             <div className=" mt-2 bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
                                 <p className="text-white text-[14px]">Revenue This Month</p>
                                 <p className="flex text-lg font-bold">
-                                    <span className="text-white text-4xl font-bold">
+                                    <span className="text-white text-3xl font-bold">
                                         $ {paymentsStats["Revenue This Month"] ? paymentsStats["Revenue This Month"] : "N/A"}
                                     </span>
                                 </p>
@@ -1275,7 +1275,7 @@ const SuperAdmin = () => {
                     {/* Left Section */}
                     <div>
                         <h2 className="text-white text-2xl font-bold">Active Subscriptions</h2>
-                        <p className="text-white text-4xl font-bold mt-2">
+                        <p className="text-white text-3xl font-bold mt-2">
                             {paymentsStats["Active Subscriptions"] ? paymentsStats["Active Subscriptions"] : "N/A"}
                         </p>
 
@@ -1283,7 +1283,7 @@ const SuperAdmin = () => {
                             <div className=" mt-2 bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
                                 <p className="text-white text-[14px]">Inactive Subscriptions</p>
                                 <p className="flex text-lg font-bold">
-                                    <span className="text-white text-4xl font-bold">
+                                    <span className="text-white text-3xl font-bold">
                                         {paymentsStats["Inactive Subscriptions"] ? paymentsStats["Inactive Subscriptions"] : "N/A"}
                                     </span>
                                 </p>
@@ -1316,7 +1316,7 @@ const SuperAdmin = () => {
                                     setTransactionSearchTerm(e.target.value);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#6C63FF] focus:border-transparent w-[90%] sm:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#6C63FF] focus:border-transparent w-[100%] sm:w-[530px] md:w-[480px] lg:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
 
@@ -2400,7 +2400,7 @@ const SuperAdmin = () => {
                                     setCurrentPageContact(1);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[90%] sm:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[100%] sm:w-[530px] md:w-[480px] lg:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
                     </div>
@@ -2636,7 +2636,7 @@ const SuperAdmin = () => {
                                     setSupportSearchTerm(e.target.value);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[90%] sm:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[100%] sm:w-[530px] md:w-[480px] lg:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
                         <div className="relative">
