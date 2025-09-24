@@ -13,6 +13,8 @@ const GrantProposalForm = ({
     initialData = null
 }) => {
     const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/rfp`;
+
+    const [isFetchingGrantProposal, setIsFetchingGrantProposal] = useState(false);
     const [grantProposalData, setGrantProposalData] = useState(initialData || {
         summary: "",
         objectives: "",
@@ -60,6 +62,7 @@ const GrantProposalForm = ({
     };
 
     const handleFetchGrantProposal = async (grant) => {
+        setIsFetchingGrantProposal(true);
         try {
             const res = await axios.post(`${BASE_URL}/getGrantProposal`, {
                 grant: grant,
@@ -104,6 +107,8 @@ const GrantProposalForm = ({
                 title: 'Error',
                 text: err.response?.data?.message || 'Failed to fetch Grant proposal.',
             });
+        } finally {
+            setIsFetchingGrantProposal(false);
         }
     };
 
@@ -121,6 +126,7 @@ const GrantProposalForm = ({
                         <h2 className="text-2xl font-bold text-gray-900">Grant Proposal Form</h2>
                         <button
                             onClick={onClose}
+                            disabled={isFetchingGrantProposal || isGenerating}
                             className="text-gray-400 hover:text-gray-600 text-2xl"
                         >
                             ×
@@ -316,28 +322,31 @@ const GrantProposalForm = ({
                 <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
                     <button
                         onClick={onClose}
-                        disabled={isGenerating}
+                        disabled={isGenerating || isFetchingGrantProposal}
                         className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleClearForm}
-                        disabled={isGenerating}
+                        disabled={isGenerating || isFetchingGrantProposal}
                         className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
                         Clear Form
                     </button>
                     <button
-                        disabled={isGenerating}
+                        disabled={isGenerating || isFetchingGrantProposal}
                         onClick={() => handleFetchGrantProposal(selectedGrant)}
                         className="px-6 py-2 text-white rounded-md flex items-center gap-2 transition-colors bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                        Fetch Grant Proposal
+                        {isFetchingGrantProposal && (
+                            <FaSpinner className="animate-spin h-4 w-4" />
+                        )}
+                        {isFetchingGrantProposal ? 'Fetching...' : 'Fetch Grant Proposal'}
                     </button>
                     <button
                         onClick={handleSubmit}
-                        disabled={isGenerating}
+                        disabled={isGenerating || isFetchingGrantProposal}
                         className={`px-6 py-2 text-white rounded-md flex items-center gap-2 transition-colors ${isGenerating
                             ? 'bg-gray-400 cursor-not-allowed'
                             : 'bg-blue-600 hover:bg-blue-700'

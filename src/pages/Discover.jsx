@@ -2685,7 +2685,7 @@ const Discover = () => {
                     <RecentGrantCard
                       key={grant._id}
                       grant={grant}
-                      isSaved={!!savedGrants.find((s) => s._id === grant._id)}
+                      isSaved={!!savedGrants.find((s) => s.grantId === grant._id)}
                       handleGenerateProposal={handleGenerateGrantProposal}
                       width="355px"
                     />
@@ -2750,7 +2750,7 @@ const Discover = () => {
                       <RecentGrantCard
                         key={grant._id}
                         grant={grant}
-                        isSaved={!!savedGrants.find((s) => s._id === grant._id)}
+                        isSaved={!!savedGrants.find((s) => s.grantId === grant._id)}
                         handleGenerateProposal={handleGenerateGrantProposal}
                         width="full"
                       />
