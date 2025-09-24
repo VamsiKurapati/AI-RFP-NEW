@@ -1062,7 +1062,7 @@ const SuperAdmin = () => {
                                     setSearchTerm(e.target.value);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[100%] sm:w-[530px] md:w-[480px] lg:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[100%] sm:w-[530px] md:max-w-[480px] lg:min-w-[530px] lg:max-w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
 
@@ -1237,7 +1237,7 @@ const SuperAdmin = () => {
 
     const renderPayments = () => (
         <div className="h-full">
-            <div className="flex flex-row gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 {/* Card-1 - Total Revenue */}
 
                 <div className="h-[242px] rounded-2xl bg-gradient-to-b from-[#413B99] to-[#6C63FF] p-4 flex justify-between shadow-lg w-full">
@@ -1316,7 +1316,7 @@ const SuperAdmin = () => {
                                     setTransactionSearchTerm(e.target.value);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#6C63FF] focus:border-transparent w-[100%] sm:w-[530px] md:w-[480px] lg:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#6C63FF] focus:border-transparent w-[100%] sm:w-[530px] md:max-w-[480px] lg:min-w-[530px] lg:max-w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
 
@@ -2400,7 +2400,7 @@ const SuperAdmin = () => {
                                     setCurrentPageContact(1);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[100%] sm:w-[530px] md:w-[480px] lg:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[100%] sm:w-[530px] md:max-w-[480px] lg:min-w-[530px] lg:max-w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
                     </div>
@@ -2636,7 +2636,7 @@ const SuperAdmin = () => {
                                     setSupportSearchTerm(e.target.value);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[100%] sm:w-[530px] md:w-[480px] lg:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[100%] sm:w-[530px] md:max-w-[480px] lg:min-w-[530px] lg:max-w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
                         <div className="relative">
