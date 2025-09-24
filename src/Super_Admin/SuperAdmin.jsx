@@ -1174,7 +1174,7 @@ const SuperAdmin = () => {
                                         </td>
                                         <td className="flex  p-4 whitespace-nowrap">
 
-                                            <img src={`${import.meta.env.VITE_API_BASE_URL}/profile/getProfileImage/file/${user.logoUrl}`} alt="User Logo" className="mt-1 mr-1 w-[30px] h-[30px] rounded-full" />
+                                            <img src={user.logoUrl ? `${import.meta.env.VITE_API_BASE_URL}/profile/getProfileImage/file/${user.logoUrl}` : "https://via.placeholder.com/150"} alt="User Logo" className="mt-1 mr-1 w-[30px] h-[30px] rounded-full" />
 
                                             <div className="flex flex-col">
                                                 <span className="text-[16px] font-medium text-[#4B5563]">{user.companyName}</span>
@@ -3381,7 +3381,7 @@ const SuperAdmin = () => {
                             <div className="flex flex-col gap-4">
                                 <div className='flex flex-row gap-2'>
                                     <div>
-                                        <img src={`${import.meta.env.VITE_API_BASE_URL}/profile/getProfileImage/file/${selectedUser.logoUrl}`} alt="Company Logo" className="w-[124px] h-[124px] border rounded-lg border-[#E5E7EB]" />
+                                        <img src={selectedUser.logoUrl ? `${import.meta.env.VITE_API_BASE_URL}/profile/getProfileImage/file/${selectedUser.logoUrl}` : "https://via.placeholder.com/150"} alt="Company Logo" className="w-[124px] h-[124px] border rounded-lg border-[#E5E7EB]" />
                                     </div>
 
                                     <div className='flex flex-col gap-2'>
@@ -3550,7 +3550,7 @@ const SuperAdmin = () => {
                                             {/* Employee Avatar and Name */}
                                             <div className="flex items-center space-x-3 mb-2">
                                                 <img
-                                                    src={`${import.meta.env.VITE_API_BASE_URL}/profile/getProfileImage/file/${employee.logoUrl}`}
+                                                    src={employee.logoUrl ? `${import.meta.env.VITE_API_BASE_URL}/profile/getProfileImage/file/${employee.logoUrl}` : "https://via.placeholder.com/150"}
                                                     alt={employee.name}
                                                     className="w-10 h-10 rounded-full object-cover"
                                                 />
@@ -3635,7 +3635,7 @@ const SuperAdmin = () => {
                                     <div>
                                         Basic Information
                                         <div className="mt-4 flex flex-row gap-2">
-                                            <img src={`${import.meta.env.VITE_API_BASE_URL}/profile/getProfileImage/file/${selectedSupport.logoUrl}`} alt="User" className="w-[120px] h-[120px] rounded-lg object-cover border border-[#E5E7EB]" />
+                                            <img src={selectedSupport.logoUrl ? `${import.meta.env.VITE_API_BASE_URL}/profile/getProfileImage/file/${selectedSupport.logoUrl}` : "https://via.placeholder.com/150"} alt="User" className="w-[120px] h-[120px] rounded-lg object-cover border border-[#E5E7EB]" />
                                             <div className="flex flex-col p-2">
                                                 <p className='text-2xl font-bold'>{selectedSupport.companyName}</p>
                                                 <div className='flex flex-row gap-4'>
