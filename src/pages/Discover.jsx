@@ -654,23 +654,47 @@ const Discover = () => {
 
   // Set available industries  and grants statically
   useEffect(() => {
+    // setAvailableIndustries([
+    //   "Information Technology",
+    //   "Healthcare",
+    //   "Finance",
+    //   "Education",
+    //   "Manufacturing",
+    //   "Retail",
+    //   "Construction",
+    //   "Consulting",
+    //   "Marketing",
+    //   "Legal",
+    //   "Real Estate",
+    //   "Transportation",
+    //   "Hospitality",
+    //   "Government",
+    //   "Non-Profit",
+    //   "Research & Development",
+    // ]);
+
     setAvailableIndustries([
-      "Information Technology",
-      "Healthcare",
-      "Finance",
-      "Education",
-      "Manufacturing",
-      "Retail",
-      "Construction",
-      "Consulting",
-      "Marketing",
-      "Legal",
-      "Real Estate",
-      "Transportation",
-      "Hospitality",
-      "Government",
-      "Non-Profit",
-      "Research & Development",
+      "Open To All",
+      "Total Small Business Set-Aside (FAR 19.5)",
+      "No Set aside used",
+      "Service-Disabled Veteran-Owned Small Business Set Aside",
+      "8a Competed",
+      "Women-Owned Small Business",
+      "HUBZone Set Aside",
+      "Indian Small Business Economic Enterprise (ISBEE) Set-Aside (specific to Department of Interior and Indian Health Services)",
+      "Partial Small Business Set-Aside (FAR 19.5)",
+      "8(a) Sole Source",
+      "Veteran Set Aside",
+      "SDVOSB Sole Source",
+      "Buy Indian Set-Aside (specific to Department of Health and Human Services, Indian Health Services)",
+      "Indian Economic Enterprise (IEE) Set-Aside (specific to Department of Interior and Indian Health Services)",
+      "SBA Certified Economically Disadvantaged WOSB (EDWOSB) Program Set-Aside (FAR 19.15)",
+      "Local Area Set-Aside (FAR 26.2)",
+      "Women-Owned Small Business Sole Source",
+      "HUBZone Sole Source",
+      "SBA Certified Economically Disadvantaged WOSB (EDWOSB) Program Sole Source (FAR 19.15)",
+      "Veteran Sole Source",
+      "Emerging Small Business"
     ]);
 
     setAvailableGrants([
@@ -2453,7 +2477,8 @@ const Discover = () => {
                   {/* Industry Selection */}
                   <div>
                     <label className="block text-[16px] font-medium text-[#111827] mb-2">
-                      Select Industries to Filter RFPs
+                      {/* Select Industries to Filter RFPs */}
+                      Select from the list to Filter RFPs by different set-asides(categories)
                     </label>
                     <IndustryMultiSelect
                       selectedIndustries={selectedIndustries}
@@ -2514,13 +2539,13 @@ const Discover = () => {
                 </>
               ) : filteredOtherRFPs.length === 0 && selectedIndustries.length > 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-[16px] text-[#4B5563] mb-2">No RFPs found for the selected industries.</p>
-                  <p className="text-[14px] text-[#6B7280]">Try selecting different industries or check back later for new opportunities.</p>
+                  <p className="text-[16px] text-[#4B5563] mb-2">No RFPs found for the selected set-asides(categories).</p>
+                  <p className="text-[14px] text-[#6B7280]">Try selecting different set-asides(categories) or check back later for new opportunities.</p>
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <p className="text-[16px] text-[#4B5563] mb-2">Select industries and click "Search RFPs" to discover relevant opportunities.</p>
-                  <p className="text-[14px] text-[#6B7280]">Choose from the available industries to filter and find RFPs that match your expertise.</p>
+                  <p className="text-[16px] text-[#4B5563] mb-2">Select from the list to filter RFPs by different set-asides(categories) and click "Search RFPs" to discover relevant opportunities.</p>
+                  <p className="text-[14px] text-[#6B7280]">Choose from the available set-asides(categories) to filter and find RFPs that match your expertise.</p>
                 </div>
               )}
 
