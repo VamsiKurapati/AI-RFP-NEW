@@ -1062,7 +1062,7 @@ const SuperAdmin = () => {
                                     setSearchTerm(e.target.value);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-4 md:pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[90%] md:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
 
@@ -1243,49 +1243,22 @@ const SuperAdmin = () => {
                 <div className="h-[242px] rounded-2xl bg-gradient-to-b from-[#413B99] to-[#6C63FF] p-4 flex justify-between shadow-lg w-full">
                     {/* Left Section */}
                     <div>
-
                         <div>
-
                             <h2 className="text-white text-2xl font-bold">Total Revenue</h2>
                             <p className="text-white text-4xl font-bold mt-2 overflow-hidden">
-                                $ {paymentsStats["Total Revenue"]}
+                                $ {paymentsStats["Total Revenue"] ? paymentsStats["Total Revenue"] : "N/A"}
                             </p>
                         </div>
 
-
-
                         <div className="flex gap-4 mt-4">
-                            {/* Successful Payments */}
-                            {/* <div className="w-[129px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
-                                <p className="text-black text-[14px]">Successful</p>
-                                <p className="flex text-lg font-bold">
-                                    <span className="text-white text-4xl font-bold">
-                                        {paymentsStats["Successful Payments"]}
-                                    </span>
-                                    <img src={bluearrow} alt="trend" className="w-[56px] h-[56px]" />
-                                </p>
-                            </div> */}
-
-                            {/* Failed Payments */}
-                            {/* <div className="w-[129px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
-                                <p className="text-black text-[14px]">Failed</p>
-                                <p className="flex text-lg font-bold">
-                                    <span className="text-white text-4xl font-bold">
-                                        {paymentsStats["Failed Payments"]}
-                                    </span>
-                                    <img src={redarrow} alt="trend" className="w-[50px] h-[50px]" />
-                                </p>
-                            </div> */}
-
                             <div className=" mt-2 bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
                                 <p className="text-white text-[14px]">Revenue This Month</p>
                                 <p className="flex text-lg font-bold">
                                     <span className="text-white text-4xl font-bold">
-                                        $ {paymentsStats["Revenue This Month"]}
+                                        $ {paymentsStats["Revenue This Month"] ? paymentsStats["Revenue This Month"] : "N/A"}
                                     </span>
                                 </p>
                             </div>
-
                         </div>
                     </div>
 
@@ -1301,44 +1274,20 @@ const SuperAdmin = () => {
                 <div className="h-[242px] rounded-2xl bg-gradient-to-b from-[#413B99] to-[#6C63FF] p-6 flex justify-between shadow-lg w-full">
                     {/* Left Section */}
                     <div>
-
                         <h2 className="text-white text-2xl font-bold">Active Subscriptions</h2>
                         <p className="text-white text-4xl font-bold mt-2">
-                            {paymentsStats["Active Subscriptions"]}
+                            {paymentsStats["Active Subscriptions"] ? paymentsStats["Active Subscriptions"] : "N/A"}
                         </p>
 
                         <div className="flex gap-4 mt-4">
-                            {/* Successful Payments */}
-                            {/* <div className="w-[135px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
-                                <p className="text-black text-[14px]">Total Refunds</p>
-                                <p className="flex text-lg font-bold">
-                                    <span className="text-white text-4xl font-bold">
-                                        {paymentsStats["Total Refunds"]}
-                                    </span>
-                                    <img src={bluearrow} alt="trend" className="w-[56px] h-[56px]" />
-                                </p>
-                            </div> */}
-
-                            {/* Failed Payments */}
-                            {/* <div className="w-[140px] h-[84px] bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
-                                <p className="text-black text-[14px]">Pending Refunds</p>
-                                <p className="flex text-lg font-bold">
-                                    <span className="text-white text-4xl font-bold">
-                                        {paymentsStats["Pending Refunds"]}
-                                    </span>
-                                    <img src={redarrow} alt="trend" className="w-[50px] h-[50px]" />
-                                </p>
-                            </div> */}
-
                             <div className=" mt-2 bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white">
                                 <p className="text-white text-[14px]">Inactive Subscriptions</p>
                                 <p className="flex text-lg font-bold">
                                     <span className="text-white text-4xl font-bold">
-                                        {paymentsStats["Inactive Subscriptions"]}
+                                        {paymentsStats["Inactive Subscriptions"] ? paymentsStats["Inactive Subscriptions"] : "N/A"}
                                     </span>
                                 </p>
                             </div>
-
                         </div>
                     </div>
 
@@ -1367,7 +1316,7 @@ const SuperAdmin = () => {
                                     setTransactionSearchTerm(e.target.value);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#6C63FF] focus:border-transparent w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-4 md:pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#6C63FF] focus:border-transparent w-[90%] md:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
 
@@ -2451,7 +2400,7 @@ const SuperAdmin = () => {
                                     setCurrentPageContact(1);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-4 md:pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[90%] md:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
                     </div>
@@ -2687,7 +2636,7 @@ const SuperAdmin = () => {
                                     setSupportSearchTerm(e.target.value);
                                     closeAllInvoiceRows();
                                 }}
-                                className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
+                                className="pl-4 md:pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#2563EB] focus:border-transparent w-[90%] md:w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
                             />
                         </div>
                         <div className="relative">
