@@ -3930,7 +3930,7 @@ const SuperAdmin = () => {
             invoiceDiv.innerHTML = `
                 <div style="font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto;">
                     <div style="display: flex; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #2563eb; padding-bottom: 20px;">
-                        <img src="/Logo.png" alt="Company Logo" style="width: 60px; height: 60px; margin-right: 20px;">
+                        <img src="/logo_1.png" alt="Company Logo" style="width: 160px; height: 44px; margin-right: 20px;">
                         <div>
                             <h1 style="color: #2563eb; margin: 0; font-size: 28px; font-weight: bold;">RFP2GRANTS</h1>
                             <p style="color: #6b7280; margin: 5px 0 0 0; font-size: 16px;">Professional Proposal Management</p>
@@ -4025,7 +4025,7 @@ const SuperAdmin = () => {
                     <style>
                         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
                         .invoice-header { display: flex; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #2563eb; padding-bottom: 20px; }
-                        .logo { width: 60px; height: 60px; margin-right: 20px; }
+                        .logo { width: 160px; height: 44px; margin-right: 20px; }
                         .company-name { color: #2563eb; margin: 0; font-size: 28px; font-weight: bold; }
                         .company-tagline { color: #6b7280; margin: 5px 0 0 0; font-size: 16px; }
                         .invoice-title { color: #111827; margin: 30px 0 20px 0; font-size: 24px; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px; }
@@ -4046,7 +4046,7 @@ const SuperAdmin = () => {
                 </head>
                 <body>
                     <div class="invoice-header">
-                        <img src="/Logo.png" alt="Company Logo" class="logo">
+                        <img src="/logo_1.png" alt="Company Logo" class="logo">
                         <div>
                             <h1 class="company-name">RFP App</h1>
                             <p class="company-tagline">Professional Proposal Management</p>
@@ -4159,7 +4159,7 @@ const SuperAdmin = () => {
 
                         {/* Logo and Company Header */}
                         <div className="flex items-center mb-6 p-4 bg-gray-50 rounded-lg">
-                            <img src="/Logo.png" alt="Company Logo" className="w-12 h-12 mr-4" />
+                            <img src="/logo_1.png" alt="Company Logo" className="w-40 h-11 mr-4" />
                             <div>
                                 <h4 className="text-xl font-bold text-[#2563eb]">RFP2GRANTS</h4>
                                 <p className="text-sm text-[#6b7280]">Professional Proposal Management</p>
@@ -4229,8 +4229,8 @@ const SuperAdmin = () => {
 
                         {/* Header Section */}
                         <div className="p-4 border-b border-[#4B5563] flex items-center justify-between">
-                            <div className="w-[127px] h-[36px]">
-                                <img src="/Logo.png" alt="logo" className="w-full h-full" />
+                            <div className="w-[160px] h-[44px]">
+                                <img src="/logo_1.png" alt="logo" className="w-full h-full" />
                             </div>
                             <button
                                 className="p-2 transition-colors"
@@ -4369,8 +4369,8 @@ const SuperAdmin = () => {
                     <div className="p-4 h-screen flex flex-col justify-between">
                         {/* Top Section */}
                         <div>
-                            <div className="hidden group-hover:block w-[127px] h-[36px] mb-4">
-                                <img src={"/Logo.png"} alt="logo" className="w-full h-full" />
+                            <div className="hidden group-hover:block w-[160px] h-[44px] mb-4">
+                                <img src={"/logo_1.png"} alt="logo" className="w-full h-full" />
                             </div>
 
                             <nav className="space-y-2">

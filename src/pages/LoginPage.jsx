@@ -96,9 +96,9 @@ const LoginPage = () => {
       {/* Right Form */}
       <div className="w-full md:w-1/2 max-w-lg">
         <div className="flex items-center justify-between">
-          <img src="/Logo.png" alt="Logo" className="w-[180px] h-[72px]" />
+          <img src="/logo_1.png" alt="Logo" className="w-[180px] h-[72px]" />
         </div>
-        <p className="font-normal text-[16px] text-[#6B7280] mb-6">
+        <p className="font-normal text-[16px] text-[#6B7280] mb-6 mt-1">
           Welcome back! Login to continue
         </p>
 

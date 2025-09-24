@@ -100,7 +100,11 @@ export const handleStripeError = (error) => {
         case 'insufficient_funds':
             return 'Your card has insufficient funds.';
         case 'authentication_required':
+            return 'Your card requires additional authentication. Please complete the verification process.';
+        case 'authentication_failed':
+            return 'Your card requires additional authentication. Please complete the verification process.';
         case 'setup_intent_authentication_required':
+            return 'Your card requires additional authentication. Please complete the verification process.';
         case 'payment_intent_authentication_required':
             return 'Your card requires additional authentication. Please complete the verification process.';
         case 'processing_error':

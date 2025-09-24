@@ -1365,7 +1365,7 @@ const CompanyProfileDashboard = () => {
           <style>
             body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
             .invoice-header { display: flex; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #2563eb; padding-bottom: 20px; }
-            .logo { width: 60px; height: 60px; margin-right: 20px; }
+            .logo { width: 160px; height: 44px; margin-right: 20px; }
             .company-name { color: #2563eb; margin: 0; font-size: 28px; font-weight: bold; }
             .company-tagline { color: #6b7280; margin: 5px 0 0 0; font-size: 16px; }
             .invoice-title { color: #111827; margin: 30px 0 20px 0; font-size: 24px; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px; }
@@ -1383,7 +1383,7 @@ const CompanyProfileDashboard = () => {
         </head>
         <body>
           <div class="invoice-header">
-            <img src="/Logo.png" alt="Company Logo" class="logo">
+            <img src="/logo_1.png" alt="Company Logo" class="logo">
             <div>
               <h1 class="company-name">RFP2GRANTS</h1>
               <p class="company-tagline">Professional Proposal Management</p>

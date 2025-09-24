@@ -42,10 +42,10 @@ const NavbarComponent = () => {
           <FiMenu className="text-lg" onClick={() => setIsMobileNavOpen(!isMobileNavOpen)} />
         </div>
         <div
-          className="w-[127px] h-[36px] hover:cursor-pointer"
+          className="w-[160px] h-[44px] hover:cursor-pointer"
           onClick={() => role === null ? navigate("/") : role === "SuperAdmin" ? navigate("/admin") : navigate("/dashboard")}
         >
-          <img src={"/Logo.png"} alt="logo" className="w-full h-full" />
+          <img src={"/logo_1.png"} alt="logo" className="w-full h-full" />
         </div>
         <div className="hidden md:flex gap-6 ml-16">
           {navItems.map(({ name, path }) => (

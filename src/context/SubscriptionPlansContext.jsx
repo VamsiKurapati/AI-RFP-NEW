@@ -37,14 +37,7 @@ export const SubscriptionPlansProvider = ({ children }) => {
                     setMostPopularPlan(null);
                 }
             } catch (error) {
-                // console.error('Error fetching subscription plans:', error);
-                Swal.fire({
-                    title: "Error fetching subscription plans",
-                    icon: "error",
-                    timer: 1500,
-                    showConfirmButton: false,
-                    showCancelButton: false,
-                });
+                console.error('Error fetching subscription plans:', error);
                 setSubscriptionPlans([]);
                 setMostPopularPlan(null);
             }
