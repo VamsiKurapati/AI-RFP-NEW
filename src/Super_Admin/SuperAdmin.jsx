@@ -1585,16 +1585,13 @@ const SuperAdmin = () => {
                 },
             });
             setPlans(data.data);
-            // console.log("data.data.plans", data.data.plans);
             for (let i = 0; i < data.data.plans.length; i++) {
                 if (data.data.plans[i].name === "Enterprise") {
                     setIsContact(data.data.plans[i].isContact);
-                    // console.log("Enterprise isContact:", data.data.plans[i].isContact);
                     break;
                 }
             }
         } catch (err) {
-            // console.error("Failed to fetch plans:", err);
             Swal.fire({
                 title: "Failed to fetch plans:",
                 icon: "warning",
@@ -1608,10 +1605,6 @@ const SuperAdmin = () => {
     useEffect(() => {
         subPlan();
     }, []);
-
-    useEffect(() => {
-        // console.log("Updated isContact:", isContact);
-    }, [isContact]);
 
 
     const startEdit = (plan) => {
@@ -1683,7 +1676,6 @@ const SuperAdmin = () => {
             await subPlan();
             cancelEdit(planId);
         } catch (err) {
-            // console.error("Failed to update plan:", err);
             Swal.fire({
                 title: "Failed to update plan:",
                 icon: "warning",
@@ -1720,14 +1712,6 @@ const SuperAdmin = () => {
                     </div>
                 )}
 
-                {/* Yearly Price */}
-                {/* Toggle switch button */}
-
-                {/* Plan Name */}
-
-                {/* Price */}
-
-                {/* Features */}
                 {planName === "Basic" ? (
                     <>
                         {!editingPlans[plan._id] ? (
@@ -2262,7 +2246,7 @@ const SuperAdmin = () => {
                 ) : null}
 
                 {
-                    !isContact && (
+                    ((!isContact) || (isContact && plan.name !== "Enterprise")) && (
                         !editingPlans[plan._id] ? (
                             <button
                                 className="w-full py-2 rounded-lg bg-gradient-to-b from-[#6C63FF] to-[#3F73BD] text-white font-medium shadow mt-auto"
@@ -2310,7 +2294,6 @@ const SuperAdmin = () => {
             );
             setIsContact(!isContact);
         } catch (error) {
-            // console.error(error);
             Swal.fire({
                 title: "Failed to update contacts: " + (error.response?.data?.message || error.message),
                 icon: "error",
