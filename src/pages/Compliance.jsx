@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 const ALERT_CONFIGS = {
     invalidFileType: {
         title: "Invalid File Type",
-        text: "Please upload a PDF file.",
+        text: "Please upload a PDF file only.",
         icon: "error",
         timer: 1500,
         showConfirmButton: false,
@@ -169,6 +169,18 @@ const Compliance = () => {
     const handleCheckCompliance = async () => {
         if (!data || !uploadedFile) {
             Swal.fire(ALERT_CONFIGS.missingRequirements);
+            return;
+        }
+
+        // check if file type is PDF
+        if (uploadedFile.type !== "application/pdf") {
+            Swal.fire(ALERT_CONFIGS.invalidFileType);
+            return;
+        }
+
+        // check if file size is greater than 5MB
+        if (uploadedFile.size > 5 * 1024 * 1024) {
+            Swal.fire(ALERT_CONFIGS.fileTooLarge);
             return;
         }
 

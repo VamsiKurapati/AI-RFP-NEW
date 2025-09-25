@@ -6,12 +6,24 @@ import axios from 'axios';
 import contact from '../assets/Contact.png';
 import { FaPlay } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
 
 
 export default function Contact() {
   const navigate = useNavigate();
 
+  const handleHomeClick = () => {
+    navigate("/");
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
+  };
+
+  const handleContactClick = () => {
+    navigate("/contact");
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 100);
+  };
 
   const [formData, setFormData] = useState({
     name: "",
@@ -60,11 +72,11 @@ export default function Contact() {
 
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/contact`, formData);
-      if (response.status === 201) {
+      if (response.status === 201 || response.status === 200) {
         setMessage(response.data.message || 'Your request has been sent successfully!');
         setFormData({ name: "", company: "", email: "", description: "" });
         setTimeout(() => {
-          navigate("/");
+          handleHomeClick();
         }, 2000);
       }
     } catch (error) {
@@ -176,12 +188,12 @@ export default function Contact() {
         <p className="text-[#FFFFFF] text-[16px] font-medium mb-4">Join thousands of satisfied customers and transform your business today.</p>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
           <button className="w-[140px] sm:w-auto bg-[#2563EB] hover:bg-[#1d4ed8] transition text-white px-6 py-2 rounded-lg text-[16px] font-medium shadow"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/sign_up")}
           >
             Get Started
           </button>
           <button className="w-[180px] sm:w-auto bg-white hover:bg-gray-100 transition border border-gray-300 px-6 py-2 rounded-lg flex items-center justify-center gap-2 text-[16px] text-black font-medium shadow"
-            onClick={() => navigate("/")}
+            onClick={() => handleContactClick()}
           >
             <FaPlay className="text-black" />
             Watch Demo

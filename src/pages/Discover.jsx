@@ -33,7 +33,7 @@ const STATUS_STYLES = {
 // Sidebar Component
 const LeftSidebar = ({ isOpen, onClose, filters, setFilters }) => {
   const categories = {
-    category: ["Infrastructure", "Education", "Healthcare", "Research & Development", "Government", "Non-Profit", "Private Sector"],
+    category: ["Combined Synopsis/Solicitation", "Solicitation", "Presolicitation", "Sources Sought", "Special Notice", "Consolidate/(Substantially) Bundle"],
     deadline: ["This Week", "This Month", "Next 3 Months", "Next 6 Months"],
   };
 
@@ -1064,7 +1064,7 @@ const Discover = () => {
     return rfps.filter((rfp) => {
       if (
         filters.category.length &&
-        (filters.category.includes("None") ? false : !filters.category.includes(rfp.fundingType))
+        (filters.category.includes("None") ? false : !filters.category.includes(rfp.baseType))
       )
         return false;
 
@@ -2249,7 +2249,7 @@ const Discover = () => {
       const pattern = new RegExp(`\\b${searchQuery.toLowerCase()}`, "i");
       return pattern.test(rfp.title?.toLowerCase() || "") ||
         pattern.test(rfp.organization?.toLowerCase() || "") ||
-        pattern.test(rfp.fundingType?.toLowerCase() || "");
+        pattern.test(rfp.baseType?.toLowerCase() || "");
     });
   }, [searchQuery]);
 

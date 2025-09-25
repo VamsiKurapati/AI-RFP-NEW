@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaPlay } from "react-icons/fa";
-import { MdOutlineSearch, MdViewQuilt, MdOutlineSecurity, MdChat, MdOutlineAnalytics, MdOutlineCheckCircle, MdOutlineRocketLaunch, MdOutlineCalendarMonth, MdOutlineCancel } from "react-icons/md";
-import { BiTrophy } from "react-icons/bi";
+import { MdOutlineSearch, MdOutlineSecurity, MdChat, MdOutlineAnalytics, MdOutlineCheckCircle, MdOutlineRocketLaunch, MdOutlineCalendarMonth, MdOutlineCancel, MdOutlineGroup, MdOutlineUpload, MdOutlineSupportAgent, MdOutlineAutoFixHigh, MdOutlineCategory } from "react-icons/md";
 import { IoMdStats } from "react-icons/io";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
@@ -20,16 +19,16 @@ export default function HomePage() {
 
   const features = [
     { title: "AI RFP Discovery", desc: "Find relevant RFPs matched to your business capabilities", image: <MdOutlineSearch className="w-10 h-10 text-[#2563EB]" /> },
-    { title: "Smart Templates", desc: "Industry-specific templates with AI-powered customization", image: <MdViewQuilt className="w-10 h-10 text-[#2563EB]" /> },
-    { title: "Collaborative Teams", desc: "Work efficiently by teaming up with your employees.", image: <BiTrophy className="w-10 h-10 text-[#2563EB]" /> },
-    { title: "Compliance Check", desc: "Automated compliance against RFP verification", image: <MdOutlineSecurity className="w-10 h-10 text-[#2563EB]" /> },
+    { title: "AI Grants Discovery", desc: "Find the right grant opportunities with AI suggestions.", image: <MdOutlineSearch className="w-10 h-10 text-[#2563EB]" /> },
+    { title: "Collaborative Teams", desc: "Work efficiently by teaming up with your employees.", image: <MdOutlineGroup className="w-10 h-10 text-[#2563EB]" /> },
+    { title: "RFP Compliance Check", desc: "Validate every RFP proposal with AI compliance checks.", image: <MdOutlineSecurity className="w-10 h-10 text-[#2563EB]" /> },
   ];
 
   const features_2 = [
-    { title: "Discover", desc: "Find the right grant opportunities with AI suggestions.", image: <MdOutlineSearch className="w-10 h-10 text-[#2563EB]" /> },
-    { title: "Draft", desc: "Use guided templates and AI assistance to write strong grants.", image: <MdViewQuilt className="w-10 h-10 text-[#2563EB]" /> },
-    { title: "Collaborate", desc: "Work with your entire team on one platform.", image: <BiTrophy className="w-10 h-10 text-[#2563EB]" /> },
-    { title: "Comply", desc: "Run compliance & eligibility checks before submission.", image: <MdOutlineSecurity className="w-10 h-10 text-[#2563EB]" /> },
+    { title: "AI Proposal Generation", desc: "Client-ready AI proposals generation with one click.", image: <MdOutlineAutoFixHigh className="w-10 h-10 text-[#2563EB]" /> },
+    { title: "Categories", desc: "Search and explore RFPs and grants across multiple sectors", image: <MdOutlineCategory className="w-10 h-10 text-[#2563EB]" /> },
+    { title: "Upload RFPs & Grants", desc: "Import third-party RFPs and Grants to instantly generate AI-powered proposals", image: <MdOutlineUpload className="w-10 h-10 text-[#2563EB]" /> },
+    { title: "Support", desc: "Real-time chat and guided help for quick resolution", image: <MdOutlineSupportAgent className="w-10 h-10 text-[#2563EB]" /> },
   ];
 
   const proposalManagement = [
@@ -57,21 +56,21 @@ export default function HomePage() {
 
   const benefits = [
     {
-      title: "DISCOVER",
+      title: "AI DISCOVERY",
       subtitle: "RFP & Grant Discovery",
       desc: "Uncover the right opportunities faster with AI-powered search and personalized RFP recommendations based on your industry, preferences, and history.",
       image: "/why_1.png",
     },
     {
-      title: "GENERATE",
-      subtitle: "Smart Templates",
-      desc: "Build compelling, high-converting proposals instantly using dynamic templates, auto-filled sections, and real-time AI-driven content enhancements.",
+      title: "AI PROPOSAL GENERATION",
+      subtitle: "End-to-End Proposal Generation",
+      desc: "Instantly create tailored, high-impact proposals with the power of AI. Leverage advanced algorithms that analyze client needs, project scope, and industry context to auto-generate persuasive, professional documents ready to send in minutes.",
       image: "/why_2.png",
     },
     {
       title: "COLLABORATE",
       subtitle: "Team Collaboration Tools",
-      desc: "Bring your entire team together with live co-editing, threaded comments, version control, and seamless workflow — all in one collaborative workspace.",
+      desc: "Empower your team to work smarter with shared access. Assign proposals to the right team members, re-assign as priorities shift, and ensure accountability at every stage.",
       image: "/why_3.png",
     },
     {
@@ -190,11 +189,11 @@ export default function HomePage() {
             <p className="text-[14px] lg:text-[16px] text-[#6B7280] font-medium mt-4">
               AI-powered drafting, compliance, and collaboration to help you secure proposals & grants with confidence.
             </p>
-            <div className="md:hidden w-full xs:w-[70%] h-[200px] mx-auto md:h-full lg:w-1/2 mt-4">
+            <div className="md:hidden w-full xs:w-[70%] h-[200px] mx-auto md:h-full lg:w-1/2 mt-4 shadow-2xl">
               <img
                 src="/homepage.png"
                 alt="Hero Analytics Dashboard"
-                className="w-full h-full rounded shadow-xl"
+                className="w-full h-full rounded shadow-2xl"
               />
             </div>
             <div className="flex gap-4 mt-6">
@@ -204,7 +203,7 @@ export default function HomePage() {
                 Get Started
               </button>
               <button className="border border-1 border-[#00000033] px-3 sm:px-6 py-2 rounded-lg flex items-center gap-2 text-[16px] text-[#000000] font-regular"
-                onClick={() => navigate("/")}
+                onClick={() => handleContactClick()}
               >
                 <FaPlay className="text-[#000000]" />
                 Watch Demo
@@ -213,11 +212,11 @@ export default function HomePage() {
           </div>
 
           {/* Right Image Section */}
-          <div className="hidden md:block w-[90%] xs:w-[50%] h-[200px] md:h-full lg:w-1/2">
+          <div className="hidden md:block w-[90%] xs:w-[50%] h-[200px] md:h-full lg:w-1/2 shadow-2xl">
             <img
               src="/homepage.png"
               alt="Hero Analytics Dashboard"
-              className="w-full h-full rounded shadow-lg"
+              className="w-full h-full rounded shadow-2xl"
             />
           </div>
         </div>
@@ -227,7 +226,7 @@ export default function HomePage() {
       <section id="about" className="bg-white scroll-mt-20">
         <div className="py-8 md:py-16 px-8 md:px-16">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="mx-auto text-[30px] text-[#2F3349] font-semibold">Streamline your <span className="text-[#2563EB]">RFP</span> Process</h2>
+            <h2 className="mx-auto text-[30px] text-[#2F3349] font-semibold">Streamline your <span className="text-[#2563EB]">RFP & Grants</span> Process</h2>
           </div>
           <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-6">
             {features.map((item, idx) => (
@@ -244,7 +243,7 @@ export default function HomePage() {
 
         <div className="py-8 md:py-16 px-8 md:px-16">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="mx-auto text-[30px] text-[#2F3349] font-semibold">Improve your <span className="text-[#2563EB]">Grant Writing</span> Process</h2>
+            <h2 className="mx-auto text-[30px] text-[#2563EB] font-semibold">End to End <span className="text-[#2F3349]">AI Solution</span></h2>
           </div>
           <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-6">
             {features_2.map((item, idx) => (
@@ -263,8 +262,8 @@ export default function HomePage() {
         <div className="py-8 md:py-16 bg-white px-8 md:px-16">
           <h2 className="text-[30px] font-semibold mb-4 text-[#2F3349] text-center">Comprehensive Proposal <span className="text-[#2563EB]">Management</span></h2>
           <div className="flex gap-8 flex-col md:flex-row items-center justify-center lg:ml-24">
-            <div className="w-full md:w-3/5">
-              <img src="/proposal_management.png" alt="Proposal Management" className="w-full rounded-lg shadow-lg mb-4" />
+            <div className="w-full md:w-3/5 shadow-2xl">
+              <img src="/proposal_management.png" alt="Proposal Management" className="w-full rounded-lg shadow-2xl" />
             </div>
             <div className="w-full md:w-1/2 flex flex-col justify-center">
               {proposalManagement.map((item, idx) => (
@@ -403,7 +402,7 @@ export default function HomePage() {
             Get Started
           </button>
           <button className="w-[180px] sm:w-auto bg-white hover:bg-gray-100 transition border border-gray-300 px-6 py-2 rounded-lg flex items-center justify-center gap-2 text-[16px] text-black font-medium shadow"
-            onClick={() => navigate("/")}
+            onClick={() => handleContactClick()}
           >
             <FaPlay className="text-black" />
             Watch Demo

@@ -538,6 +538,19 @@ const AddCaseStudyModal = ({ isOpen, onClose }) => {
       return;
     }
 
+    // check if file size is greater than 5MB
+    if (formData.file.size > 5 * 1024 * 1024) {
+      Swal.fire({
+        title: 'File size must be less than 5MB.',
+        icon: 'error',
+        timer: 1500,
+        showConfirmButton: false,
+        showCancelButton: false,
+      });
+      setAddingCaseStudy(false);
+      return;
+    }
+
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('title', formData.title);
@@ -869,7 +882,20 @@ const AddDocumentModal = ({ isOpen, onClose }) => {
 
     if (!formData.file) {
       Swal.fire({
-        title: 'Please upload a file.',
+        title: 'Please upload a PDF or TXT file.',
+        icon: 'error',
+        timer: 1500,
+        showConfirmButton: false,
+        showCancelButton: false,
+      });
+      setUploadingDocument(false);
+      return;
+    }
+
+    // check if file size is greater than 5MB
+    if (formData.file.size > 5 * 1024 * 1024) {
+      Swal.fire({
+        title: 'File size must be less than 5MB.',
         icon: 'error',
         timer: 1500,
         showConfirmButton: false,
@@ -1465,6 +1491,30 @@ const CompanyProfileDashboard = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // check if file size is greater than 1MB
+    if (file.size > 1 * 1024 * 1024) {
+      Swal.fire({
+        title: 'File size must be less than 1MB.',
+        icon: 'error',
+        timer: 1500,
+        showConfirmButton: false,
+        showCancelButton: false,
+      });
+      return;
+    }
+
+    //Only allow image files jpg, jpeg, png
+    if (file.type !== 'image/jpg' && file.type !== 'image/jpeg' && file.type !== 'image/png') {
+      Swal.fire({
+        title: 'Please upload only image files.',
+        icon: 'error',
+        timer: 1500,
+        showConfirmButton: false,
+        showCancelButton: false,
+      });
+      return;
+    }
     setSelectedFile(file);
     setPreviewUrl(URL.createObjectURL(file));
     setEditMode(true); // Ensure editMode stays true after file selection
