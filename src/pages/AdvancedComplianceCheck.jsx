@@ -80,13 +80,13 @@ const AdvancedComplianceCheck = () => {
                             <ul className="space-y-3">
                                 {basicComplianceCheck && basicComplianceCheck.missing_sections && basicComplianceCheck.missing_sections.map((section, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
-                                        <MdOutlineError className="text-[20px] text-[#EAB308]" />
+                                        <MdOutlineError className="text-[20px] text-[#EAB308] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">{formatSection(section)}</span>
                                     </li>
                                 ))}
                                 {basicComplianceCheck && basicComplianceCheck.missing_sections && basicComplianceCheck.missing_sections.length === 0 && (
                                     <li className="flex items-center justify-start gap-2">
-                                        <MdOutlineError className="text-[20px] text-[#EAB308]" />
+                                        <MdOutlineError className="text-[20px] text-[#EAB308] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">No missing sections</span>
                                     </li>
                                 )}
@@ -112,7 +112,7 @@ const AdvancedComplianceCheck = () => {
                                     ))
                                 ) : (
                                     <li className="flex items-center justify-start gap-2">
-                                        <MdOutlineError className="text-[20px] text-[#EAB308]" />
+                                        <MdOutlineError className="text-[20px] text-[#EAB308] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">No format issues</span>
                                     </li>
                                 )}
@@ -126,13 +126,13 @@ const AdvancedComplianceCheck = () => {
                             <ul className="space-y-3">
                                 {basicComplianceCheck && basicComplianceCheck.empty_sections && basicComplianceCheck.empty_sections.map((section, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
-                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
+                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">{formatSection(section)}</span>
                                     </li>
                                 ))}
                                 {basicComplianceCheck && basicComplianceCheck.empty_sections && basicComplianceCheck.empty_sections.length === 0 && (
                                     <li className="flex items-center justify-start gap-2">
-                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
+                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">No empty sections</span>
                                     </li>
                                 )}
@@ -161,13 +161,13 @@ const AdvancedComplianceCheck = () => {
                             <ul className="space-y-3">
                                 {advancedComplianceCheck && advancedComplianceCheck.requested_information && advancedComplianceCheck.requested_information.map((item, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
-                                        <MdOutlineError className="text-[20px] text-[#EAB308]" />
+                                        <MdOutlineError className="text-[20px] text-[#EAB308] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">{formatSection(item)}</span>
                                     </li>
                                 ))}
                                 {advancedComplianceCheck && advancedComplianceCheck.requested_information && advancedComplianceCheck.requested_information.length === 0 && (
                                     <li className="flex items-center justify-start gap-2">
-                                        <MdOutlineError className="text-[20px] text-[#EAB308]" />
+                                        <MdOutlineError className="text-[20px] text-[#EAB308] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">No items specified</span>
                                     </li>
                                 )}
@@ -180,13 +180,13 @@ const AdvancedComplianceCheck = () => {
                             <ul className="space-y-3">
                                 {advancedComplianceCheck && advancedComplianceCheck.present_information && advancedComplianceCheck.present_information.map((item, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
-                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A]" />
+                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">{formatSection(item)}</span>
                                     </li>
                                 ))}
                                 {advancedComplianceCheck && advancedComplianceCheck.present_information && advancedComplianceCheck.present_information.length === 0 && (
                                     <li className="flex items-center justify-start gap-2">
-                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A]" />
+                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">No present information</span>
                                     </li>
                                 )}
@@ -199,13 +199,13 @@ const AdvancedComplianceCheck = () => {
                             <ul className="space-y-3">
                                 {advancedComplianceCheck && advancedComplianceCheck.missing_information && advancedComplianceCheck.missing_information.map((item, idx) => (
                                     <li key={idx} className="flex items-center justify-start gap-2">
-                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
+                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">{formatSection(item)}</span>
                                     </li>
                                 ))}
                                 {advancedComplianceCheck && advancedComplianceCheck.missing_information && advancedComplianceCheck.missing_information.length === 0 && (
                                     <li className="flex items-center justify-start gap-2">
-                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
+                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">No missing information</span>
                                     </li>
                                 )}
@@ -216,7 +216,7 @@ const AdvancedComplianceCheck = () => {
                     <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
                         <button className="border border-[#4B5563] text-[#4B5563] px-6 py-2 rounded transition text-[16px] flex items-center gap-2"
                             onClick={() => navigate(-1)}>
-                            <IoIosArrowBack className="text-[20px] text-[#4B5563]" />
+                            <IoIosArrowBack className="text-[20px] text-[#4B5563] shrink-0" />
                             Back
                         </button>
                         <button className="bg-[#2563EB] text-white px-8 py-2 rounded transition text-[16px]"

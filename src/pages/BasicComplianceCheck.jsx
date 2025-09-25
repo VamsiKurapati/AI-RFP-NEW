@@ -60,13 +60,13 @@ const BasicComplianceCheck = () => {
                                 {complianceData && complianceData.missing_sections && complianceData.missing_sections.length > 0 ? (
                                     complianceData.missing_sections.map((section, idx) => (
                                         <li key={idx} className="flex items-center justify-start gap-2">
-                                            <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
+                                            <IoMdCloseCircle className="text-[20px] text-[#EF4444] shrink-0" />
                                             <span className="text-[#111827] text-[16px]">{section}</span>
                                         </li>
                                     ))
                                 ) : (
                                     <li className="flex items-center justify-start gap-2">
-                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A]" />
+                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">No missing sections</span>
                                     </li>
                                 )}
@@ -81,7 +81,7 @@ const BasicComplianceCheck = () => {
                                 {complianceData && complianceData.format_issues && Object.keys(complianceData.format_issues).length > 0 ? (
                                     Object.entries(complianceData.format_issues).map(([section, issues], idx) => (
                                         <li key={idx} className="flex items-start justify-start gap-2">
-                                            <MdOutlineError className="text-[20px] text-[#EAB308] mt-1 flex-shrink-0" />
+                                            <MdOutlineError className="text-[20px] text-[#EAB308] mt-1 shrink-0" />
                                             <div className="flex flex-col">
                                                 <span className="text-[#111827] text-[16px] font-medium">{section}</span>
                                                 {issues.map((issue, issueIdx) => (
@@ -92,7 +92,7 @@ const BasicComplianceCheck = () => {
                                     ))
                                 ) : (
                                     <li className="flex items-center justify-start gap-2">
-                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A]" />
+                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">No format issues found</span>
                                     </li>
                                 )}
@@ -107,13 +107,13 @@ const BasicComplianceCheck = () => {
                                 {complianceData && complianceData.empty_sections && complianceData.empty_sections.length > 0 ? (
                                     complianceData.empty_sections.map((section, idx) => (
                                         <li key={idx} className="flex items-center justify-start gap-2">
-                                            <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
+                                            <IoMdCloseCircle className="text-[20px] text-[#EF4444] shrink-0" />
                                             <span className="text-[#111827] text-[16px]">{section}</span>
                                         </li>
                                     ))
                                 ) : (
                                     <li className="flex items-center justify-start gap-2">
-                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444]" />
+                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444] shrink-0" />
                                         <span className="text-[#111827] text-[16px]">No empty sections</span>
                                     </li>
                                 )}
@@ -145,7 +145,7 @@ const BasicComplianceCheck = () => {
                     </div>
                     {/* Glassy, blurred overlay */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center z-20 backdrop-blur-sm">
-                        <MdOutlineLock className="text-6xl text-[#2563EB] mb-4" />
+                        <MdOutlineLock className="text-6xl text-[#2563EB] mb-4 shrink-0" />
                         <p className="text-2xl font-bold text-[#2563EB] mb-2 text-center">
                             Upgrade to unlock Advanced Compliance Check
                         </p>
@@ -164,7 +164,7 @@ const BasicComplianceCheck = () => {
                 <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
                     <button className="border border-[#4B5563] text-[#4B5563] px-6 py-2 rounded transition text-[16px] flex items-center gap-2"
                         onClick={() => navigate(-1)}>
-                        <IoIosArrowBack className="text-[20px] text-[#4B5563]" />
+                        <IoIosArrowBack className="text-[20px] text-[#4B5563] shrink-0" />
                         Back
                     </button>
                     <button className="bg-[#2563EB] text-white px-8 py-2 rounded transition text-[16px]"
