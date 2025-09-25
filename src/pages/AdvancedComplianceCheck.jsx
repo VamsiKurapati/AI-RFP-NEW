@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import NavbarComponent from "./NavbarComponent";
 import { IoIosArrowBack, IoMdCloseCircle } from "react-icons/io";
 import { MdOutlineError } from "react-icons/md";
-import { BsFillCheckCircleFill } from "react-icons/bs";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const AdvancedComplianceCheck = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const [data, setData] = useState(null);
     const [basicComplianceCheck, setBasicComplianceCheck] = useState(null);
     const [advancedComplianceCheck, setAdvancedComplianceCheck] = useState(null);
 
@@ -24,35 +22,19 @@ const AdvancedComplianceCheck = () => {
     useEffect(() => {
         const incoming = location.state && location.state.data;
         if (incoming) {
-            setData(incoming);
             setBasicComplianceCheck({
                 missing_sections: incoming?.compliance_dataBasicCompliance?.missing_sections || [],
                 empty_sections: incoming?.compliance_dataBasicCompliance?.empty_sections || [],
                 format_issues: incoming?.compliance_dataBasicCompliance?.format_issues || {},
             });
-            setAdvancedComplianceCheck({
-                rfp_title: incoming?.dataAdvancedCompliance?.rfp_title || "",
-                requested_information: incoming?.dataAdvancedCompliance?.requested_information || [],
-                present_information: incoming?.dataAdvancedCompliance?.present_information || [],
-                missing_information: incoming?.dataAdvancedCompliance?.missing_information || [],
-                status: incoming?.dataAdvancedCompliance?.status || "",
-            });
-            //Delete the location.state.data
-            delete location.state.data;
+            setAdvancedComplianceCheck(incoming?.dataAdvancedCompliance || {});
         } else {
-            setData(null);
             setBasicComplianceCheck({
                 missing_sections: [],
                 empty_sections: [],
                 format_issues: {},
             });
-            setAdvancedComplianceCheck({
-                rfp_title: "",
-                requested_information: [],
-                present_information: [],
-                missing_information: [],
-                status: "",
-            });
+            setAdvancedComplianceCheck({});
         }
     }, []);
 
@@ -145,71 +127,31 @@ const AdvancedComplianceCheck = () => {
                     <span className="text-black text-[20px] font-semibold mt-4 mb-4">
                         Advanced Compliance Check
                     </span>
-                    {/* Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="bg-[#F8F9FA] border-2 border-[#E5E7EB] rounded-lg p-4 flex flex-col items-start">
-                            <span className="text-[#6B7280] text-[18px]">Overall Compliance Status</span>
-                            <span className="text-[#2563EB] text-[28px] font-semibold">{advancedComplianceCheck && advancedComplianceCheck.status}</span>
-                        </div>
-                    </div>
-                    {/* Compliance Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                        {/* Requested Information */}
-                        <div className="bg-[#FEFCE8] border-2 border-[#FEF0C7] rounded-lg p-6">
-                            <h2 className="text-[16px] font-semibold text-[#713F12]">Requested Information</h2>
-                            <p className="text-[#713F12] text-[14px] mb-4">As specified in the RFP</p>
-                            <ul className="space-y-3">
-                                {advancedComplianceCheck && advancedComplianceCheck.requested_information && advancedComplianceCheck.requested_information.map((item, idx) => (
-                                    <li key={idx} className="flex items-center justify-start gap-2">
-                                        <MdOutlineError className="text-[20px] text-[#EAB308] shrink-0" />
-                                        <span className="text-[#111827] text-[16px]">{formatSection(item)}</span>
-                                    </li>
-                                ))}
-                                {advancedComplianceCheck && advancedComplianceCheck.requested_information && advancedComplianceCheck.requested_information.length === 0 && (
-                                    <li className="flex items-center justify-start gap-2">
-                                        <MdOutlineError className="text-[20px] text-[#EAB308] shrink-0" />
-                                        <span className="text-[#111827] text-[16px]">No items specified</span>
-                                    </li>
-                                )}
-                            </ul>
-                        </div>
-                        {/* Present Information */}
-                        <div className="bg-[#F0FDF4] border-2 border-[#BBF7D0] rounded-lg p-6">
-                            <h2 className="text-[16px] font-semibold text-[#14532D]">Present Information</h2>
-                            <p className="text-[#14532D] text-[14px] mb-4">Information detected in the proposal</p>
-                            <ul className="space-y-3">
-                                {advancedComplianceCheck && advancedComplianceCheck.present_information && advancedComplianceCheck.present_information.map((item, idx) => (
-                                    <li key={idx} className="flex items-center justify-start gap-2">
-                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A] shrink-0" />
-                                        <span className="text-[#111827] text-[16px]">{formatSection(item)}</span>
-                                    </li>
-                                ))}
-                                {advancedComplianceCheck && advancedComplianceCheck.present_information && advancedComplianceCheck.present_information.length === 0 && (
-                                    <li className="flex items-center justify-start gap-2">
-                                        <BsFillCheckCircleFill className="text-[20px] text-[#16A34A] shrink-0" />
-                                        <span className="text-[#111827] text-[16px]">No present information</span>
-                                    </li>
-                                )}
-                            </ul>
-                        </div>
-                        {/* Missing Information */}
-                        <div className="bg-[#FEF2F2] border-2 border-[#FECACA] rounded-lg p-6">
-                            <h2 className="text-[16px] font-semibold text-[#14532D]">Missing Information</h2>
-                            <p className="text-[#14532D] text-[14px] mb-4">Requested but not found</p>
-                            <ul className="space-y-3">
-                                {advancedComplianceCheck && advancedComplianceCheck.missing_information && advancedComplianceCheck.missing_information.map((item, idx) => (
-                                    <li key={idx} className="flex items-center justify-start gap-2">
-                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444] shrink-0" />
-                                        <span className="text-[#111827] text-[16px]">{formatSection(item)}</span>
-                                    </li>
-                                ))}
-                                {advancedComplianceCheck && advancedComplianceCheck.missing_information && advancedComplianceCheck.missing_information.length === 0 && (
-                                    <li className="flex items-center justify-start gap-2">
-                                        <IoMdCloseCircle className="text-[20px] text-[#EF4444] shrink-0" />
-                                        <span className="text-[#111827] text-[16px]">No missing information</span>
-                                    </li>
-                                )}
-                            </ul>
+
+                    {/* Single div displaying all compliance data */}
+                    <div className="bg-white border-2 border-[#E5E7EB] rounded-lg p-6 mb-10">
+                        <h2 className="text-[18px] font-semibold text-[#111827] mb-6">Compliance Analysis Results</h2>
+                        <div className="space-y-4">
+                            {advancedComplianceCheck && Object.keys(advancedComplianceCheck).length > 0 ? (
+                                Object.entries(advancedComplianceCheck).map(([key, value], idx) => (
+                                    <div key={idx} className="border-b border-[#E5E7EB] pb-4 last:border-b-0">
+                                        <div className="flex items-start gap-3">
+                                            <div className="flex-1">
+                                                <h3 className="text-[16px] font-semibold text-[#111827] mb-2 text-left">
+                                                    {formatSection(key)}
+                                                </h3>
+                                                <p className="text-[14px] text-[#6B7280] leading-relaxed text-left ml-4">
+                                                    {value}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-center py-8">
+                                    <p className="text-[#6B7280] text-[16px]">No compliance data available</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                     {/* Navigation Buttons */}
