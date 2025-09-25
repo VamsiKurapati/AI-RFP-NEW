@@ -189,11 +189,11 @@ export default function HomePage() {
             <p className="text-[14px] lg:text-[16px] text-[#6B7280] font-medium mt-4">
               AI-powered drafting, compliance, and collaboration to help you secure proposals & grants with confidence.
             </p>
-            <div className="md:hidden w-full xs:w-[70%] h-[200px] mx-auto md:h-full lg:w-1/2 mt-4 shadow-2xl rounded-2xl">
+            <div className="md:hidden w-full xs:w-[70%] h-[200px] mx-auto md:h-full lg:w-1/2 mt-4 shadow-2xl rounded-lg">
               <img
                 src="/homepage.png"
                 alt="Hero Analytics Dashboard"
-                className="w-full h-full rounded shadow-2xl"
+                className="w-full h-full shadow-2xl rounded-lg"
               />
             </div>
             <div className="flex gap-4 mt-6">
@@ -212,11 +212,11 @@ export default function HomePage() {
           </div>
 
           {/* Right Image Section */}
-          <div className="hidden md:block w-[90%] xs:w-[50%] h-[200px] md:h-full lg:w-1/2 shadow-2xl rounded-2xl">
+          <div className="hidden md:block w-[90%] xs:w-[50%] h-[200px] md:h-full lg:w-1/2 shadow-2xl rounded-lg">
             <img
               src="/homepage.png"
               alt="Hero Analytics Dashboard"
-              className="w-full h-full rounded shadow-2xl"
+              className="w-full h-full shadow-2xl rounded-lg"
             />
           </div>
         </div>
@@ -262,8 +262,8 @@ export default function HomePage() {
         <div className="py-8 md:py-16 bg-white px-8 md:px-16">
           <h2 className="text-[30px] font-semibold mb-4 text-[#2F3349] text-center">Comprehensive Proposal <span className="text-[#2563EB]">Management</span></h2>
           <div className="flex gap-8 flex-col md:flex-row items-center justify-center lg:ml-24">
-            <div className="w-full md:w-3/5 shadow-2xl rounded-2xl">
-              <img src="/proposal_management.png" alt="Proposal Management" className="w-full rounded-lg shadow-2xl" />
+            <div className="w-full md:w-3/5 shadow-2xl rounded-lg">
+              <img src="/proposal_management.png" alt="Proposal Management" className="w-full shadow-2xl rounded-lg" />
             </div>
             <div className="w-full md:w-1/2 flex flex-col justify-center">
               {proposalManagement.map((item, idx) => (
