@@ -181,10 +181,10 @@ export default function HomePage() {
       <section
         className="mt-12 sm:mt-[62px]"
         style={{ background: "linear-gradient(180deg, #EEF4FF 50%, #FFFFFF 100%)" }} >
-        <div className="flex flex-col md:flex-row items-center justify-between px-8 md:px-16 py-8 md:py-16">
+        <div className="flex flex-col md:flex-row items-center justify-between px-8 md:px-16 py-8 md:py-16 gap-4">
           {/* Left Text Section */}
-          <div className="w-full md:w-1/2 text-left mb-10 md:mb-0 lg:ml-24">
-            <h1 className="text-[28px] sm:text-[32px] lg:text-[36px] font-semibold text-[#000000] leading-tight">
+          <div className="w-full md:w-1/2 text-left mb-10 md:mb-0 mt-8 md:mt-0">
+            <h1 className="text-[32px] lg:text-[36px] font-semibold text-[#000000] leading-tight">
               From Requests to Results - Smarter, Faster.
             </h1>
             <p className="text-[14px] lg:text-[16px] text-[#6B7280] font-medium mt-4">
@@ -194,7 +194,7 @@ export default function HomePage() {
               <img
                 src="/homepage.png"
                 alt="Hero Analytics Dashboard"
-                className="w-full h-full rounded shadow-lg"
+                className="w-full h-full rounded shadow-xl"
               />
             </div>
             <div className="flex gap-4 mt-6">
@@ -263,7 +263,7 @@ export default function HomePage() {
         <div className="py-8 md:py-16 bg-white px-8 md:px-16">
           <h2 className="text-[30px] font-semibold mb-4 text-[#2F3349] text-center">Comprehensive Proposal <span className="text-[#2563EB]">Management</span></h2>
           <div className="flex gap-8 flex-col md:flex-row items-center justify-center lg:ml-24">
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-3/5">
               <img src="/proposal_management.png" alt="Proposal Management" className="w-full rounded-lg shadow-lg mb-4" />
             </div>
             <div className="w-full md:w-1/2 flex flex-col justify-center">
