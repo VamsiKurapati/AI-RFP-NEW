@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import NavbarComponent from "./NavbarComponent";
 import { IoIosArrowBack, IoMdCloseCircle } from "react-icons/io";
-import { MdOutlineError } from "react-icons/md";
+import { MdOutlineError, MdOutlineArrowBack } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const AdvancedComplianceCheck = () => {
@@ -29,7 +29,7 @@ const AdvancedComplianceCheck = () => {
                 format_issues: incoming?.compliance_dataBasicCompliance?.format_issues || {},
             });
             setAdvancedComplianceCheck(incoming?.dataAdvancedCompliance || {});
-            setRfpTitle(incoming?.rfpTitle || "");
+            setRfpTitle(incoming.rfpTitle ? incoming.rfpTitle : "");
         } else {
             setBasicComplianceCheck({
                 missing_sections: [],
@@ -46,10 +46,13 @@ const AdvancedComplianceCheck = () => {
             <NavbarComponent />
             <div className="w-full mx-auto p-8 mt-16">
                 {/* Compliance Check Title */}
-                <h1 className="text-[24px] font-semibold mb-4">Compliance Check</h1>
+                <h1 className="text-[24px] font-semibold mb-4 text-center">Compliance Check</h1>
 
                 {/* RFP Title */}
-                <h1 className="text-[24px] font-semibold mb-4 text-left">{rfpTitle}</h1>
+                <div className="w-full flex items-center mb-6">
+                    <button className="bg-white rounded-lg p-2 mr-4 text-[#2563EB]" onClick={() => navigate(-1)}><MdOutlineArrowBack className="w-5 h-5 shrink-0" /></button>
+                    <h1 className="text-[32px] font-semibold">{rfpTitle}</h1>
+                </div>
 
                 {/* Basic Compliance Check */}
                 <div className="flex flex-col gap-4">
