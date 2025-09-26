@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, ArrowLeft, EyeOff, Eye } from "lucide-react";
 import PhoneNumberInput, { validatePhoneNumber } from '../components/PhoneNumberInput';
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -21,9 +22,159 @@ const SignupForm = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Email verification states
+  const [verificationCode, setVerificationCode] = useState("");
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isSendingCode, setIsSendingCode] = useState(false);
+  const [isVerifyingCode, setIsVerifyingCode] = useState(false);
+  const [verificationMessage, setVerificationMessage] = useState("");
+  const [showResendButton, setShowResendButton] = useState(false);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
+
+    // Reset email verification if email changes
+    if (e.target.name === "email") {
+      setIsEmailVerified(false);
+      setVerificationCode("");
+      setVerificationMessage("");
+      setShowResendButton(false);
+    }
+  };
+
+  // Send verification email
+  const sendVerificationEmail = async () => {
+    if (!form.email) {
+      setErrors({ ...errors, email: "Please enter your email first" });
+      return;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(form.email)) {
+      setErrors({ ...errors, email: "Please enter a valid email address" });
+      return;
+    }
+
+    setIsSendingCode(true);
+    setVerificationMessage("");
+
+    try {
+      const response = await axios.post('/api/auth/send-verification-email', {
+        email: form.email
+      });
+
+      if (response.status === 200) {
+        setVerificationMessage("Verification code sent to your email!");
+        setShowResendButton(false);
+        Swal.fire({
+          title: "Verification Code Sent",
+          text: "Please check your email for the verification code",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } else {
+        setVerificationMessage(response.data.message);
+        Swal.fire({
+          title: "Error",
+          text: response.data.message,
+        });
+      }
+    } catch (error) {
+      let errorMessage = error.response?.data?.message || "Failed to send verification code";
+      let swalTitle = "Error";
+
+      // Handle specific backend error for existing user
+      if (error.response?.data?.message?.includes("User already exists")) {
+        errorMessage = "An account with this email already exists. Please use a different email or try logging in.";
+        swalTitle = "Email Already Exists";
+      }
+
+      setVerificationMessage(errorMessage);
+      Swal.fire({
+        title: swalTitle,
+        text: errorMessage,
+        icon: "error",
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setIsSendingCode(false);
+    }
+  };
+
+  // Verify OTP code
+  const verifyCode = async () => {
+    if (!verificationCode.trim()) {
+      setVerificationMessage("Please enter the verification code");
+      return;
+    }
+
+    setIsVerifyingCode(true);
+    setVerificationMessage("");
+
+    try {
+      const response = await axios.post('/api/auth/verify-email-code', {
+        email: form.email,
+        code: verificationCode
+      });
+
+      if (response.status === 200) {
+        setIsEmailVerified(true);
+        setVerificationMessage("Email verified successfully!");
+        Swal.fire({
+          title: "Email Verified",
+          text: "Your email has been verified successfully",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } else {
+        setVerificationMessage(response.data.message);
+        Swal.fire({
+          title: "Error",
+          text: response.data.message,
+        });
+      }
+    } catch (error) {
+      // Handle specific error messages from backend
+      const errorMessage = error.response?.data?.message || "Invalid verification code";
+      let swalTitle = "Verification Failed";
+      let swalText = errorMessage;
+
+      if (error.response?.data?.message) {
+        if (error.response.data.message === "Verification code expired") {
+          swalText = "Your verification code has expired. Please click 'Resend Code' to get a new code.";
+          swalTitle = "Code Expired";
+          // Clear the verification code input for expired codes
+          setVerificationCode("");
+          setShowResendButton(true);
+        } else if (error.response.data.message === "Invalid verification code") {
+          swalText = "This verification code is not valid. Please click 'Resend Code' to get a new code.";
+          swalTitle = "Invalid Code";
+          // Clear the verification code input for invalid codes
+          setVerificationCode("");
+          setShowResendButton(true);
+        } else {
+          // For any other error messages, show the original message
+          swalText = errorMessage;
+          swalTitle = "Verification Failed";
+          setShowResendButton(false);
+        }
+      }
+
+      setVerificationMessage(errorMessage);
+      Swal.fire({
+        title: swalTitle,
+        text: swalText,
+        icon: "error",
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setIsVerifyingCode(false);
+    }
   };
 
   const validatePassword = (password) => {
@@ -42,6 +193,7 @@ const SignupForm = () => {
     if (!form.fullName.trim()) newErrors.fullName = "Full name is required";
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(form.email)) newErrors.email = "Enter a valid email address";
+    if (!isEmailVerified) newErrors.email = "Please verify your email address";
     if (form.password.length < 8) newErrors.password = "Password must be at least 8 characters";
     if (form.password !== form.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
     const passwordValidation = validatePassword(form.password);
@@ -178,6 +330,86 @@ const SignupForm = () => {
                       {errors[field] && <p className="text-red-500 text-sm">{errors[field]}</p>}
                     </div>
                   ))}
+
+                  {/* Email Verification Section */}
+                  {form.email && (
+                    <div className="mt-4 p-4 bg-gray-50 rounded-md">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-sm font-medium text-gray-700">
+                          Email Verification {isEmailVerified && <span className="text-green-600">✓</span>}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={sendVerificationEmail}
+                          disabled={isSendingCode || isEmailVerified}
+                          className={`px-4 py-2 text-sm font-medium rounded-md ${isEmailVerified
+                            ? "bg-green-100 text-green-700 cursor-not-allowed"
+                            : isSendingCode
+                              ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                              : "bg-blue-600 text-white hover:bg-blue-700"
+                            }`}
+                        >
+                          {isSendingCode ? "Sending..." : isEmailVerified ? "Verified" : "Verify Email"}
+                        </button>
+                      </div>
+
+                      {!isEmailVerified && (
+                        <div className="space-y-3">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Verification Code
+                            </label>
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={verificationCode}
+                                onChange={(e) => setVerificationCode(e.target.value)}
+                                placeholder="Enter 6-digit code"
+                                maxLength="6"
+                                className="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              />
+                              <button
+                                type="button"
+                                onClick={verifyCode}
+                                disabled={isVerifyingCode || !verificationCode.trim()}
+                                className={`px-4 py-2 text-sm font-medium rounded-md ${isVerifyingCode || !verificationCode.trim()
+                                  ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                                  : "bg-green-600 text-white hover:bg-green-700"
+                                  }`}
+                              >
+                                {isVerifyingCode ? "Verifying..." : "Verify Code"}
+                              </button>
+                            </div>
+
+                            {/* Resend Code Button */}
+                            {showResendButton && (
+                              <div className="mt-2">
+                                <button
+                                  type="button"
+                                  onClick={sendVerificationEmail}
+                                  disabled={isSendingCode}
+                                  className={`px-4 py-2 text-sm font-medium rounded-md ${isSendingCode
+                                    ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                                    : "bg-orange-600 text-white hover:bg-orange-700"
+                                    }`}
+                                >
+                                  {isSendingCode ? "Sending..." : "Resend Code"}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          {verificationMessage && (
+                            <p className={`text-sm ${verificationMessage.includes("success") || verificationMessage.includes("sent")
+                              ? "text-green-600"
+                              : "text-red-600"
+                              }`}>
+                              {verificationMessage}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="text-right mt-6">
