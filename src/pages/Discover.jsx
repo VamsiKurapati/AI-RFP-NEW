@@ -2253,7 +2253,6 @@ const Discover = () => {
       opportunityStatus: [],
       deadlineRange: []
     });
-    setSelectedIndustries([]);
     setSearchQuery("");
   };
 
