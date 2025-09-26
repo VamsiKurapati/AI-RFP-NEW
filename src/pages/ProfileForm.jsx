@@ -261,7 +261,7 @@ const CreateProfile = () => {
           customIndustry: "",
         });
         setErrors({});
-        navigate("/dashboard");
+        navigate("/login");
       }
     } catch (err) {
       // console.error(err);

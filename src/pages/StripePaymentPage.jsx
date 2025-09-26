@@ -308,13 +308,13 @@ const StripePaymentPage = () => {
     const subscriptionPlansData = React.useMemo(() => {
         if (!subscriptionPlans || subscriptionPlans.length === 0) {
             // console.log("No subscription plans available from context");
-            Swal.fire({
-                title: "No subscription plans available from context",
-                icon: "warning",
-                timer: 1500,
-                showConfirmButton: false,
-                showCancelButton: false,
-            });
+            // Swal.fire({
+            //     title: "No subscription plans available from context",
+            //     icon: "warning",
+            //     timer: 1500,
+            //     showConfirmButton: false,
+            //     showCancelButton: false,
+            // });
             return [];
         }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +15,11 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const { setRole } = useUser();
+
+  // Clear all localStorage data when the component mounts
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
