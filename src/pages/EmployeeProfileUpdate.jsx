@@ -185,7 +185,7 @@ const EmployeeProfileUpdate = () => {
                     showCancelButton: false,
                 });
                 setTimeout(() => {
-                    navigate("/employee_profile_dashboard");
+                    navigate("/employee-profile");
                     window.location.reload();
                 }, 1500);
             }
@@ -210,7 +210,7 @@ const EmployeeProfileUpdate = () => {
     };
 
     const handleCancel = () => {
-        navigate("/employee_profile_dashboard");
+        navigate("/employee-profile");
     };
 
     return (

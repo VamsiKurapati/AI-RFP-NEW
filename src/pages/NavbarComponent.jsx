@@ -16,7 +16,7 @@ const NavbarComponent = () => {
     { name: "Dashboard", path: "/dashboard" },
     { name: "Discover", path: "/discover" },
     { name: "Proposals", path: "/proposals" },
-    { name: "Profile", path: role === "company" ? "/company_profile_dashboard" : "/employee_profile_dashboard" },
+    { name: "Profile", path: role === "company" ? "/company-profile" : "/employee-profile" },
     { name: "Support", path: "/support-ticket" },
   ];
 

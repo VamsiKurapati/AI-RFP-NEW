@@ -379,7 +379,7 @@ const CompanyProfileUpdate = () => {
                     showCancelButton: false,
                 });
                 setTimeout(() => {
-                    navigate("/company_profile_dashboard");
+                    navigate("/company-profile");
                     window.location.reload();
                 }, 1500);
             }
@@ -404,7 +404,7 @@ const CompanyProfileUpdate = () => {
     };
 
     const handleCancel = () => {
-        navigate("/company_profile_dashboard");
+        navigate("/company-profile");
     };
 
     return (

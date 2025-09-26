@@ -79,7 +79,7 @@ const App = () => {
             </ProtectedRoutes>
           } />
 
-          <Route path="/company_profile_dashboard" element={
+          <Route path="/company-profile" element={
             <ProtectedRoutes allowedRoles={["company"]}>
               <CompanyProfileDashboard />
             </ProtectedRoutes>
@@ -90,7 +90,7 @@ const App = () => {
             </ProtectedRoutes>
           } />
 
-          <Route path="/employee_profile_dashboard" element={
+          <Route path="/employee-profile" element={
             <ProtectedRoutes allowedRoles={["Editor", "Viewer"]}>
               <EmployeeProfileDashboard />
             </ProtectedRoutes>
