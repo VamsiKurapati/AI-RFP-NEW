@@ -319,7 +319,7 @@ const GrantProposalForm = ({
                     </div>
                 </div>
 
-                <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
+                <div className="p-6 border-t border-gray-200 grid grid-cols-2 md:grid-cols-4 justify-end gap-3">
                     <button
                         onClick={onClose}
                         disabled={isGenerating || isFetchingGrantProposal}
