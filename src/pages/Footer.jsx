@@ -23,7 +23,7 @@ export default function Footer() {
             <footer className="white text-black py-10 px-8 md:px-16">
                 <div className="grid xs:grid-cols-1 sm:grid-cols-3 gap-2 lg:gap-4 text-sm">
                     <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-                        <img src={"./logo_1.png"} alt="logo" className="w-[160px] h-[44px] mb-4" />
+                        <img src={"./logo_1.png"} alt="logo" className="w-[180px] h-[72px] mb-4" />
                         <p className="text-[16px] text-[#1E293B] font-regular mb-4">Transforming RFP management with AI-powered solutions</p>
                     </div>
                     <div className="flex flex-row justify-center items-start text-left gap-8 sm:gap-24 mx-auto">

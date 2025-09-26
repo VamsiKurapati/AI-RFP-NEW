@@ -1588,7 +1588,7 @@ const CompanyProfileDashboard = () => {
     <div className="h-full relative">
       <NavbarComponent />
 
-      <div className="bg-[#F8F9FA] w-full mt-18 lg:mt-0 lg:fixed lg:top-18 left-0 right-0 z-10 shadow-md px-8 lg:px-12 py-[14px]">
+      <div className="bg-[#F8F9FA] w-full mt-20 lg:mt-0 lg:fixed lg:top-20 left-0 right-0 z-10 shadow-md px-8 lg:px-12 py-[14px]">
         {/* Profile image and info */}
         <div className="w-full">
           {/* For <lg: Row 1 - image and edit button */}
