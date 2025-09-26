@@ -323,21 +323,21 @@ const GrantProposalForm = ({
                     <button
                         onClick={onClose}
                         disabled={isGenerating || isFetchingGrantProposal}
-                        className="text-center px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        className="mx-auto text-center px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleClearForm}
                         disabled={isGenerating || isFetchingGrantProposal}
-                        className="text-center px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        className="mx-auto text-center px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
                         Clear Form
                     </button>
                     <button
                         disabled={isGenerating || isFetchingGrantProposal}
                         onClick={() => handleFetchGrantProposal(selectedGrant)}
-                        className="text-center px-6 py-2 text-white rounded-md flex items-center gap-2 transition-colors bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        className="mx-auto text-center px-6 py-2 text-white rounded-md flex items-center justify-center gap-2 transition-colors bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
                         {isFetchingGrantProposal && (
                             <FaSpinner className="animate-spin h-4 w-4" />
@@ -347,7 +347,7 @@ const GrantProposalForm = ({
                     <button
                         onClick={handleSubmit}
                         disabled={isGenerating || isFetchingGrantProposal}
-                        className={`text-center px-6 py-2 text-white rounded-md flex items-center gap-2 transition-colors ${isGenerating
+                        className={`mx-auto text-center px-6 py-2 text-white rounded-md flex items-center justify-center gap-2 transition-colors ${isGenerating
                             ? 'bg-gray-400 cursor-not-allowed'
                             : 'bg-blue-600 hover:bg-blue-700'
                             }`}
