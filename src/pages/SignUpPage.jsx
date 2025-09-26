@@ -22,6 +22,8 @@ const SignupForm = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const baseUrl = `${import.meta.env.VITE_API_BASE_URL}/auth`;
+
   // Email verification states
   const [verificationCode, setVerificationCode] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -60,7 +62,7 @@ const SignupForm = () => {
     setVerificationMessage("");
 
     try {
-      const response = await axios.post('/api/auth/send-verification-email', {
+      const response = await axios.post(`${baseUrl}/send-verification-email`, {
         email: form.email
       });
 
@@ -115,7 +117,7 @@ const SignupForm = () => {
     setVerificationMessage("");
 
     try {
-      const response = await axios.post('/api/auth/verify-email-code', {
+      const response = await axios.post(`${baseUrl}/verify-email-code`, {
         email: form.email,
         code: verificationCode
       });
