@@ -34,7 +34,7 @@ const STATUS_STYLES = {
 const LeftSidebar = ({ isOpen, onClose, filters, setFilters }) => {
   const categories = {
     category: ["Combined Synopsis/Solicitation", "Solicitation", "Presolicitation", "Sources Sought", "Special Notice", "Consolidate/(Substantially) Bundle"],
-    deadline: ["This Week", "This Month", "Next 3 Months", "Next 6 Months"],
+    deadline: ["Next 7 Days", "Next 30 Days", "Next 60 Days", "Next 90 Days", "Next 180 Days", "Not Disclosed"],
   };
 
   const handleChange = (type, value) => {
@@ -96,7 +96,7 @@ const GrantsFilterSidebar = ({ isOpen, onClose, grantFilters, setGrantFilters })
   const awardCeiling = ['0-10000', '10000-50000', '50000-100000', '>100000'];
   const costSharingMatchRequirement = ['Yes', 'No'];
   const opportunityStatus = ['Posted', 'Forecasted'];
-  const deadlineRange = ['30', '90', '180'];
+  const deadlineRange = ['7', '30', '60', '90', '180'];
 
   const handleChange = (type, value) => {
     setGrantFilters((prev) => {
@@ -1074,19 +1074,18 @@ const Discover = () => {
         const deadlineDate = rfp.deadline === "Not Disclosed" ? new Date(now.getFullYear(), now.getMonth() + 6, now.getDate()) : new Date(rfp.deadline);
         if (isNaN(deadlineDate.getTime())) return true; // Skip invalid dates
         const hasMatchingDeadline = filters.deadline.some(filter => {
+          const daysDiff = Math.ceil((deadlineDate - now) / (1000 * 60 * 60 * 24));
           switch (filter) {
-            case "This Week":
-              const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-              return deadlineDate <= weekFromNow;
-            case "This Month":
-              const monthFromNow = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
-              return deadlineDate <= monthFromNow;
-            case "Next 3 Months":
-              const threeMonthsFromNow = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate());
-              return deadlineDate <= threeMonthsFromNow;
-            case "Next 6 Months":
-              const sixMonthsFromNow = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
-              return deadlineDate <= sixMonthsFromNow;
+            case "Next 7 Days":
+              return daysDiff <= 7;
+            case "Next 30 Days":
+              return daysDiff <= 30;
+            case "Next 60 Days":
+              return daysDiff <= 60;
+            case "Next 90 Days":
+              return daysDiff <= 90;
+            case "Next 180 Days":
+              return daysDiff <= 180;
             case "Not Disclosed":
               return deadlineDate <= now;
             default:
@@ -1181,8 +1180,12 @@ const Discover = () => {
         const hasMatchingRange = grantFilters.deadlineRange.some(range => {
           const daysDiff = Math.ceil((deadlineDate - now) / (1000 * 60 * 60 * 24));
           switch (range) {
+            case '7':
+              return daysDiff <= 7;
             case '30':
               return daysDiff <= 30;
+            case '60':
+              return daysDiff <= 60;
             case '90':
               return daysDiff <= 90;
             case '180':
@@ -1192,42 +1195,6 @@ const Discover = () => {
           }
         });
         if (!hasMatchingRange) return false;
-      }
-
-      // Apply existing category and deadline filters
-      if (
-        filters.category.length &&
-        (filters.category.includes("None") ? false : !filters.category.includes(grant.CATEGORY_OF_FUNDING_ACTIVITY))
-      )
-        return false;
-
-      // Handle deadline filtering for grants
-      if (filters.deadline.length) {
-        const now = new Date();
-        const deadlineDate = grant.ESTIMATED_APPLICATION_DUE_DATE === "Not Provided" ?
-          new Date(now.getFullYear(), now.getMonth() + 6, now.getDate()) :
-          new Date(grant.ESTIMATED_APPLICATION_DUE_DATE);
-        if (isNaN(deadlineDate.getTime())) return true; // Skip invalid dates
-
-        const hasMatchingDeadline = filters.deadline.some(filter => {
-          switch (filter) {
-            case "This Week":
-              const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-              return deadlineDate <= weekFromNow;
-            case "This Month":
-              const monthFromNow = new Date(now.getFullYear(), now.getMonth() + 1, now.getDate());
-              return deadlineDate <= monthFromNow;
-            case "Next 3 Months":
-              const threeMonthsFromNow = new Date(now.getFullYear(), now.getMonth() + 3, now.getDate());
-              return deadlineDate <= threeMonthsFromNow;
-            case "Next 6 Months":
-              const sixMonthsFromNow = new Date(now.getFullYear(), now.getMonth() + 6, now.getDate());
-              return deadlineDate <= sixMonthsFromNow;
-            default:
-              return true;
-          }
-        });
-        if (!hasMatchingDeadline) return false;
       }
 
       return true;
