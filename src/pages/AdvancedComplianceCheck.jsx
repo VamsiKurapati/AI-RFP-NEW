@@ -49,7 +49,7 @@ const AdvancedComplianceCheck = () => {
                 <h1 className="text-[24px] font-semibold mb-4">Compliance Check</h1>
 
                 {/* RFP Title */}
-                <h1 className="text-[24px] font-semibold mb-4">{rfpTitle}</h1>
+                <h1 className="text-[24px] font-semibold mb-4 text-left">{rfpTitle}</h1>
 
                 {/* Basic Compliance Check */}
                 <div className="flex flex-col gap-4">

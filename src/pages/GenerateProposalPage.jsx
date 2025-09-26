@@ -108,9 +108,9 @@ const GenerateProposalPage = () => {
       )}
 
       <div className="w-full mx-auto px-8 md:px-12 mt-16">
-        <div className="w-full flex justify-between items-center mb-6">
+        <div className="w-full flex items-center mb-6">
           <button className="bg-white rounded-lg p-2 mr-4 text-[#2563EB]" onClick={() => navigate(-1)}><MdOutlineArrowBack className="w-5 h-5 shrink-0" /></button>
-          <h1 className="ml-2 text-[32px] font-semibold">{proposal?.title}</h1>
+          <h1 className="text-[32px] font-semibold">{proposal?.title}</h1>
         </div>
 
         <p className="text-[#4B5563] text-[20px] mb-6">1. Edit & preview user information</p>
