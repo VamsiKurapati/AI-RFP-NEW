@@ -113,7 +113,7 @@ const LoginPage = () => {
             <input
               type="email"
               name="email"
-              placeholder="Enter your company email id"
+              placeholder="Enter Your Company Email Id"
               value={form.email}
               onChange={handleChange}
               className={`w-full bg-[#0000000F] text-[16px] text-[#6B7280] p-3 rounded-md ${errors.email ? "border border-red-500" : ""
@@ -127,7 +127,7 @@ const LoginPage = () => {
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              placeholder="Enter your password"
+              placeholder="Enter Your Password"
               value={form.password}
               onChange={handleChange}
               className={`w-full bg-[#0000000F] text-[16px] text-[#6B7280] p-3 rounded-md pr-12 ${errors.password ? "border border-red-500" : ""

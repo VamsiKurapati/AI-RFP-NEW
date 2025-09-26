@@ -340,7 +340,7 @@ const SupportTicket = () => {
                             <label className="block font-medium mb-1">Detailed Description *</label>
                             <textarea
                                 className="w-full bg-gray-100 border border-2 border-blue-600 text-gray-600 text-sm rounded px-3 py-2"
-                                placeholder="Describe your issue..."
+                                placeholder="Describe Your Issue..."
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 required
@@ -677,7 +677,7 @@ const SupportTicket = () => {
                                                         <input
                                                             type="text"
                                                             className="flex-1 border rounded px-3 py-2 focus:outline-none"
-                                                            placeholder="Type your message..."
+                                                            placeholder="Type Your Message..."
                                                             value={newMessage}
                                                             onChange={e => setNewMessage(e.target.value)}
                                                             disabled={sendingMessage}

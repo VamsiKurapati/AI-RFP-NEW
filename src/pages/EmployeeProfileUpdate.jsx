@@ -89,8 +89,8 @@ const PhoneInputField = ({
         error={error}
         disabled={disabled}
         required={true}
-        placeholder="Enter your mobile number"
-        country="in"
+        placeholder="Enter Your Mobile Number"
+        country="us"
         inputStyle={{
             backgroundColor: "#D9D9D966",
             fontSize: "20px",
@@ -259,7 +259,7 @@ const EmployeeProfileUpdate = () => {
                                     error={errors.location}
                                     required
                                     disabled={isLoading}
-                                    placeholder="e.g., San Francisco, CA"
+                                    placeholder="E.g., San Francisco, CA"
                                 />
                             </div>
 
@@ -302,7 +302,7 @@ const EmployeeProfileUpdate = () => {
                                     error={errors.highestQualification}
                                     required
                                     disabled={isLoading}
-                                    placeholder="e.g., Bachelor's in Computer Science"
+                                    placeholder="E.g., Bachelor's In Computer Science"
                                 />
                             </div>
 
@@ -315,7 +315,7 @@ const EmployeeProfileUpdate = () => {
                                     error={errors.skills}
                                     required
                                     disabled={isLoading}
-                                    placeholder="e.g., JavaScript, React"
+                                    placeholder="E.g., JavaScript, React"
                                 />
                                 <span className="text-[16px] font-light text-[#111827]">
                                     (Please enter your skills separated by commas)

@@ -153,7 +153,7 @@ const GrantProposalForm = ({
                             onChange={(e) => setGrantProposalData(prev => ({ ...prev, summary: e.target.value }))}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={4}
-                            placeholder="Provide a comprehensive summary of your proposed project..."
+                            placeholder="Provide A Comprehensive Summary Of Your Proposed Project..."
                         />
                     </div>
 
@@ -167,7 +167,7 @@ const GrantProposalForm = ({
                             onChange={(e) => setGrantProposalData(prev => ({ ...prev, objectives: e.target.value }))}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={4}
-                            placeholder="Describe the main objectives of your proposed project..."
+                            placeholder="Describe The Main Objectives Of Your Proposed Project..."
                         />
                     </div>
 
@@ -181,7 +181,7 @@ const GrantProposalForm = ({
                             onChange={(e) => setGrantProposalData(prev => ({ ...prev, activities: e.target.value }))}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={4}
-                            placeholder="Describe the key activities and tasks of your proposed project..."
+                            placeholder="Describe The Key Activities And Tasks Of Your Proposed Project..."
                         />
                     </div>
 
@@ -195,7 +195,7 @@ const GrantProposalForm = ({
                             onChange={(e) => setGrantProposalData(prev => ({ ...prev, beneficiaries: e.target.value }))}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={4}
-                            placeholder="Describe the beneficiaries and target population of your proposed project..."
+                            placeholder="Describe The Beneficiaries And Target Population Of Your Proposed Project..."
                         />
                     </div>
 
@@ -209,7 +209,7 @@ const GrantProposalForm = ({
                             onChange={(e) => setGrantProposalData(prev => ({ ...prev, geography: e.target.value }))}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={3}
-                            placeholder="Describe the geographic scope of your project..."
+                            placeholder="Describe The Geographic Scope Of Your Project..."
                         />
                     </div>
 
@@ -235,7 +235,7 @@ const GrantProposalForm = ({
                                 onChange={(e) => setGrantProposalData(prev => ({ ...prev, estimated_duration: e.target.value }))}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 rows={3}
-                                placeholder="e.g., 24 months, 3 years..."
+                                placeholder="E.g., 24 Months, 3 Years..."
                             />
                         </div>
                     </div>
@@ -257,7 +257,7 @@ const GrantProposalForm = ({
                                     value={grantProposalData.budget.total_project_cost}
                                     onChange={(e) => updateBudgetField('total_project_cost', e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Enter total project cost..."
+                                    placeholder="Enter Total Project Cost..."
                                 />
                             </div>
                             <div>
@@ -271,7 +271,7 @@ const GrantProposalForm = ({
                                     value={grantProposalData.budget.total_requested_amount}
                                     onChange={(e) => updateBudgetField('total_requested_amount', e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="Enter amount requesting from funder..."
+                                    placeholder="Enter Amount Requesting From Funder..."
                                 />
                             </div>
                         </div>
@@ -286,7 +286,7 @@ const GrantProposalForm = ({
                                     onChange={(e) => updateBudgetField('cost_share_required', e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     rows={3}
-                                    placeholder="Describe your cost share contribution and any partner contributions..."
+                                    placeholder="Describe Your Cost Share Contribution And Any Partner Contributions..."
                                 />
                             </div>
                             <div>
@@ -298,7 +298,7 @@ const GrantProposalForm = ({
                                     onChange={(e) => updateBudgetField('budget_breakdown', e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     rows={3}
-                                    placeholder="Provide detailed budget breakdown with amounts, reasons, and justifications..."
+                                    placeholder="Provide Detailed Budget Breakdown With Amounts, Reasons, And Justifications..."
                                 />
                             </div>
                         </div>
@@ -314,7 +314,7 @@ const GrantProposalForm = ({
                             onChange={(e) => setGrantProposalData(prev => ({ ...prev, methods_for_measuring_success: e.target.value }))}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             rows={4}
-                            placeholder="Describe the methods and metrics you will use to measure the success of your project..."
+                            placeholder="Describe The Methods And Metrics You Will Use To Measure The Success Of Your Project..."
                         />
                     </div>
                 </div>

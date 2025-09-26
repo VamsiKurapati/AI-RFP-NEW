@@ -48,8 +48,8 @@ const PhoneInputField = ({
     error={error}
     disabled={disabled}
     required={true}
-    placeholder="Enter your mobile number"
-    country="in"
+    placeholder="Enter Your Mobile Number"
+    country="us"
     inputStyle={{
       backgroundColor: "#D9D9D966",
       fontSize: "20px",
@@ -124,14 +124,33 @@ const CreateProfile = () => {
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
 
-  // Helper to check valid URL
+  // Helper to check valid URL and add https:// if not present
   function isValidUrl(url) {
+    if (!url.trim()) return false;
+
+    // Add https:// if no protocol is specified
+    let urlToCheck = url.trim();
+    if (!urlToCheck.startsWith('http://') && !urlToCheck.startsWith('https://')) {
+      urlToCheck = 'https://' + urlToCheck;
+    }
+
     try {
-      const parsed = new URL(url);
+      const parsed = new URL(urlToCheck);
       return parsed.protocol === "http:" || parsed.protocol === "https:";
     } catch {
       return false;
     }
+  }
+
+  // Helper to normalize URL by adding https:// if not present
+  function normalizeUrl(url) {
+    if (!url.trim()) return url;
+
+    let normalizedUrl = url.trim();
+    if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+      normalizedUrl = 'https://' + normalizedUrl;
+    }
+    return normalizedUrl;
   }
 
   useEffect(() => {
@@ -156,15 +175,17 @@ const CreateProfile = () => {
       else if (form.bio.length < 100) newErrors.bio = "Bio must be at least 100 characters long";
 
       if (!form.website.trim()) newErrors.website = "Website is required";
-      else if (!isValidUrl(form.website)) newErrors.website = "Please enter a valid URL (e.g., https://example.com)";
+      else if (!isValidUrl(form.website)) newErrors.website = "Please enter a valid URL (e.g., example.com)";
 
       if (phoneError) newErrors.phone = phoneError;
 
       if (!form.email.trim()) newErrors.email = "Email is required";
       else if (!email || !emailRegex.test(form.email)) newErrors.email = "Enter a valid Email address";
 
-      if (!form.linkedIn.trim()) newErrors.linkedIn = "LinkedIn is required";
-      else if (!isValidUrl(form.linkedIn)) newErrors.linkedIn = "Please enter a valid URL (e.g., https://linkedin.com/username)";
+      // LinkedIn is now optional, but if provided, it should be a valid URL
+      if (form.linkedIn.trim() && !isValidUrl(form.linkedIn)) {
+        newErrors.linkedIn = "Please enter a valid URL (e.g., linkedin.com/username)";
+      }
 
       if (!form.location.trim()) newErrors.location = "Location is required";
 
@@ -182,8 +203,10 @@ const CreateProfile = () => {
 
       if (phoneError) newErrors.phone = phoneError;
 
-      if (!form.linkedIn.trim()) newErrors.linkedIn = "LinkedIn is required";
-      else if (!isValidUrl(form.linkedIn)) newErrors.linkedIn = "Please enter a valid URL (e.g., https://linkedin.com/username)";
+      // LinkedIn is now optional, but if provided, it should be a valid URL
+      if (form.linkedIn.trim() && !isValidUrl(form.linkedIn)) {
+        newErrors.linkedIn = "Please enter a valid URL (e.g., linkedin.com/username)";
+      }
     }
     return newErrors;
   };
@@ -223,15 +246,15 @@ const CreateProfile = () => {
         formData.append("industry", form.industry === "Other" ? form.customIndustry : form.industry);
         formData.append("numberOfEmployees", form.numberOfEmployees);
         formData.append("bio", form.bio);
-        formData.append("website", form.website);
-        formData.append("linkedIn", form.linkedIn);
+        formData.append("website", normalizeUrl(form.website));
+        formData.append("linkedIn", form.linkedIn.trim() ? normalizeUrl(form.linkedIn) : "https://linkedin.com");
         formData.append("location", form.location);
         formData.append("establishedYear", form.establishedYear);
       } else {
         formData.append("companyName", form.companyName);
         formData.append("location", form.location);
         formData.append("jobTitle", form.jobTitle);
-        formData.append("linkedIn", form.linkedIn);
+        formData.append("linkedIn", form.linkedIn.trim() ? normalizeUrl(form.linkedIn) : "https://linkedin.com");
       }
 
       const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signup`, formData);
@@ -291,7 +314,7 @@ const CreateProfile = () => {
           : "Enter all your details to complete your account."}
       </p>
       <p className="font-medium italic text-[14px] text-[#9CA3AF] mb-6">
-        (* All fields are mandatory.)
+        (* Please fill all the required fields.)
       </p>
 
       {redirecting && (
@@ -343,7 +366,7 @@ const CreateProfile = () => {
               <input
                 type="text"
                 className={`w-full border rounded-md mt-2 p-2 bg-[#F0F0F0] ${isFormDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
-                placeholder="Please specify your industry"
+                placeholder="Please Specify Your Industry"
                 value={form.customIndustry}
                 onChange={e => setForm({ ...form, customIndustry: e.target.value })}
                 disabled={isFormDisabled}
@@ -358,7 +381,7 @@ const CreateProfile = () => {
               label="Location"
               value={form.location}
               onChange={e => setForm({ ...form, location: e.target.value })}
-              placeholder="Eg: California, USA"
+              placeholder="E.g., California, USA"
               error={errors.location}
               required
               disabled={isFormDisabled}
@@ -449,22 +472,19 @@ const CreateProfile = () => {
               error={errors.website}
               required
               disabled={isFormDisabled}
-              pattern="https?://.+"
-              title="Please enter a valid URL starting with http:// or https://"
+              placeholder="example.com"
             />
           </div>
           <div className="col-span-2 md:col-span-1">
             <FormInput
               id="linkedIn"
-              label="LinkedIn"
+              label="LinkedIn (Optional)"
               type="url"
               value={form.linkedIn}
               onChange={e => setForm({ ...form, linkedIn: e.target.value })}
               error={errors.linkedIn}
-              required
               disabled={isFormDisabled}
-              pattern="https?://.+"
-              title="Please enter a valid URL starting with http:// or https://"
+              placeholder="linkedin.com/username"
             />
           </div>
         </div>
@@ -478,7 +498,7 @@ const CreateProfile = () => {
             { key: "companyName", label: "Company Name", type: "text" },
             { key: "email", label: "Email", type: "email" },
             { key: "jobTitle", label: "Job Title", type: "text" },
-            { key: "linkedIn", label: "LinkedIn", type: "url", pattern: "https?://.+", title: "Please enter a valid URL starting with http:// or https://" },
+            { key: "linkedIn", label: "LinkedIn (Optional)", type: "url", placeholder: "linkedin.com/username" },
           ].map(field => (
             <FormInput
               key={field.key}
@@ -488,8 +508,9 @@ const CreateProfile = () => {
               value={form[field.key]}
               onChange={e => setForm({ ...form, [field.key]: e.target.value })}
               error={errors[field.key]}
-              required
+              required={field.key !== "linkedIn"}
               disabled={isFormDisabled}
+              {...(field.placeholder ? { placeholder: field.placeholder } : {})}
               {...(field.pattern ? { pattern: field.pattern } : {})}
               {...(field.maxLength ? { maxLength: field.maxLength } : {})}
             />

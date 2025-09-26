@@ -36,13 +36,13 @@ const NavbarComponent = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white border-b shadow-sm h-16 flex items-center justify-between px-8 z-50">
+    <nav className="fixed top-0 left-0 right-0 bg-white border-b shadow-sm h-18 flex items-center justify-between px-8 z-50">
       <div className="flex items-center gap-4">
         <div className="md:hidden hover:cursor-pointer">
           <FiMenu className="text-lg" onClick={() => setIsMobileNavOpen(!isMobileNavOpen)} />
         </div>
         <div
-          className="w-[160px] h-[44px] hover:cursor-pointer"
+          className="w-[180px] h-[72px] hover:cursor-pointer"
           onClick={() => role === null ? navigate("/") : role === "SuperAdmin" ? navigate("/admin") : navigate("/dashboard")}
         >
           <img src={"/logo_1.png"} alt="logo" className="w-full h-full" />

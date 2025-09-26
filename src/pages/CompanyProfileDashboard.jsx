@@ -444,8 +444,8 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
             value={formData.phone}
             onChange={phone => setFormData({ ...formData, phone })}
             required={true}
-            placeholder="Enter phone number"
-            country="in"
+            placeholder="Enter Phone Number"
+            country="us"
             className="mb-4"
           />
 
@@ -614,7 +614,7 @@ const AddCaseStudyModal = ({ isOpen, onClose }) => {
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-              placeholder="Enter case study title"
+              placeholder="Enter Case Study Title"
               required
             />
           </div>
@@ -626,7 +626,7 @@ const AddCaseStudyModal = ({ isOpen, onClose }) => {
               value={formData.company}
               onChange={(e) => setFormData({ ...formData, company: e.target.value })}
               className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-              placeholder="Enter case study company"
+              placeholder="Enter Case Study Company"
               required
             />
           </div>
@@ -972,7 +972,7 @@ const AddDocumentModal = ({ isOpen, onClose }) => {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2563EB]"
-              placeholder="Enter document name"
+              placeholder="Enter Document Name"
               required
             />
           </div>
@@ -1588,7 +1588,7 @@ const CompanyProfileDashboard = () => {
     <div className="h-full relative">
       <NavbarComponent />
 
-      <div className="bg-[#F8F9FA] w-full mt-16 lg:mt-0 lg:fixed lg:top-16 left-0 right-0 z-10 shadow-md px-8 lg:px-12 py-[14px]">
+      <div className="bg-[#F8F9FA] w-full mt-18 lg:mt-0 lg:fixed lg:top-18 left-0 right-0 z-10 shadow-md px-8 lg:px-12 py-[14px]">
         {/* Profile image and info */}
         <div className="w-full">
           {/* For <lg: Row 1 - image and edit button */}
@@ -1823,8 +1823,8 @@ const CompanyProfileDashboard = () => {
         Activity
       </button>
 
-      <main className="flex-1 lg:-mt-7 py-16 px-4 sm:px-8 pb-10 overflow-y-auto lg:ml-64 lg:mr-64">
-        <div className="bg-[#FFFFFF] ml-3">
+      <main className="flex-1 lg:-mt-7 py-16 px-4 sm:px-8 pb-10 lg:ml-64 lg:mr-64">
+        <div className="bg-[#FFFFFF] ml-3 h-[calc(100vh-8rem)] sm:h-[calc(100vh-10rem)] lg:h-[calc(100vh-16rem)] overflow-y-auto custom-scrollbar p-4 sm:p-6 border border-gray-200 rounded-lg">
           {/* Mobile Dropdown */}
           <div className="relative lg:hidden right-0 -mt-12 mb-4"><MobileDropdown activeTab={activeTab} onSelect={setActiveTab} /></div>
           {activeTab === "Overview" && (
@@ -2021,7 +2021,7 @@ const CompanyProfileDashboard = () => {
                   <div className="relative flex-1">
                     <input
                       type="text"
-                      placeholder="Search proposals by title or client"
+                      placeholder="Search Proposals by Title or Client"
                       className="w-full md:w-1/2 border border-[#E5E7EB] rounded-lg px-4 py-2 text-[16px] focus:outline-none focus:ring-2 focus:ring-[#2563EB] pl-10"
                       onChange={(e) => handleSearchProposals(e.target.value)}
                     />

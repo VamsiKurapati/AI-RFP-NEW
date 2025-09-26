@@ -146,6 +146,7 @@ const SignupForm = () => {
                             : field === "password"
                               ? "Create Password"
                               : "Confirm Password"}
+                        <span className="text-red-500 text-sm"> *</span>
                       </label>
                       <div className="relative">
                         <input
@@ -154,10 +155,10 @@ const SignupForm = () => {
                           required={field === "fullName" || field === "email" || field === "password" || field === "confirmPassword"}
                           placeholder={
                             field === "password"
-                              ? "Minimum 8 characters"
+                              ? "Minimum 8 Characters"
                               : field === "confirmPassword"
-                                ? "Retype password"
-                                : `Enter ${field}`
+                                ? "Retype Password"
+                                : `Enter ${field === "fullName" ? "Full Name" : field === "email" ? "Email" : field}`
                           }
                           value={form[field]}
                           onChange={handleChange}
@@ -214,8 +215,8 @@ const SignupForm = () => {
                     onChange={mobile => setForm({ ...form, mobile })}
                     error={errors.mobile}
                     required={true}
-                    placeholder="Enter your mobile number"
-                    country="in"
+                    placeholder="Enter Your Mobile Number"
+                    country="us"
                     inputStyle={{
                       backgroundColor: "#D9D9D966",
                       fontSize: "20px",
@@ -226,11 +227,12 @@ const SignupForm = () => {
                   <div>
                     <label className="text-lg font-medium text-gray-800 mb-1 block">
                       Organization Name
+                      <span className="text-red-500 text-sm"> *</span>
                     </label>
                     <input
                       type="text"
                       name="organization"
-                      placeholder="Enter organization"
+                      placeholder="Enter Organization"
                       value={form.organization}
                       onChange={handleChange}
                       className={`w-full p-3 bg-[#0000000F] rounded-md ${errors.organization ? "border border-red-500" : ""}`}

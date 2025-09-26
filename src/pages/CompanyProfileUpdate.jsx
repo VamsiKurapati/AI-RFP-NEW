@@ -205,8 +205,8 @@ const PhoneInputField = ({
         error={error}
         disabled={disabled}
         required={true}
-        placeholder="Enter your mobile number"
-        country="in"
+        placeholder="Enter Your Mobile Number"
+        country="us"
         inputStyle={{
             backgroundColor: "#D9D9D966",
             fontSize: "20px",
@@ -447,7 +447,7 @@ const CompanyProfileUpdate = () => {
                                     error={errors.companyName}
                                     required
                                     disabled={isLoading}
-                                    placeholder="Enter company name"
+                                    placeholder="Enter Company Name"
                                 />
                             </div>
 
@@ -460,7 +460,7 @@ const CompanyProfileUpdate = () => {
                                     error={errors.adminName}
                                     required
                                     disabled={isLoading}
-                                    placeholder="Enter admin name"
+                                    placeholder="Enter Admin Name"
                                 />
                             </div>
 
@@ -493,7 +493,7 @@ const CompanyProfileUpdate = () => {
                                     error={errors.location}
                                     required
                                     disabled={isLoading}
-                                    placeholder="e.g., San Francisco, CA"
+                                    placeholder="E.g., San Francisco, CA"
                                 />
                             </div>
 
@@ -507,7 +507,7 @@ const CompanyProfileUpdate = () => {
                                     error={errors.email}
                                     required
                                     disabled={true}
-                                    placeholder="Enter email"
+                                    placeholder="Enter Email"
                                 />
                             </div>
 
@@ -567,7 +567,7 @@ const CompanyProfileUpdate = () => {
                                 rows={4}
                                 disabled={isLoading}
                                 className={`w-full border rounded-md mt-1 p-2 bg-[#F0F0F0] ${errors.bio ? "border-red-500" : ""} ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
-                                placeholder="Describe your company, its mission, and what makes it unique..."
+                                placeholder="Describe Your Company, Its Mission, And What Makes It Unique..."
                             />
                             {errors.bio && <div className="text-red-500 text-sm mt-1">{errors.bio}</div>}
                         </div>
@@ -701,7 +701,7 @@ const CompanyProfileUpdate = () => {
                                 options={INDUSTRY_OPTIONS}
                                 value={form.preferredIndustries}
                                 onChange={(newValue) => setForm(prev => ({ ...prev, preferredIndustries: newValue }))}
-                                placeholder="Select preferred industries"
+                                placeholder="Select Preferred Industries"
                                 disabled={isLoading}
                             />
                         </div>

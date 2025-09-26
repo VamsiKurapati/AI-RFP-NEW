@@ -415,7 +415,7 @@ const ShowCustomDetails = () => {
               <MdOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5" />
               <input
                 type="text"
-                placeholder="Search by company or email"
+                placeholder="Search By Company Or Email"
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="pl-10 pr-4 py-2 border border-[#E5E7EB] rounded-lg focus:ring-2 focus:ring-[#6C63FF] focus:border-transparent w-[530px] text-[#374151] placeholder-[#9CA3AF] bg-white"
@@ -786,7 +786,7 @@ const ShowCustomDetails = () => {
                         value={formData.email}
                         onChange={handleChange}
                         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                        placeholder="Enter your email"
+                        placeholder="Enter Your Email"
                       />
                     </div>
 
@@ -801,7 +801,7 @@ const ShowCustomDetails = () => {
                         value={formData.price}
                         onChange={handleChange}
                         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                        placeholder="Enter price"
+                        placeholder="Enter Price"
                       />
                     </div>
 
@@ -833,7 +833,7 @@ const ShowCustomDetails = () => {
                         value={formData.maxEditors}
                         onChange={handleChange}
                         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                        placeholder="Enter number of editors"
+                        placeholder="Enter Number Of Editors"
                       />
                     </div>
 
@@ -848,7 +848,7 @@ const ShowCustomDetails = () => {
                         value={formData.maxViewers}
                         onChange={handleChange}
                         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                        placeholder="Enter number of viewers"
+                        placeholder="Enter Number Of Viewers"
                       />
                     </div>
 
@@ -863,7 +863,7 @@ const ShowCustomDetails = () => {
                         value={formData.maxRFPProposalGenerations}
                         onChange={handleChange}
                         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                        placeholder="Enter max RFP generations"
+                        placeholder="Enter Max RFP Generations"
                       />
                     </div>
 
@@ -878,7 +878,7 @@ const ShowCustomDetails = () => {
                         value={formData.maxGrantProposalGenerations}
                         onChange={handleChange}
                         className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                        placeholder="Enter max grant generations"
+                        placeholder="Enter Max Grant Generations"
                       />
                     </div>
                   </div>

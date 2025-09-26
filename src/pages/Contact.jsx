@@ -110,7 +110,7 @@ export default function Contact() {
                   <input
                     type="text"
                     name="name"
-                    placeholder="Enter your name"
+                    placeholder="Enter Your Name"
                     value={formData.name}
                     onChange={handleChange}
                     className="w-full border-b border-gray-300 focus:border-blue-500 outline-none pb-2"
@@ -123,7 +123,7 @@ export default function Contact() {
                   <input
                     type="text"
                     name="company"
-                    placeholder="Enter company name"
+                    placeholder="Enter Company Name"
                     value={formData.company}
                     onChange={handleChange}
                     className="w-full border-b border-gray-300 focus:border-blue-500 outline-none pb-2"
@@ -136,7 +136,7 @@ export default function Contact() {
                   <input
                     type="email"
                     name="email"
-                    placeholder="Enter your email"
+                    placeholder="Enter Your Email"
                     value={formData.email}
                     onChange={handleChange}
                     className="w-full border-b border-gray-300 focus:border-blue-500 outline-none pb-2"
@@ -148,7 +148,7 @@ export default function Contact() {
                   <label className="block font-medium text-gray-700 mb-1">Description</label>
                   <textarea
                     name="description"
-                    placeholder="Enter description of your request"
+                    placeholder="Enter Description Of Your Request"
                     value={formData.description}
                     onChange={handleChange}
                     className="w-full border-b border-gray-300 focus:border-blue-500 outline-none pb-2"

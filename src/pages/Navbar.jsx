@@ -21,7 +21,7 @@ export default function Navbar() {
         <>
             {/* Navbar */}
             <nav className="fixed top-0 left-0 z-50 w-full flex items-center justify-between bg-white p-4 shadow-md px-8 md:px-16">
-                <div className="w-[160px] h-[44px] hover:cursor-pointer" onClick={() => navigate("/")}>
+                <div className="w-[180px] h-[72px] hover:cursor-pointer" onClick={() => navigate("/")}>
                     <img src={"/logo_1.png"} alt="logo" className="w-full h-full" />
                 </div>
 

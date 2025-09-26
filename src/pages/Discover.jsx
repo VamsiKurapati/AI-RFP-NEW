@@ -335,7 +335,7 @@ const IndustryMultiSelect = ({ selectedIndustries, onIndustryChange, industries 
           <div className="p-2 border-b">
             <input
               type="text"
-              placeholder="Search industries..."
+              placeholder="Search Industries..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full px-2 py-1 border border-[#E5E7EB] rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
@@ -2364,7 +2364,7 @@ const Discover = () => {
                       <MdOutlineSearch className="absolute w-6 h-6 left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] shrink-0" />
                       <input
                         type="text"
-                        placeholder={activeTab === "rfp" ? "Search RFPs by title, organization or category" : "Search Grants by title, agency or category"}
+                        placeholder={activeTab === "rfp" ? "Search RFPs By Title, Organization Or Category" : "Search Grants By Title, Agency Or Category"}
                         className="w-full text-[18px] text-[#9CA3AF] bg-[#FFFFFF] pl-12 pr-32 py-3 border border-[#E5E7EB] rounded-md focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -2588,7 +2588,7 @@ const Discover = () => {
                       <MdOutlineSearch className="absolute w-6 h-6 left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] shrink-0" />
                       <input
                         type="text"
-                        placeholder={activeTab === "rfp" ? "Search RFPs by title, organization or category" : "Search Grants by title, agency or category"}
+                        placeholder={activeTab === "rfp" ? "Search RFPs By Title, Organization Or Category" : "Search Grants By Title, Agency Or Category"}
                         className="w-full text-[18px] text-[#9CA3AF] bg-[#FFFFFF] pl-12 pr-32 py-3 border border-[#E5E7EB] rounded-md focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}

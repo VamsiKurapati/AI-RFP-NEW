@@ -953,7 +953,7 @@ const Dashboard = () => {
                         <MdOutlineSearch className="absolute left-3 text-gray-500" />
                         <input
                             type="text"
-                            placeholder="Search RFP proposals"
+                            placeholder="Search RFP Proposals"
                             className="border rounded px-3 py-2 w-full bg-white border-[#E5E7EB] text-[#9CA3AF] pl-10 focus:outline-none focus:ring-1 focus:ring-[#111827]"
                             value={search}
                             onChange={e => setSearch(e.target.value)}
@@ -1256,7 +1256,7 @@ const Dashboard = () => {
                         <MdOutlineSearch className="absolute left-3 text-gray-500" />
                         <input
                             type="text"
-                            placeholder="Search grant proposals"
+                            placeholder="Search Grant Proposals"
                             className="border rounded px-3 py-2 w-full bg-white border-[#E5E7EB] text-[#9CA3AF] pl-10 focus:outline-none focus:ring-1 focus:ring-[#111827]"
                             value={grantSearch}
                             onChange={e => setGrantSearch(e.target.value)}

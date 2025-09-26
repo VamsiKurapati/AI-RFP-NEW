@@ -2376,7 +2376,7 @@ const SuperAdmin = () => {
                             <MdOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5" />
                             <input
                                 type="text"
-                                placeholder="Search by name, company, email, or status"
+                                placeholder="Search By Name, Company, Email, Or Status"
                                 value={contactRequestSearchTerm}
                                 onChange={(e) => {
                                     setContactRequestSearchTerm(e.target.value);
@@ -3724,7 +3724,7 @@ const SuperAdmin = () => {
                                     <label className="block text-sm text-[#B6B6B6] font-medium text-white mb-2">Resolution Details</label>
                                     <textarea
                                         ref={supportResolvedDescriptionRef}
-                                        placeholder="Describe how the issue was resolved..."
+                                        placeholder="Describe How The Issue Was Resolved..."
                                         className={`${selectedSupport.status === "Completed" ? 'bg-white' : 'bg-white'} w-full text-black p-3 border border-gray-300 rounded-lg resize-none`}
                                         rows="3"
                                         disabled={selectedSupport.status === "Completed"}
@@ -3832,7 +3832,7 @@ const SuperAdmin = () => {
                                         <div className="bg-white rounded-lg p-4 border-t border-purple-200 pt-4">
                                             <textarea
                                                 ref={adminMessageRef}
-                                                placeholder="Enter your message..."
+                                                placeholder="Enter Your Message..."
                                                 className="w-full rounded-lg resize-none"
                                                 rows="3"
                                                 disabled={selectedSupport.status === 'Completed'}
