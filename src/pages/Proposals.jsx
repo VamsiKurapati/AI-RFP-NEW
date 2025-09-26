@@ -19,6 +19,15 @@ const API_ENDPOINTS = {
     UNSAVE_GRANT: `${API_BASE_URL}/rfp/unsaveGrant`,
 };
 
+const formatDate = (date) => {
+    //If valid date, return the date in the format of MM/DD/YYYY
+    const dateObj = new Date(date);
+    if (isNaN(dateObj.getTime())) {
+        return "Not Provided";
+    }
+    return dateObj.toLocaleDateString();
+};
+
 const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole, buttonText = "Generate", isCurrentEditor = true, isLoading = false }) => (
     <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 flex flex-col justify-between relative">
         <div>
@@ -53,7 +62,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
             <p className="text-[#4B5563] text-[16px] mb-2 line-clamp-4">{proposal_info.description}</p>
             <div className="flex items-center text-[14px] text-[#4B5563CC] mb-2">
                 <MdOutlineCalendarMonth className="w-4 h-4 mr-1 text-[#4B5563] shrink-0" />
-                Deadline: {proposal_info.deadline}
+                Deadline: {formatDate(proposal_info.deadline)}
             </div>
         </div>
         <div className="flex justify-between items-center mt-2">
@@ -136,8 +145,8 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
 
             <div className="flex items-center text-[14px] text-[#4B5563CC] mb-2">
                 <MdOutlineCalendarMonth className="w-4 h-4 mr-1 text-[#4B5563] shrink-0" />
-                {grant_info.CLOSE_DATE ? `Close Date: ${grant_info.CLOSE_DATE}` :
-                    grant_info.ESTIMATED_APPLICATION_DUE_DATE ? `Due Date: ${grant_info.ESTIMATED_APPLICATION_DUE_DATE}` :
+                {grant_info.CLOSE_DATE ? `Close Date: ${formatDate(grant_info.CLOSE_DATE)}` :
+                    grant_info.ESTIMATED_APPLICATION_DUE_DATE ? `Due Date: ${formatDate(grant_info.ESTIMATED_APPLICATION_DUE_DATE)}` :
                         "Deadline: Not Provided"}
             </div>
 
