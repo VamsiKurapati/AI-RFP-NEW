@@ -1823,8 +1823,9 @@ const CompanyProfileDashboard = () => {
         Activity
       </button>
 
-      <main className="flex-1 lg:-mt-7 py-16 px-4 sm:px-8 pb-10 lg:ml-64 lg:mr-64">
-        <div className="bg-[#FFFFFF] ml-3 h-[calc(100vh-8rem)] sm:h-[calc(100vh-10rem)] lg:h-[calc(100vh-16rem)] overflow-y-auto custom-scrollbar p-4 sm:p-6 border border-gray-200 rounded-lg">
+      <main className="flex-1 lg:-mt-7 py-16 px-4 sm:px-8 pb-10 overflow-y-auto lg:ml-64 
+      lg:mr-64">
+        <div className="bg-[#FFFFFF] ml-3">
           {/* Mobile Dropdown */}
           <div className="relative lg:hidden right-0 -mt-12 mb-4"><MobileDropdown activeTab={activeTab} onSelect={setActiveTab} /></div>
           {activeTab === "Overview" && (
