@@ -1593,7 +1593,7 @@ const Discover = () => {
     </div>
   );
 
-  const RecentRFPCard = ({ rfp, isSaved }) => (
+  const RecentRFPCard = ({ rfp, isSaved, handleGenerateProposal }) => (
     <div className={`bg-white rounded-xl p-4 shadow-sm w-full mr-4 flex flex-col justify-between border border-[#E5E7EB] flex-shrink-0`}>
       {/* Top Row: Title and Actions */}
       <div>
@@ -1634,16 +1634,12 @@ const Discover = () => {
             <MdOutlineCalendarMonth className="text-[16px] shrink-0" />
             <span>Deadline: {rfp.deadline || "Not Disclosed"}</span>
           </div>
-          {/* <div className="flex items-center gap-2">
-              <MdOutlineAccountBalance className="text-[16px]" />
-              <span>{rfp.organization || "Not Disclosed"}</span>
-            </div> */}
         </div>
       </div>
 
       {/* Footer */}
       <div className="flex justify-between items-center">
-        <span className="font-semibold text-[#2563EB] shrink-0">{rfp.budget === "Not found" ? "Not Disclosed" : rfp.budget || "Not Disclosed"}</span>
+        {/* <span className="font-semibold text-[#2563EB] shrink-0">{rfp.budget === "Not found" ? "Not Disclosed" : rfp.budget || "Not Disclosed"}</span> */}
         <a
           href={rfp.link}
           className="text-[14px] text-[#2563EB]"
@@ -1652,6 +1648,16 @@ const Discover = () => {
         >
           View Details
         </a>
+
+        <button
+          onClick={() => handleGenerateProposal(rfp)}
+          disabled={role === "Viewer"}
+          aria-disabled={role === "Viewer"}
+          aria-label={role === "Viewer" ? "Viewer cannot generate proposal" : "Generate Proposal"}
+          className="text-[#2563EB] text-[14px] font-medium hover:underline"
+        >
+          Generate
+        </button>
       </div>
     </div>
   );
@@ -2492,6 +2498,7 @@ const Discover = () => {
                         key={rfp._id}
                         rfp={rfp}
                         isSaved={!!saved.find((s) => s._id === rfp._id)}
+                        handleGenerateProposal={handleGenerateProposal}
                       />
                     ))}
                   </div>
