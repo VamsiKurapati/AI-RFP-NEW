@@ -9,6 +9,7 @@ const AdvancedComplianceCheck = () => {
     const navigate = useNavigate();
     const [basicComplianceCheck, setBasicComplianceCheck] = useState(null);
     const [advancedComplianceCheck, setAdvancedComplianceCheck] = useState(null);
+    const [rfpTitle, setRfpTitle] = useState("");
 
     const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
@@ -28,6 +29,7 @@ const AdvancedComplianceCheck = () => {
                 format_issues: incoming?.compliance_dataBasicCompliance?.format_issues || {},
             });
             setAdvancedComplianceCheck(incoming?.dataAdvancedCompliance || {});
+            setRfpTitle(incoming?.rfpTitle || "");
         } else {
             setBasicComplianceCheck({
                 missing_sections: [],
@@ -35,6 +37,7 @@ const AdvancedComplianceCheck = () => {
                 format_issues: {},
             });
             setAdvancedComplianceCheck({});
+            setRfpTitle("");
         }
     }, []);
 
@@ -46,7 +49,7 @@ const AdvancedComplianceCheck = () => {
                 <h1 className="text-[24px] font-semibold mb-4">Compliance Check</h1>
 
                 {/* RFP Title */}
-                <h1 className="text-[24px] font-semibold mb-4">{advancedComplianceCheck && advancedComplianceCheck.rfp_title}</h1>
+                <h1 className="text-[24px] font-semibold mb-4">{rfpTitle}</h1>
 
                 {/* Basic Compliance Check */}
                 <div className="flex flex-col gap-4">
