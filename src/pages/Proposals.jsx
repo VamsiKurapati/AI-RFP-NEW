@@ -76,7 +76,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onCompli
             <div>
                 <button
                     onClick={onGenerate}
-                    disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor) || isFetching[proposal_info._id]}
+                    disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor) || isFetching}
                     aria-label={`${buttonText.toLowerCase()} proposal`}
                     className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)
                         ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
@@ -87,12 +87,12 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onCompli
                             ? "Viewer cannot generate/edit proposals"
                             : buttonText === "Download" && !isCurrentEditor
                                 ? "Only the current editor can download this proposal"
-                                : isFetching[proposal_info._id]
+                                : isFetching
                                     ? "Fetching proposal..."
                                     : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
-                    {isFetching[proposal_info._id] ? (
+                    {isFetching ? (
                         <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-[#111827]" aria-hidden="true">
                             <span className="sr-only">Fetching...</span>
                         </div>
@@ -111,7 +111,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onCompli
                 <div>
                     <button
                         onClick={onComplianceCheck}
-                        disabled={userRole === "Viewer" || (!isCurrentEditor) || isFetching[proposal_info._id]}
+                        disabled={userRole === "Viewer" || (!isCurrentEditor) || isFetching}
                         aria-label={`Compliance Check`}
                         className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (!isCurrentEditor)
                             ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
@@ -122,7 +122,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onCompli
                                 ? "Viewer cannot check compliance"
                                 : !isCurrentEditor
                                     ? "Only the current editor can check compliance"
-                                    : isFetching[proposal_info._id]
+                                    : isFetching
                                         ? "Fetching proposal..."
                                         : `Click to Compliance Check`
                         }
@@ -215,7 +215,7 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
             <div>
                 <button
                     onClick={onGenerate}
-                    disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor) || isFetching[grant_info._id]}
+                    disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor) || isFetching}
                     aria-label={`${buttonText.toLowerCase()} grant proposal`}
                     className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)
                         ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
@@ -226,12 +226,12 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
                             ? "Viewer cannot generate/edit grant proposals"
                             : buttonText === "Download" && !isCurrentEditor
                                 ? "Only the current editor can download this grant proposal"
-                                : isFetching[grant_info._id]
+                                : isFetching
                                     ? "Fetching grant proposal..."
                                     : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
-                    {isFetching[grant_info._id] ? (
+                    {isFetching ? (
                         <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-[#111827]" aria-hidden="true">
                             <span className="sr-only">Fetching...</span>
                         </div>
