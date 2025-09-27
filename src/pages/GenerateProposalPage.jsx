@@ -123,7 +123,7 @@ const GenerateProposalPage = () => {
         </div>
       )}
 
-      <div className="w-full mx-auto px-8 md:px-12 mt-16">
+      <div className="w-full mx-auto px-8 md:px-12 mt-20">
         <div className="w-full flex items-center mb-6">
           <button className="bg-white rounded-lg p-2 mr-4 text-[#2563EB]" onClick={() => navigate(-1)}><MdOutlineArrowBack className="w-5 h-5 shrink-0" /></button>
           <h1 className="text-[32px] font-semibold">{proposal?.title}</h1>
@@ -268,8 +268,19 @@ const GenerateProposalPage = () => {
         </div>
 
         {/* Show a note box saying please complete your company profile for better proposal generation results*/}
-        <div className="bg-light-blue-50 rounded-xl border border-[#E5E7EB] p-6 flex flex-col">
-          <div className="text-[18px] text-[#4B5563]"><span className="font-bold">Note:</span> Please complete the company profile for better proposal generation results</div>
+        <div className="bg-blue-50 rounded-2xl border border-blue-200 p-5 flex items-start gap-3 mb-6 shadow-sm">
+          <div className="flex-shrink-0 text-blue-500">
+            <svg xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 mt-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+            </svg>
+          </div>
+          <div className="text-[16px] text-gray-700 leading-relaxed">
+            <span className="font-semibold">Note:</span> Please complete the company profile for better proposal generation results.
+          </div>
         </div>
 
         {/* Save & Next Button */}

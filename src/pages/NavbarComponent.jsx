@@ -42,7 +42,7 @@ const NavbarComponent = () => {
           <FiMenu className="text-lg" onClick={() => setIsMobileNavOpen(!isMobileNavOpen)} />
         </div>
         <div
-          className="w-[180px] h-[72px] hover:cursor-pointer"
+          className="w-[170px] h-[72px] hover:cursor-pointer"
           onClick={() => role === null ? navigate("/") : role === "SuperAdmin" ? navigate("/admin") : navigate("/dashboard")}
         >
           <img src={"/logo_1.png"} alt="logo" className="w-full h-full" />
