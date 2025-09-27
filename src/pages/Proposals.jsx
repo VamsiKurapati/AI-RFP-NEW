@@ -30,7 +30,7 @@ const formatDate = (date) => {
     return dateObj.toLocaleDateString();
 };
 
-const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole, buttonText = "Generate", isCurrentEditor = true, isLoading = false }) => (
+const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onComplianceCheck, userRole, buttonText = "Generate", isCurrentEditor = true, isLoading = false }) => (
     <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 flex flex-col justify-between relative">
         <div>
             <div className="flex items-start justify-between">
@@ -68,9 +68,11 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
             </div>
         </div>
         <div className="flex justify-between items-center mt-2">
-            <div className="flex items-center">
-                <span className="text-[#2563EB] text-[14px] font-semibold">{proposal_info.budget}</span>
-            </div>
+            {buttonText !== "Download" && (
+                <div className="flex items-center">
+                    <span className="text-[#2563EB] text-[14px] font-semibold">{proposal_info.budget === "Not found" || proposal_info.budget === "Not Provided" || proposal_info.budget === "Not Disclosed" ? "Budget: Not Disclosed" : proposal_info.budget}</span>
+                </div>
+            )}
             <div>
                 <button
                     onClick={onGenerate}
@@ -96,6 +98,34 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, userRole
                     </div>
                 )}
             </div>
+            {/* Compliance Check only for buttonText = "Download" */}
+            {buttonText === "Download" && (
+                <div>
+                    <button
+                        onClick={onComplianceCheck}
+                        disabled={userRole === "Viewer" || (!isCurrentEditor)}
+                        aria-label={`Compliance Check`}
+                        className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (!isCurrentEditor)
+                            ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                            : 'bg-[#2563EB] text-white hover:bg-[#1d4ed8]'
+                            }`}
+                        title={
+                            userRole === "Viewer"
+                                ? "Viewer cannot check compliance"
+                                : !isCurrentEditor
+                                    ? "Only the current editor can check compliance"
+                                    : `Click to Compliance Check`
+                        }
+                    >
+                        Compliance Check
+                    </button>
+                    {!isCurrentEditor && (
+                        <div className="text-xs text-gray-500 mt-1 text-center">
+                            Current editor: {proposal_info.currentEditor?.fullName || proposal_info.currentEditor?.email || 'Unknown'}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
 
     </div>
@@ -1044,6 +1074,7 @@ const Proposals = () => {
                                             onBookmark={() => handleUnsave(proposal._id)}
                                             onShare={() => handleShare(proposal.link)}
                                             onGenerate={() => handleGenerate(proposal)}
+                                            onComplianceCheck={() => handleComplianceCheck(proposal)}
                                             userRole={role}
                                             buttonText="Generate"
                                             isCurrentEditor={true}
@@ -1089,6 +1120,7 @@ const Proposals = () => {
                                                 onBookmark={() => isSaved(proposal._id) ? handleUnsave(proposal._id) : handleSave(proposal)}
                                                 onShare={() => handleShare(proposal.link)}
                                                 onGenerate={() => handleContinue(proposal)}
+                                                onComplianceCheck={() => handleComplianceCheck(proposal)}
                                                 userRole={role}
                                                 buttonText="Download"
                                                 isCurrentEditor={proposal.currentEditor?.email === userEmail || role === "company"}
