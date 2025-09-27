@@ -631,7 +631,7 @@ const Proposals = () => {
     };
 
     const handleComplianceCheck = (proposal) => {
-        navigate('/compliance-check', { state: { proposal } });
+        navigate('/compliance-check', { state: { data: proposal } });
     };
 
     const handleContinue = async (proposal) => {

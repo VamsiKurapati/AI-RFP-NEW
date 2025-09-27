@@ -51,7 +51,9 @@ const GenerateProposalPage = () => {
             timer: 1500,
             text: res.data.message || 'Your proposal is being generated. Please visit again after some time.',
           });
-          navigate('/proposals');
+          setTimeout(() => {
+            navigate('/proposals');
+          }, 1500);
         } else if (res.data.message === "Proposal Generation is still in progress. Please wait for it to complete.") {
           Swal.fire({
             icon: 'info',
@@ -59,7 +61,9 @@ const GenerateProposalPage = () => {
             timer: 1500,
             text: res.data.message || 'Your proposal is still being generated. Please visit again after some time.',
           });
-          navigate('/proposals');
+          setTimeout(() => {
+            navigate('/proposals');
+          }, 1500);
         } else if (res.data.message === "A proposal with the same RFP ID already exists in draft. Please edit the draft proposal instead of generating a new one.") {
           Swal.fire({
             icon: 'warning',
@@ -67,7 +71,9 @@ const GenerateProposalPage = () => {
             timer: 1500,
             text: res.data.message || 'A proposal with the same RFP ID already exists in draft. Please edit the draft proposal instead of generating a new one.',
           });
-          navigate('/proposals');
+          setTimeout(() => {
+            navigate('/proposals');
+          }, 1500);
         } else {
           Swal.fire({
             icon: 'warning',
@@ -259,6 +265,11 @@ const GenerateProposalPage = () => {
               <div className="text-[16px] text-[#4B5563]">No case studies found</div>
             )}
           </div>
+        </div>
+
+        {/* Show a note box saying please complete your company profile for better proposal generation results*/}
+        <div className="bg-light-blue-50 rounded-xl border border-[#E5E7EB] p-6 flex flex-col">
+          <div className="text-[18px] text-[#4B5563]"><span className="font-bold">Note:</span> Please complete the company profile for better proposal generation results</div>
         </div>
 
         {/* Save & Next Button */}
