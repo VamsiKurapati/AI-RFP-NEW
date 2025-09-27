@@ -630,6 +630,10 @@ const Proposals = () => {
         navigate('/proposal_page', { state: { proposal } });
     };
 
+    const handleComplianceCheck = (proposal) => {
+        navigate('/compliance-check', { state: { proposal } });
+    };
+
     const handleContinue = async (proposal) => {
         //If there is no docx_base64 or docx_base64 is null, then call the backend to fetch the docx_base64
         if (!proposal.docx_base64 || proposal.docx_base64 === null) {
