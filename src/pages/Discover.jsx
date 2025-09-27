@@ -1525,7 +1525,7 @@ const Discover = () => {
   };
 
   const RFPCard = ({ rfp, isSaved, handleGenerateProposal }) => (
-    <div className="bg-[#F8FAFC] rounded-xl p-4 shadow w-[355px] mr-4 flex flex-col justify-between">
+    <div className="bg-[#F8FAFC] rounded-xl p-4 shadow min-w-[355px] max-w-[355px] mr-4 flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between mb-2">
           {(rfp.logo && rfp.logo !== "None") && <img src={rfp.logo} alt="Logo" className="w-12 h-12 rounded-full object-cover object-center" />}
@@ -1722,7 +1722,7 @@ const Discover = () => {
   };
 
   const RecentGrantCard = ({ grant, isSaved, width }) => (
-    <div className={`bg-white rounded-xl p-4 shadow-sm ${width === "355px" ? "w-[355px]" : "w-full"} mr-4 flex flex-col justify-between border border-[#E5E7EB] flex-shrink-0`}>
+    <div className={`bg-white rounded-xl p-4 shadow-sm ${width === "355px" ? "min-w-[355px] max-w-[355px]" : "w-full"} mr-4 flex flex-col justify-between border border-[#E5E7EB] flex-shrink-0`}>
       <div>
         <div className="flex justify-between items-center gap-8 mb-2">
           <h3 className="font-semibold text-[#111827] text-[18px] line-clamp-2">{grant.OPPORTUNITY_TITLE}</h3>
