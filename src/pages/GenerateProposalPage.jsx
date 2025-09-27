@@ -267,7 +267,7 @@ const GenerateProposalPage = () => {
           </div>
         </div>
 
-        {/* Show a note box saying please complete your company profile for better proposal generation results*/}
+        {/* Show a note box saying please complete the company profile for better proposal generation results*/}
         <div className="bg-blue-50 rounded-2xl border border-blue-200 p-5 flex items-start gap-3 mb-6 shadow-sm">
           <div className="flex-shrink-0 text-blue-500">
             <svg xmlns="http://www.w3.org/2000/svg"
@@ -279,7 +279,7 @@ const GenerateProposalPage = () => {
             </svg>
           </div>
           <div className="text-[16px] text-gray-700 leading-relaxed">
-            <span className="font-semibold">Note:</span> Please complete the company profile for better proposal generation results.
+            <span className="font-semibold">Note:</span> Please Complete The Company Profile For Better Proposal Generation Results.
           </div>
         </div>
 

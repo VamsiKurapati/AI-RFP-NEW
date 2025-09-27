@@ -30,7 +30,7 @@ const formatDate = (date) => {
     return dateObj.toLocaleDateString();
 };
 
-const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onComplianceCheck, userRole, buttonText = "Generate", isCurrentEditor = true, isLoading = false }) => (
+const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onComplianceCheck, userRole, buttonText = "Generate", isCurrentEditor = true, isLoading = false, isFetching = false }) => (
     <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 flex flex-col justify-between relative">
         <div>
             <div className="flex items-start justify-between">
@@ -90,7 +90,13 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onCompli
                                 : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
-                    {buttonText}
+                    {isFetching[proposal_info._id] ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-[#111827]" aria-hidden="true">
+                            <span className="sr-only">Fetching...</span>
+                        </div>
+                    ) : (
+                        buttonText
+                    )}
                 </button>
                 {buttonText === "Download" && !isCurrentEditor && (
                     <div className="text-xs text-gray-500 mt-1 text-center">
@@ -131,7 +137,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onCompli
     </div>
 );
 
-const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, buttonText = "Generate", isCurrentEditor = true, isLoading = false }) => (
+const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, buttonText = "Generate", isCurrentEditor = true, isLoading = false, isFetching = false }) => (
     <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 flex flex-col justify-between relative">
         <div>
             <div className="flex items-start justify-between">
@@ -219,7 +225,13 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
                                 : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
-                    {buttonText}
+                    {isFetching[grant_info._id] ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-[#111827]" aria-hidden="true">
+                            <span className="sr-only">Fetching...</span>
+                        </div>
+                    ) : (
+                        buttonText
+                    )}
                 </button>
                 {buttonText === "Download" && !isCurrentEditor && (
                     <div className="text-xs text-gray-500 mt-1 text-center">
@@ -411,6 +423,9 @@ const Proposals = () => {
     const draftGrantsEndIndex = Math.min(draftGrantsStartIndex + itemsPerPage, draftGrants.length);
     const currentDraftGrants = draftGrants.slice(draftGrantsStartIndex, draftGrantsEndIndex);
     const totalDraftGrantsPages = Math.max(1, Math.ceil(draftGrants.length / itemsPerPage));
+
+    const [isFetchingProposal, setIsFetchingProposal] = useState({});
+    const [isFetchingGrantProposal, setIsFetchingGrantProposal] = useState({});
 
     // Validate that we're not showing more items than expected
     const validatePagination = () => {
@@ -616,7 +631,7 @@ const Proposals = () => {
                 text: "Link copied to clipboard!",
                 confirmButtonColor: '#2563EB',
             });
-        }).catch(() => {
+        }).catch((err) => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -638,6 +653,7 @@ const Proposals = () => {
         //If there is no docx_base64 or docx_base64 is null, then call the backend to fetch the docx_base64
         if (!proposal.docx_base64 || proposal.docx_base64 === null) {
             try {
+                setIsFetchingProposal(prev => ({ ...prev, [proposal._id]: true }));
                 const res = await axios.post(API_ENDPOINTS.FETCH_RFP_PROPOSAL, { rfp: proposal }, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -688,6 +704,8 @@ const Proposals = () => {
                     text: error.response?.data?.message || error.response?.data?.error || 'Failed to generate proposal. Please try again after some time.',
                 });
                 return;
+            } finally {
+                setIsFetchingProposal(prev => ({ ...prev, [proposal._id]: false }));
             }
         } else {
             //If there is docx_base64, then continue to word generation
@@ -796,6 +814,7 @@ const Proposals = () => {
         //If there is no docx_base64 or docx_base64 is null, then call the backend to fetch the docx_base64
         if (!grant.docx_base64 || grant.docx_base64 === null) {
             try {
+                setIsFetchingGrantProposal(prev => ({ ...prev, [grant._id]: true }));
                 const res = await axios.post(API_ENDPOINTS.FETCH_GRANT_PROPOSAL, { grant: grant }, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -838,6 +857,8 @@ const Proposals = () => {
                     title: 'Error',
                     text: err.response?.data?.message || 'Failed to fetch Grant proposal.',
                 });
+            } finally {
+                setIsFetchingGrantProposal(prev => ({ ...prev, [grant._id]: false }));
             }
         } else {
             //If there is docx_base64, then continue to word generation
@@ -1083,6 +1104,7 @@ const Proposals = () => {
                                             buttonText="Generate"
                                             isCurrentEditor={true}
                                             isLoading={savingStates[proposal._id] || false}
+                                            isFetching={isFetchingProposal[proposal._id] || false}
                                         />
                                     ))}
                                 </>
@@ -1129,6 +1151,7 @@ const Proposals = () => {
                                                 buttonText="Download"
                                                 isCurrentEditor={proposal.currentEditor?.email === userEmail || role === "company"}
                                                 isLoading={savingStates[proposal._id] || false}
+                                                isFetching={isFetchingProposal[proposal._id] || false}
                                             />
                                         );
                                     })}
@@ -1168,6 +1191,7 @@ const Proposals = () => {
                                         buttonText="Generate"
                                         isCurrentEditor={true}
                                         isLoading={savingStates[grant._id] || false}
+                                        isFetching={isFetchingGrantProposal[grant._id] || false}
                                     />
                                 ))
                             ) : (
@@ -1208,6 +1232,7 @@ const Proposals = () => {
                                             buttonText="Download"
                                             isCurrentEditor={grant.currentEditor?.email === userEmail || role === "company"}
                                             isLoading={savingStates[grant._id] || false}
+                                            isFetching={isFetchingGrantProposal[grant._id] || false}
                                         />
                                     );
                                 })
