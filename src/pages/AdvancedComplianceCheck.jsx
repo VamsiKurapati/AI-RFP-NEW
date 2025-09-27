@@ -44,7 +44,7 @@ const AdvancedComplianceCheck = () => {
     return (
         <div className="min-h-screen overflow-y-auto">
             <NavbarComponent />
-            <div className="w-full mx-auto p-8 mt-16">
+            <div className="w-full mx-auto p-8 mt-20">
                 {/* Compliance Check Title */}
                 <h1 className="text-[24px] font-semibold mb-4 text-center">Compliance Check</h1>
 

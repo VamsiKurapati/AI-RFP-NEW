@@ -17,6 +17,8 @@ const API_ENDPOINTS = {
     GET_SAVED_AND_DRAFT_GRANTS: `${API_BASE_URL}/rfp/getSavedAndDraftGrants`,
     SAVE_GRANT: `${API_BASE_URL}/rfp/saveGrant`,
     UNSAVE_GRANT: `${API_BASE_URL}/rfp/unsaveGrant`,
+    FETCH_RFP_PROPOSAL: `${API_BASE_URL}/rfp/getRFPProposal`,
+    FETCH_GRANT_PROPOSAL: `${API_BASE_URL}/rfp/getGrantProposal`,
 };
 
 const formatDate = (date) => {
@@ -598,8 +600,65 @@ const Proposals = () => {
         navigate('/proposal_page', { state: { proposal } });
     };
 
-    const handleContinue = (proposal) => {
-        handleWordGeneration(proposal.docx_base64);
+    const handleContinue = async (proposal) => {
+        //If there is no docx_base64 or docx_base64 is null, then call the backend to fetch the docx_base64
+        if (!proposal.docx_base64 || proposal.docx_base64 === null) {
+            try {
+                const res = await axios.post(API_ENDPOINTS.FETCH_RFP_PROPOSAL, { rfp: proposal }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                });
+
+                if (res.status === 200) {
+                    if (res.data.message === "Proposal Generation completed successfully.") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            timer: 1500,
+                            text: res.data.message || 'Proposal generated successfully. Downloading proposal...',
+                        });
+                        setTimeout(() => {
+                            handleWordGeneration(res.data.proposal);
+                        }, 1500);
+                    } else if (res.data.message === "Proposal Generation is in Progress. Please visit again after some time.") {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'In Progress',
+                            text: res.data.message || 'Your proposal is being generated. Please visit again after some time.',
+                        });
+                    } else if (res.data.message === "Proposal Generation is still in progress. Please wait for it to complete.") {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'In Progress',
+                            text: res.data.message || 'Your proposal is still being generated. Please visit again after some time.',
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Failed',
+                            text: res.data.message || res.data.error || 'Failed to generate proposal. Please try again after some time.',
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Failed',
+                        text: res.data.message || res.data.error || 'Failed to generate proposal. Please try again after some time.',
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Failed',
+                    text: error.response?.data?.message || error.response?.data?.error || 'Failed to generate proposal. Please try again after some time.',
+                });
+                return;
+            }
+        } else {
+            //If there is docx_base64, then continue to word generation
+            handleWordGeneration(proposal.docx_base64);
+        }
     };
 
     const isSaved = (rfpId) => {
@@ -699,8 +758,57 @@ const Proposals = () => {
         setShowGrantProposalModal(true);
     };
 
-    const handleContinueGrant = (grant) => {
-        handleWordGeneration(grant.docx_base64);
+    const handleContinueGrant = async (grant) => {
+        //If there is no docx_base64 or docx_base64 is null, then call the backend to fetch the docx_base64
+        if (!grant.docx_base64 || grant.docx_base64 === null) {
+            try {
+                const res = await axios.post(API_ENDPOINTS.FETCH_GRANT_PROPOSAL, { grant: grant }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                });
+                if (res.status === 200) {
+                    if (res.data.message === "Grant Proposal Generated successfully.") {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            timer: 1000,
+                            text: res.data.message || 'Grant proposal generated successfully. Downloading proposal...',
+                        });
+                        setTimeout(() => {
+                            handleWordGeneration(res.data.proposal);
+                        }, 1000);
+                    } else if (res.data.message === "Grant Proposal Generation is still in progress. Please wait for it to complete.") {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'In Progress',
+                            text: res.data.message || 'Grant proposal is still being generated. Please wait for it to complete.',
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: res.data.message || 'Failed to fetch Grant proposal.',
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res.data.message || 'Failed to fetch Grant proposal.',
+                    });
+                }
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: err.response?.data?.message || 'Failed to fetch Grant proposal.',
+                });
+            }
+        } else {
+            //If there is docx_base64, then continue to word generation
+            handleWordGeneration(grant.docx_base64);
+        }
     };
 
     const handleSubmitGrantProposal = async (proposalData) => {
@@ -813,16 +921,18 @@ const Proposals = () => {
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
+                        timer: 1500,
                         text: res.data.message || 'Grant proposal generated successfully. Downloading proposal...',
                         confirmButtonColor: '#2563EB'
                     });
                     setTimeout(() => {
                         handleWordGeneration(res.data.proposal);
-                    }, 1000);
+                    }, 1500);
                 } else if (res.data.message === "Grant Proposal Generation is in Progress. Please visit again after some time.") {
                     Swal.fire({
                         icon: 'info',
                         title: 'In Progress',
+                        timer: 1500,
                         text: res.data.message || 'Grant proposal is being generated. Please visit again after some time.',
                         confirmButtonColor: '#2563EB'
                     });
@@ -830,6 +940,7 @@ const Proposals = () => {
                     Swal.fire({
                         icon: 'info',
                         title: 'In Progress',
+                        timer: 1500,
                         text: res.data.message || 'Grant proposal is still being generated. Please visit again after some time.',
                         confirmButtonColor: '#2563EB'
                     });
@@ -837,6 +948,7 @@ const Proposals = () => {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Duplicate Proposal',
+                        timer: 1500,
                         text: res.data.message || 'A proposal with the same Grant ID already exists in draft. Please edit the draft proposal instead of generating a new one.',
                         confirmButtonColor: '#2563EB'
                     });
@@ -844,6 +956,7 @@ const Proposals = () => {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Failed',
+                        timer: 1500,
                         text: res.data.message || 'Failed to generate Grant proposal. Please try again after some time.',
                         confirmButtonColor: '#2563EB'
                     });
@@ -852,6 +965,7 @@ const Proposals = () => {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Failed',
+                    timer: 1500,
                     text: res.data.message || 'Failed to generate Grant proposal. Please try again after some time.',
                     confirmButtonColor: '#2563EB'
                 });

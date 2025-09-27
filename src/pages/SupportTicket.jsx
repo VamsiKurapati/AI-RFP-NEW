@@ -218,6 +218,16 @@ const SupportTicket = () => {
             );
 
             if (res.status === 200) {
+                Swal.fire({
+                    title: res.data.message || "Support ticket submitted successfully!",
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false,
+                    showCancelButton: false,
+                });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
                 setCategory("");
                 setSubCategory("");
                 setDescription("");
@@ -227,26 +237,25 @@ const SupportTicket = () => {
                 if (fileInput) fileInput.value = "";
 
                 // Fetch updated tickets
-                const updatedTickets = await axios.get(
-                    `${baseUrl}/tickets?userId=${userId}`
-                );
+                // const updatedTickets = await axios.get(
+                //     `${baseUrl}/tickets?userId=${userId}`
+                // );
 
-                if (updatedTickets.data?.tickets) {
-                    setTickets(updatedTickets.data.tickets); // ensure new array reference
-                    // Open dropdowns for newly added ticket(s)
-                    const newOpen = {};
-                    updatedTickets.data.tickets.forEach((ticket) => {
-                        if (
-                            ticket.status === "Created" ||
-                            ticket.status === "In Progress" ||
-                            ticket.status === "Re-Opened"
-                        ) {
-                            newOpen[ticket._id] = true;
-                        }
-                    });
-                    setOpenTickets(newOpen);
-                }
-
+                // if (updatedTickets.data?.tickets) {
+                //     setTickets(updatedTickets.data.tickets); // ensure new array reference
+                //     // Open dropdowns for newly added ticket(s)
+                //     const newOpen = {};
+                //     updatedTickets.data.tickets.forEach((ticket) => {
+                //         if (
+                //             ticket.status === "Created" ||
+                //             ticket.status === "In Progress" ||
+                //             ticket.status === "Re-Opened"
+                //         ) {
+                //             newOpen[ticket._id] = true;
+                //         }
+                //     });
+                //     setOpenTickets(newOpen);
+                // }
             } else {
                 setErrorMsg(res.data.message || "Failed to submit ticket.");
             }

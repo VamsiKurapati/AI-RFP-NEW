@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ToastContainer from "./ToastContainer";
 import { useUser } from "../context/UserContext";
+import { useJWTVerifier } from "../context/JWTVerifier";
 
 const LoginPage = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -15,6 +16,8 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const { setRole } = useUser();
+
+  const { setIsTokenValid, verifyAndSchedule } = useJWTVerifier();
 
   // Clear all localStorage data when the component mounts
   useEffect(() => {
@@ -80,11 +83,15 @@ const LoginPage = () => {
         setRole(role === "SuperAdmin" ? "SuperAdmin" : role === "company" ? "company" : res.data.user.accessLevel || "Viewer");
         localStorage.setItem("userRole", role === "SuperAdmin" ? "SuperAdmin" : role === "company" ? "company" : res.data.user.accessLevel || "Viewer");
         role === "SuperAdmin" ? navigate("/admin") : navigate("/dashboard");
+        setIsTokenValid(true);
+        verifyAndSchedule();
       } else {
         toast.error(res.data.message);
+        setIsTokenValid(false);
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed. Please try again.");
+      setIsTokenValid(false);
     } finally {
       setIsSubmitting(false);
     }

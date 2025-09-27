@@ -875,7 +875,7 @@ const Dashboard = () => {
     return (
         <div className="min-h-screen">
             <NavbarComponent />
-            <main className="w-full mx-auto py-8 px-4 md:px-12 mt-12">
+            <main className="w-full mx-auto py-8 px-4 md:px-12 mt-20">
 
                 {/* Proposals Data */}
                 <div className="rounded-lg p-6 mb-6" style={{ background: "url('/dashboard-bg.png') no-repeat center center", backgroundSize: "cover" }}>

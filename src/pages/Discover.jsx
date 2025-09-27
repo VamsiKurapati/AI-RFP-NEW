@@ -1572,12 +1572,12 @@ const Discover = () => {
           <div className="flex justify-center mt-3 gap-2">
             <button
               onClick={() => handleGenerateProposal(rfp)}
-              disabled={role === "Viewer"}
-              aria-disabled={role === "Viewer"}
-              aria-label={role === "Viewer" ? "Viewer cannot generate proposal" : "Generate Proposal"}
-              className="text-[#2563EB] text-[14px] font-medium hover:underline"
+              disabled={role === "Viewer" || rfp.generated}
+              aria-disabled={role === "Viewer" || rfp.generated}
+              aria-label={role === "Viewer" ? "Viewer cannot generate proposal" : rfp.generated ? "Proposal already generated" : "Generate Proposal"}
+              className={`text-[14px] font-medium ${rfp.generated ? "text-[#9CA3AF] cursor-not-allowed" : "text-[#2563EB] hover:underline"}`}
             >
-              Generate
+              {rfp.generated ? "In Progress" : "Generate"}
             </button>
 
             <a href={rfp.link}
@@ -1651,12 +1651,12 @@ const Discover = () => {
 
         <button
           onClick={() => handleGenerateProposal(rfp)}
-          disabled={role === "Viewer"}
-          aria-disabled={role === "Viewer"}
-          aria-label={role === "Viewer" ? "Viewer cannot generate proposal" : "Generate Proposal"}
-          className="text-[#2563EB] text-[14px] font-medium hover:underline"
+          disabled={role === "Viewer" || rfp.generated}
+          aria-disabled={role === "Viewer" || rfp.generated}
+          aria-label={role === "Viewer" ? "Viewer cannot generate proposal" : rfp.generated ? "Proposal already generated" : "Generate Proposal"}
+          className={`text-[14px] font-medium ${rfp.generated ? "text-[#9CA3AF] cursor-not-allowed" : "text-[#2563EB] hover:underline"}`}
         >
-          Generate
+          {rfp.generated ? "In Progress" : "Generate"}
         </button>
       </div>
     </div>
@@ -1777,12 +1777,12 @@ const Discover = () => {
         <div className="flex gap-2">
           <button
             onClick={() => handleGenerateGrantProposal(grant)}
-            className="text-[#2563EB] text-[14px] font-medium hover:underline"
-            disabled={role === "Viewer"}
-            aria-disabled={role === "Viewer"}
-            aria-label={role === "Viewer" ? "Viewer cannot generate proposal" : "Generate Proposal"}
+            className={`text-[14px] font-medium ${grant.generated ? "text-[#9CA3AF] cursor-not-allowed" : "text-[#2563EB] hover:underline"}`}
+            disabled={role === "Viewer" || grant.generated}
+            aria-disabled={role === "Viewer" || grant.generated}
+            aria-label={role === "Viewer" ? "Viewer cannot generate proposal" : grant.generated ? "Proposal already generated" : "Generate Proposal"}
           >
-            Generate
+            {grant.generated ? "In Progress" : "Generate"}
           </button>
           <a
             href={grant.OPPORTUNITY_NUMBER_LINK}

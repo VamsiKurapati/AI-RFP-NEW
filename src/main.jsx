@@ -13,6 +13,7 @@ import '@fontsource/inter/800.css';
 import { ProfileProvider } from './context/ProfileContext';
 import { EmployeeProfileProvider } from './context/EmployeeProfileContext';
 import { SubscriptionPlansProvider } from './context/SubscriptionPlansContext';
+import { JWTVerifierProvider } from './context/JWTVerifier';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -20,7 +21,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <ProfileProvider>
         <EmployeeProfileProvider>
           <SubscriptionPlansProvider>
-            <App />
+            <JWTVerifierProvider>
+              <App />
+            </JWTVerifierProvider>
           </SubscriptionPlansProvider>
         </EmployeeProfileProvider>
       </ProfileProvider>
