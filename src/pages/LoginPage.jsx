@@ -50,11 +50,13 @@ const LoginPage = () => {
 
   const triggerRFPDiscovery = (token, role) => {
     if (role !== "SuperAdmin") {
-      axios.post(`${import.meta.env.VITE_API_BASE_URL}/rfp/triggerRFPDiscovery`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      if (token && token !== null && token !== "") {
+        axios.post(`${import.meta.env.VITE_API_BASE_URL}/rfp/triggerRFPDiscovery`, {}, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      }
     }
   };
 

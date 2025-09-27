@@ -72,7 +72,7 @@ export const JWTVerifierProvider = ({ children }) => {
     }, [navigate]);
 
     return (
-        <JWTVerifierContext.Provider value={{ isTokenValid, verifyAndSchedule }}>
+        <JWTVerifierContext.Provider value={{ isTokenValid, setIsTokenValid, verifyAndSchedule }}>
             {children}
         </JWTVerifierContext.Provider>
     );
