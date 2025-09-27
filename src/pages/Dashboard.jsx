@@ -140,7 +140,7 @@ const Dashboard = () => {
     const [editForm, setEditForm] = useState({ deadline: "", submittedAt: "", status: "" });
 
     const [editGrantIdx, setEditGrantIdx] = useState(null);
-    const [editGrantForm, setEditGrantForm] = useState({ deadline: "", status: "" });
+    const [editGrantForm, setEditGrantForm] = useState({ deadline: "", submittedAt: "", status: "" });
 
     const handleEditClick = (idx, proposal) => {
         setEditIdx(idx);
@@ -198,7 +198,8 @@ const Dashboard = () => {
     const handleEditGrantClick = (idx, proposal) => {
         setEditGrantIdx(idx);
         setEditGrantForm({
-            deadline: proposal.CLOSE_DATE ? new Date(proposal.CLOSE_DATE).toISOString().split('T')[0] : "",
+            deadline: proposal.deadline ? new Date(proposal.deadline).toISOString().split('T')[0] : "",
+            submittedAt: proposal.submittedAt ? new Date(proposal.submittedAt).toISOString().split('T')[0] : "",
             status: proposal.OPPORTUNITY_STATUS || proposal.status
         });
     };
@@ -1448,11 +1449,20 @@ const Dashboard = () => {
                                             </td>
 
                                             <td className="px-4 py-2">
-                                                {p.submittedAt || p.SUBMITTED_AT ? new Date(p.submittedAt || p.SUBMITTED_AT).toLocaleDateString('en-US', {
-                                                    year: 'numeric',
-                                                    month: 'short',
-                                                    day: 'numeric'
-                                                }) : "Not submitted"}
+                                                {editGrantIdx === realIdx ? (
+                                                    <input
+                                                        type="date"
+                                                        value={editGrantForm.submittedAt}
+                                                        onChange={e => handleEditGrantChange("submittedAt", e.target.value)}
+                                                        className="border border-[#111827] rounded px-2 py-1 text-[#111827] text-[16px] w-full bg-[#F3F4F6] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+                                                    />
+                                                ) : (
+                                                    p.submittedAt || p.SUBMITTED_AT ? new Date(p.submittedAt || p.SUBMITTED_AT).toLocaleDateString('en-US', {
+                                                        year: 'numeric',
+                                                        month: 'short',
+                                                        day: 'numeric'
+                                                    }) : "Not submitted"
+                                                )}
                                             </td>
 
                                             <td className="px-4 py-2">
