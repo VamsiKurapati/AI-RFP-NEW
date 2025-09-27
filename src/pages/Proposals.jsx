@@ -654,7 +654,7 @@ const Proposals = () => {
         if (!proposal.docx_base64 || proposal.docx_base64 === null) {
             try {
                 setIsFetchingProposal(prev => ({ ...prev, [proposal._id]: true }));
-                const res = await axios.post(API_ENDPOINTS.FETCH_RFP_PROPOSAL, { rfp: proposal }, {
+                const res = await axios.post(API_ENDPOINTS.FETCH_RFP_PROPOSAL, { proposal: proposal }, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
