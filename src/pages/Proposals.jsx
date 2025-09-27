@@ -76,7 +76,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onCompli
             <div>
                 <button
                     onClick={onGenerate}
-                    disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)}
+                    disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor) || isFetching[proposal_info._id]}
                     aria-label={`${buttonText.toLowerCase()} proposal`}
                     className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)
                         ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
@@ -87,7 +87,9 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onCompli
                             ? "Viewer cannot generate/edit proposals"
                             : buttonText === "Download" && !isCurrentEditor
                                 ? "Only the current editor can download this proposal"
-                                : `Click to ${buttonText.toLowerCase()}`
+                                : isFetching[proposal_info._id]
+                                    ? "Fetching proposal..."
+                                    : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
                     {isFetching[proposal_info._id] ? (
@@ -109,7 +111,7 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onCompli
                 <div>
                     <button
                         onClick={onComplianceCheck}
-                        disabled={userRole === "Viewer" || (!isCurrentEditor)}
+                        disabled={userRole === "Viewer" || (!isCurrentEditor) || isFetching[proposal_info._id]}
                         aria-label={`Compliance Check`}
                         className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (!isCurrentEditor)
                             ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
@@ -120,10 +122,12 @@ const ProposalCard = ({ proposal_info, onBookmark, onShare, onGenerate, onCompli
                                 ? "Viewer cannot check compliance"
                                 : !isCurrentEditor
                                     ? "Only the current editor can check compliance"
-                                    : `Click to Compliance Check`
+                                    : isFetching[proposal_info._id]
+                                        ? "Fetching proposal..."
+                                        : `Click to Compliance Check`
                         }
                     >
-                        Compliance Check
+                        Compliance
                     </button>
                     {!isCurrentEditor && (
                         <div className="text-xs text-gray-500 mt-1 text-center">
@@ -211,7 +215,7 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
             <div>
                 <button
                     onClick={onGenerate}
-                    disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)}
+                    disabled={userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor) || isFetching[grant_info._id]}
                     aria-label={`${buttonText.toLowerCase()} grant proposal`}
                     className={`self-end px-5 py-1.5 rounded-lg text-[16px] font-medium ${userRole === "Viewer" || (buttonText === "Download" && !isCurrentEditor)
                         ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
@@ -222,7 +226,9 @@ const GrantCard = ({ grant_info, onBookmark, onShare, onGenerate, userRole, butt
                             ? "Viewer cannot generate/edit grant proposals"
                             : buttonText === "Download" && !isCurrentEditor
                                 ? "Only the current editor can download this grant proposal"
-                                : `Click to ${buttonText.toLowerCase()}`
+                                : isFetching[grant_info._id]
+                                    ? "Fetching grant proposal..."
+                                    : `Click to ${buttonText.toLowerCase()}`
                     }
                 >
                     {isFetching[grant_info._id] ? (
@@ -661,27 +667,21 @@ const Proposals = () => {
                 });
 
                 if (res.status === 200) {
-                    if (res.data.message === "Proposal Generation completed successfully.") {
+                    if (res.data.message === "Proposal Generated successfully.") {
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
                             timer: 1500,
-                            text: res.data.message || 'Proposal generated successfully. Downloading proposal...',
+                            text: 'Proposal Generated successfully. Downloading proposal...',
                         });
                         setTimeout(() => {
                             handleWordGeneration(res.data.proposal);
                         }, 1500);
-                    } else if (res.data.message === "Proposal Generation is in Progress. Please visit again after some time.") {
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'In Progress',
-                            text: res.data.message || 'Your proposal is being generated. Please visit again after some time.',
-                        });
                     } else if (res.data.message === "Proposal Generation is still in progress. Please wait for it to complete.") {
                         Swal.fire({
                             icon: 'info',
                             title: 'In Progress',
-                            text: res.data.message || 'Your proposal is still being generated. Please visit again after some time.',
+                            text: 'Your proposal is still being generated. Please wait for it to complete.',
                         });
                     } else {
                         Swal.fire({
@@ -826,7 +826,7 @@ const Proposals = () => {
                             icon: 'success',
                             title: 'Success',
                             timer: 1000,
-                            text: res.data.message || 'Grant proposal generated successfully. Downloading proposal...',
+                            text: 'Grant proposal generated successfully. Downloading proposal...',
                         });
                         setTimeout(() => {
                             handleWordGeneration(res.data.proposal);
@@ -835,7 +835,7 @@ const Proposals = () => {
                         Swal.fire({
                             icon: 'info',
                             title: 'In Progress',
-                            text: res.data.message || 'Grant proposal is still being generated. Please wait for it to complete.',
+                            text: 'Grant proposal is still being generated. Please wait for it to complete.',
                         });
                     } else {
                         Swal.fire({
