@@ -1681,47 +1681,50 @@ const Dashboard = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedDeletedProposals.map((p, idx) => (
-                                <tr key={idx + (currentDeletedPage - 1) * PAGE_SIZE} className="border-t">
-                                    <td className="px-4 py-2 font-semibold">{p.title}</td>
-                                    <td className="px-4 py-2">{p.client}</td>
-                                    <td className="px-4 py-2">{new Date(p.deadline).toLocaleDateString('en-US', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric'
-                                    })}</td>
-                                    <td className="px-4 py-2">{statusBadge(p.status)}</td>
-                                    <td className="px-4 py-2">{p.restoreIn}</td>
-                                    <td className="px-4 py-2">
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                className="text-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-                                                title="Restore"
-                                                onClick={() => handleRestoreProposal(idx)}
-                                                disabled={restoringProposal[idx]}
-                                            >
-                                                {restoringProposal[idx] ? (
-                                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
-                                                ) : (
-                                                    <MdOutlineRotateLeft className="w-5 h-5" />
-                                                )}
-                                            </button>
-                                            <button
-                                                className={`${role === "Viewer" ? "text-[#9CA3AF] cursor-not-allowed opacity-50" : "text-[#2563EB]"} disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1`}
-                                                title={role === "Viewer" ? "Viewer cannot delete permanently" : "Delete Permanently"}
-                                                onClick={role === "Viewer" ? undefined : () => handleDeletePermanently(idx)}
-                                                disabled={role === "Viewer" || paginatedDeletedProposals.length === 0 || deletingPermanently[idx]}
-                                            >
-                                                {deletingPermanently[idx] ? (
-                                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
-                                                ) : (
-                                                    <MdOutlineDeleteForever className="w-5 h-5" />
-                                                )}
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                            {paginatedDeletedProposals.map((p, idx) => {
+                                const absoluteIdx = (currentDeletedPage - 1) * PAGE_SIZE + idx;
+                                return (
+                                    <tr key={absoluteIdx} className="border-t">
+                                        <td className="px-4 py-2 font-semibold">{p.title}</td>
+                                        <td className="px-4 py-2">{p.client}</td>
+                                        <td className="px-4 py-2">{new Date(p.deadline).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric'
+                                        })}</td>
+                                        <td className="px-4 py-2">{statusBadge(p.status)}</td>
+                                        <td className="px-4 py-2">{p.restoreIn}</td>
+                                        <td className="px-4 py-2">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    className="text-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                                                    title="Restore"
+                                                    onClick={() => handleRestoreProposal(absoluteIdx)}
+                                                    disabled={restoringProposal[absoluteIdx]}
+                                                >
+                                                    {restoringProposal[absoluteIdx] ? (
+                                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
+                                                    ) : (
+                                                        <MdOutlineRotateLeft className="w-5 h-5" />
+                                                    )}
+                                                </button>
+                                                <button
+                                                    className={`${role === "Viewer" ? "text-[#9CA3AF] cursor-not-allowed opacity-50" : "text-[#2563EB]"} disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1`}
+                                                    title={role === "Viewer" ? "Viewer cannot delete permanently" : "Delete Permanently"}
+                                                    onClick={role === "Viewer" ? undefined : () => handleDeletePermanently(absoluteIdx)}
+                                                    disabled={role === "Viewer" || paginatedDeletedProposals.length === 0 || deletingPermanently[absoluteIdx]}
+                                                >
+                                                    {deletingPermanently[absoluteIdx] ? (
+                                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
+                                                    ) : (
+                                                        <MdOutlineDeleteForever className="w-5 h-5" />
+                                                    )}
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                             {/* if no deleted proposals, show a message */}
                             {paginatedDeletedProposals.length === 0 && (
                                 <tr>
@@ -1768,47 +1771,50 @@ const Dashboard = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginatedDeletedGrantProposals.map((p, idx) => (
-                                <tr key={idx + (currentDeletedGrantPage - 1) * PAGE_SIZE} className="border-t">
-                                    <td className="px-4 py-2 font-semibold">{p.OPPORTUNITY_TITLE || 'Not Provided'}</td>
-                                    <td className="px-4 py-2">{p.AGENCY_NAME || 'Not Provided'}</td>
-                                    <td className="px-4 py-2">{p.CLOSE_DATE ? new Date(p.CLOSE_DATE).toLocaleDateString('en-US', {
-                                        year: 'numeric',
-                                        month: 'short',
-                                        day: 'numeric'
-                                    }) : "No close date"}</td>
-                                    <td className="px-4 py-2">{statusBadge(p.OPPORTUNITY_STATUS || p.status)}</td>
-                                    <td className="px-4 py-2">{p.restoreIn}</td>
-                                    <td className="px-4 py-2">
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                className="text-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-                                                title="Restore"
-                                                onClick={() => handleRestoreGrantProposal(idx)}
-                                                disabled={restoringGrantProposal[idx]}
-                                            >
-                                                {restoringGrantProposal[idx] ? (
-                                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
-                                                ) : (
-                                                    <MdOutlineRotateLeft className="w-5 h-5" />
-                                                )}
-                                            </button>
-                                            <button
-                                                className={`${role === "Viewer" ? "text-[#9CA3AF] cursor-not-allowed opacity-50" : "text-[#2563EB]"} disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1`}
-                                                title={role === "Viewer" ? "Viewer cannot delete permanently" : "Delete Permanently"}
-                                                onClick={role === "Viewer" ? undefined : () => handleDeleteGrantPermanently(idx)}
-                                                disabled={role === "Viewer" || paginatedDeletedGrantProposals.length === 0 || deletingGrantPermanently[idx]}
-                                            >
-                                                {deletingGrantPermanently[idx] ? (
-                                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
-                                                ) : (
-                                                    <MdOutlineDeleteForever className="w-5 h-5" />
-                                                )}
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                            {paginatedDeletedGrantProposals.map((p, idx) => {
+                                const absoluteIdx = (currentDeletedGrantPage - 1) * PAGE_SIZE + idx;
+                                return (
+                                    <tr key={absoluteIdx} className="border-t">
+                                        <td className="px-4 py-2 font-semibold">{p.OPPORTUNITY_TITLE || 'Not Provided'}</td>
+                                        <td className="px-4 py-2">{p.AGENCY_NAME || 'Not Provided'}</td>
+                                        <td className="px-4 py-2">{p.CLOSE_DATE ? new Date(p.CLOSE_DATE).toLocaleDateString('en-US', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric'
+                                        }) : "No close date"}</td>
+                                        <td className="px-4 py-2">{statusBadge(p.OPPORTUNITY_STATUS || p.status)}</td>
+                                        <td className="px-4 py-2">{p.restoreIn}</td>
+                                        <td className="px-4 py-2">
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    className="text-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                                                    title="Restore"
+                                                    onClick={() => handleRestoreGrantProposal(absoluteIdx)}
+                                                    disabled={restoringGrantProposal[absoluteIdx]}
+                                                >
+                                                    {restoringGrantProposal[absoluteIdx] ? (
+                                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
+                                                    ) : (
+                                                        <MdOutlineRotateLeft className="w-5 h-5" />
+                                                    )}
+                                                </button>
+                                                <button
+                                                    className={`${role === "Viewer" ? "text-[#9CA3AF] cursor-not-allowed opacity-50" : "text-[#2563EB]"} disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1`}
+                                                    title={role === "Viewer" ? "Viewer cannot delete permanently" : "Delete Permanently"}
+                                                    onClick={role === "Viewer" ? undefined : () => handleDeleteGrantPermanently(absoluteIdx)}
+                                                    disabled={role === "Viewer" || paginatedDeletedGrantProposals.length === 0 || deletingGrantPermanently[absoluteIdx]}
+                                                >
+                                                    {deletingGrantPermanently[absoluteIdx] ? (
+                                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
+                                                    ) : (
+                                                        <MdOutlineDeleteForever className="w-5 h-5" />
+                                                    )}
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                             {/* if no deleted grant proposals, show a message */}
                             {paginatedDeletedGrantProposals.length === 0 && (
                                 <tr>
