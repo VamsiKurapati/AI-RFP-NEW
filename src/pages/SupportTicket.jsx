@@ -228,34 +228,6 @@ const SupportTicket = () => {
                 setTimeout(() => {
                     window.location.reload();
                 }, 1500);
-                setCategory("");
-                setSubCategory("");
-                setDescription("");
-                setAttachments(null);
-
-                const fileInput = document.getElementById("fileUpload");
-                if (fileInput) fileInput.value = "";
-
-                // Fetch updated tickets
-                // const updatedTickets = await axios.get(
-                //     `${baseUrl}/tickets?userId=${userId}`
-                // );
-
-                // if (updatedTickets.data?.tickets) {
-                //     setTickets(updatedTickets.data.tickets); // ensure new array reference
-                //     // Open dropdowns for newly added ticket(s)
-                //     const newOpen = {};
-                //     updatedTickets.data.tickets.forEach((ticket) => {
-                //         if (
-                //             ticket.status === "Created" ||
-                //             ticket.status === "In Progress" ||
-                //             ticket.status === "Re-Opened"
-                //         ) {
-                //             newOpen[ticket._id] = true;
-                //         }
-                //     });
-                //     setOpenTickets(newOpen);
-                // }
             } else {
                 setErrorMsg(res.data.message || "Failed to submit ticket.");
             }
@@ -412,10 +384,17 @@ const SupportTicket = () => {
                             </button>
                             <button
                                 type="submit"
-                                className="bg-blue-600 text-white px-6 py-2 rounded"
+                                className="bg-blue-600 text-white px-6 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                 disabled={submitting}
                             >
-                                {submitting ? "Submitting..." : "Submit Ticket"}
+                                {submitting ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                        Submitting...
+                                    </>
+                                ) : (
+                                    'Submit Ticket'
+                                )}
                             </button>
                         </div>
                     </form>
@@ -693,10 +672,17 @@ const SupportTicket = () => {
                                                         />
                                                         <button
                                                             type="submit"
-                                                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+                                                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                                             disabled={sendingMessage || !newMessage.trim()}
                                                         >
-                                                            {sendingMessage ? "Sending..." : "Send"}
+                                                            {sendingMessage ? (
+                                                                <>
+                                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                                                    Sending...
+                                                                </>
+                                                            ) : (
+                                                                'Send'
+                                                            )}
                                                         </button>
                                                     </form>
                                                 </div>

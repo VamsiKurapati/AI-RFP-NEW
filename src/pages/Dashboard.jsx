@@ -142,6 +142,16 @@ const Dashboard = () => {
     const [editGrantIdx, setEditGrantIdx] = useState(null);
     const [editGrantForm, setEditGrantForm] = useState({ deadline: "", submittedAt: "", status: "" });
 
+    // Loading states for action buttons
+    const [savingProposal, setSavingProposal] = useState({});
+    const [savingGrantProposal, setSavingGrantProposal] = useState({});
+    const [deletingProposals, setDeletingProposals] = useState(false);
+    const [deletingGrantProposals, setDeletingGrantProposals] = useState(false);
+    const [restoringProposal, setRestoringProposal] = useState({});
+    const [restoringGrantProposal, setRestoringGrantProposal] = useState({});
+    const [deletingPermanently, setDeletingPermanently] = useState({});
+    const [deletingGrantPermanently, setDeletingGrantPermanently] = useState({});
+
     const handleEditClick = (idx, proposal) => {
         setEditIdx(idx);
         setEditForm({
@@ -157,6 +167,7 @@ const Dashboard = () => {
     };
 
     const handleSaveProposal = async (proposalId) => {
+        setSavingProposal(prev => ({ ...prev, [proposalId]: true }));
         try {
             const token = localStorage.getItem("token");
             const res = await axios.put(
@@ -191,6 +202,8 @@ const Dashboard = () => {
                 timer: 1500,
                 showConfirmButton: true
             });
+        } finally {
+            setSavingProposal(prev => ({ ...prev, [proposalId]: false }));
         }
     };
 
@@ -209,6 +222,7 @@ const Dashboard = () => {
     };
 
     const handleSaveGrantProposal = async (proposalId) => {
+        setSavingGrantProposal(prev => ({ ...prev, [proposalId]: true }));
         try {
             const token = localStorage.getItem("token");
             const res = await axios.put(
@@ -243,6 +257,8 @@ const Dashboard = () => {
                 timer: 1500,
                 showConfirmButton: true
             });
+        } finally {
+            setSavingGrantProposal(prev => ({ ...prev, [proposalId]: false }));
         }
     };
 
@@ -407,6 +423,7 @@ const Dashboard = () => {
         });
 
         if (result.isConfirmed) {
+            setDeletingProposals(true);
             try {
                 const token = localStorage.getItem('token');
                 const res = await axios.put(`${BASE_URL}/deleteProposals`, {
@@ -472,6 +489,8 @@ const Dashboard = () => {
                     'Failed to delete proposals.',
                     'error'
                 );
+            } finally {
+                setDeletingProposals(false);
             }
         }
     };
@@ -489,6 +508,7 @@ const Dashboard = () => {
         });
 
         if (result.isConfirmed) {
+            setDeletingGrantProposals(true);
             try {
                 const token = localStorage.getItem('token');
                 const res = await axios.put(`${BASE_URL}/deleteGrantProposals`, {
@@ -531,6 +551,8 @@ const Dashboard = () => {
                     'Failed to delete grant proposals.',
                     'error'
                 );
+            } finally {
+                setDeletingGrantProposals(false);
             }
         }
     };
@@ -548,6 +570,7 @@ const Dashboard = () => {
         });
 
         if (result.isConfirmed) {
+            setRestoringProposal(prev => ({ ...prev, [idx]: true }));
             try {
                 const token = localStorage.getItem('token');
                 const res = await axios.put(`${BASE_URL}/restoreProposal`, {
@@ -602,6 +625,8 @@ const Dashboard = () => {
                     'Failed to restore proposal.',
                     'error'
                 );
+            } finally {
+                setRestoringProposal(prev => ({ ...prev, [idx]: false }));
             }
         }
     };
@@ -619,6 +644,7 @@ const Dashboard = () => {
         });
 
         if (result.isConfirmed) {
+            setRestoringGrantProposal(prev => ({ ...prev, [idx]: true }));
             try {
                 const token = localStorage.getItem('token');
                 const res = await axios.put(`${BASE_URL}/restoreGrantProposal`, {
@@ -654,6 +680,8 @@ const Dashboard = () => {
                     'Failed to restore grant proposal.',
                     'error'
                 );
+            } finally {
+                setRestoringGrantProposal(prev => ({ ...prev, [idx]: false }));
             }
         }
     };
@@ -672,6 +700,7 @@ const Dashboard = () => {
         });
 
         if (result.isConfirmed) {
+            setDeletingPermanently(prev => ({ ...prev, [idx]: true }));
             try {
                 const token = localStorage.getItem('token');
                 const res = await axios.put(`${BASE_URL}/deletePermanently`, {
@@ -704,6 +733,8 @@ const Dashboard = () => {
                     'Failed to delete proposal permanently.',
                     'error'
                 );
+            } finally {
+                setDeletingPermanently(prev => ({ ...prev, [idx]: false }));
             }
         }
     };
@@ -722,6 +753,7 @@ const Dashboard = () => {
         });
 
         if (result.isConfirmed) {
+            setDeletingGrantPermanently(prev => ({ ...prev, [idx]: true }));
             try {
                 const token = localStorage.getItem('token');
                 const res = await axios.put(`${BASE_URL}/deleteGrantPermanently`, {
@@ -754,6 +786,8 @@ const Dashboard = () => {
                     'Failed to delete grant proposal permanently.',
                     'error'
                 );
+            } finally {
+                setDeletingGrantPermanently(prev => ({ ...prev, [idx]: false }));
             }
         }
     };
@@ -1056,8 +1090,9 @@ const Dashboard = () => {
                                                                         {employees.filter(emp => emp.name !== userName && emp.accessLevel === "Editor").map(emp => (
                                                                             <li key={emp.name} className="mb-1">
                                                                                 <button
-                                                                                    className="block px-3 py-2 bg-gray-50 rounded-md border border-gray-200 hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB] w-full text-left text-[14px] transition-colors"
+                                                                                    className="block px-3 py-2 bg-gray-50 rounded-md border border-gray-200 hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB] w-full text-left text-[14px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                                                     onClick={() => handleSetCurrentEditor(realIdx, emp.employeeId)}
+                                                                                    disabled={savingProposal[p._id]}
                                                                                 >
                                                                                     {emp.name}
                                                                                 </button>
@@ -1105,8 +1140,9 @@ const Dashboard = () => {
                                                                         {employees.filter(emp => emp.name !== userName && emp.accessLevel === "Editor").map(emp => (
                                                                             <li key={emp.name} className="mb-1">
                                                                                 <button
-                                                                                    className="block px-3 py-2 bg-gray-50 rounded-md border border-gray-200 hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB] w-full text-left text-[14px] transition-colors"
+                                                                                    className="block px-3 py-2 bg-gray-50 rounded-md border border-gray-200 hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB] w-full text-left text-[14px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                                                     onClick={() => handleSetCurrentEditor(realIdx, emp.employeeId)}
+                                                                                    disabled={savingProposal[p._id]}
                                                                                 >
                                                                                     {emp.name}
                                                                                 </button>
@@ -1171,29 +1207,38 @@ const Dashboard = () => {
                                                 {editIdx === realIdx ? (
                                                     <div className="flex items-center gap-2">
                                                         <button
-                                                            className="flex items-center gap-1 text-[16px] text-[#2563EB] hover:text-white hover:bg-[#2563EB] rounded-md px-2 py-1 transition-colors"
+                                                            className="flex items-center gap-1 text-[16px] text-[#2563EB] hover:text-white hover:bg-[#2563EB] rounded-md px-2 py-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                             title="Save"
                                                             onClick={() => handleSaveProposal(p._id)}
+                                                            disabled={savingProposal[p._id]}
                                                         >
-                                                            Save
+                                                            {savingProposal[p._id] ? (
+                                                                <>
+                                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                                                    Saving...
+                                                                </>
+                                                            ) : (
+                                                                'Save'
+                                                            )}
                                                         </button>
                                                         <button
-                                                            className="flex items-center gap-1 text-[16px] text-[#111827] hover:text-white hover:bg-[#111827] rounded-md px-2 py-1 transition-colors"
+                                                            className="flex items-center gap-1 text-[16px] text-[#111827] hover:text-white hover:bg-[#111827] rounded-md px-2 py-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                             title="Cancel"
                                                             onClick={() => setEditIdx(null)}
+                                                            disabled={savingProposal[p._id]}
                                                         >
                                                             Cancel
                                                         </button>
                                                     </div>
                                                 ) : (
                                                     <button
-                                                        className={`flex items-center gap-1 transition-colors ${role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail))
+                                                        className={`flex items-center gap-1 transition-colors ${role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) || savingProposal[p._id]
                                                             ? "text-[#9CA3AF] cursor-not-allowed opacity-50"
                                                             : "text-[#2563EB] hover:text-[#1D4ED8]"
                                                             }`}
-                                                        title={role === "Viewer" ? "Viewer cannot edit proposals" : (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) ? "Only current editor can edit this proposal" : "Edit Details"}
-                                                        onClick={role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) ? undefined : () => handleEditClick(realIdx, p)}
-                                                        disabled={role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail))}
+                                                        title={role === "Viewer" ? "Viewer cannot edit proposals" : (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) ? "Only current editor can edit this proposal" : savingProposal[p._id] ? "Saving..." : "Edit Details"}
+                                                        onClick={role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) || savingProposal[p._id] ? undefined : () => handleEditClick(realIdx, p)}
+                                                        disabled={role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) || savingProposal[p._id]}
                                                     >
                                                         <MdOutlineEdit className="w-5 h-5" /> Edit
                                                     </button>
@@ -1233,17 +1278,26 @@ const Dashboard = () => {
                     {showDeleteOptions && (
                         <div className="flex gap-4 mt-4 justify-end mb-4 px-4">
                             <button
-                                className="bg-red-500 text-white px-4 py-2 rounded"
+                                className="bg-red-500 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                 onClick={handleDeleteProposals}
+                                disabled={deletingProposals}
                             >
-                                Delete
+                                {deletingProposals ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                        Deleting...
+                                    </>
+                                ) : (
+                                    'Delete'
+                                )}
                             </button>
                             <button
-                                className="bg-gray-300 text-gray-800 px-4 py-2 rounded"
+                                className="bg-gray-300 text-gray-800 px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                                 onClick={() => {
                                     setShowDeleteOptions(false);
                                     setSelectedProposals([]);
                                 }}
+                                disabled={deletingProposals}
                             >
                                 Cancel
                             </button>
@@ -1354,8 +1408,9 @@ const Dashboard = () => {
                                                                         {employees.filter(emp => emp.name !== userName && emp.accessLevel === "Editor").map(emp => (
                                                                             <li key={emp.name} className="mb-1">
                                                                                 <button
-                                                                                    className="block px-3 py-2 bg-gray-50 rounded-md border border-gray-200 hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB] w-full text-left text-[14px] transition-colors"
+                                                                                    className="block px-3 py-2 bg-gray-50 rounded-md border border-gray-200 hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB] w-full text-left text-[14px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                                                     onClick={() => handleSetGrantCurrentEditor(realIdx, emp.employeeId)}
+                                                                                    disabled={savingGrantProposal[p._id]}
                                                                                 >
                                                                                     {emp.name}
                                                                                 </button>
@@ -1403,8 +1458,9 @@ const Dashboard = () => {
                                                                         {employees.filter(emp => emp.name !== userName && emp.accessLevel === "Editor").map(emp => (
                                                                             <li key={emp.name} className="mb-1">
                                                                                 <button
-                                                                                    className="block px-3 py-2 bg-gray-50 rounded-md border border-gray-200 hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB] w-full text-left text-[14px] transition-colors"
+                                                                                    className="block px-3 py-2 bg-gray-50 rounded-md border border-gray-200 hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB] w-full text-left text-[14px] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                                                     onClick={() => handleSetGrantCurrentEditor(realIdx, emp.employeeId)}
+                                                                                    disabled={savingGrantProposal[p._id]}
                                                                                 >
                                                                                     {emp.name}
                                                                                 </button>
@@ -1469,29 +1525,38 @@ const Dashboard = () => {
                                                 {editGrantIdx === realIdx ? (
                                                     <div className="flex items-center gap-2">
                                                         <button
-                                                            className="flex items-center gap-1 text-[16px] text-[#2563EB] hover:text-white hover:bg-[#2563EB] rounded-md px-2 py-1 transition-colors"
+                                                            className="flex items-center gap-1 text-[16px] text-[#2563EB] hover:text-white hover:bg-[#2563EB] rounded-md px-2 py-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                             title="Save"
                                                             onClick={() => handleSaveGrantProposal(p._id)}
+                                                            disabled={savingGrantProposal[p._id]}
                                                         >
-                                                            Save
+                                                            {savingGrantProposal[p._id] ? (
+                                                                <>
+                                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                                                    Saving...
+                                                                </>
+                                                            ) : (
+                                                                'Save'
+                                                            )}
                                                         </button>
                                                         <button
-                                                            className="flex items-center gap-1 text-[16px] text-[#111827] hover:text-white hover:bg-[#111827] rounded-md px-2 py-1 transition-colors"
+                                                            className="flex items-center gap-1 text-[16px] text-[#111827] hover:text-white hover:bg-[#111827] rounded-md px-2 py-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                             title="Cancel"
                                                             onClick={() => setEditGrantIdx(null)}
+                                                            disabled={savingGrantProposal[p._id]}
                                                         >
                                                             Cancel
                                                         </button>
                                                     </div>
                                                 ) : (
                                                     <button
-                                                        className={`flex items-center gap-1 transition-colors ${role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail))
+                                                        className={`flex items-center gap-1 transition-colors ${role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) || savingGrantProposal[p._id]
                                                             ? "text-[#9CA3AF] cursor-not-allowed opacity-50"
                                                             : "text-[#2563EB] hover:text-[#1D4ED8]"
                                                             }`}
-                                                        title={role === "Viewer" ? "Viewer cannot edit grant proposals" : (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) ? "Only current editor can edit this grant proposal" : "Edit Details"}
-                                                        onClick={role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) ? undefined : () => handleEditGrantClick(realIdx, p)}
-                                                        disabled={role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail))}
+                                                        title={role === "Viewer" ? "Viewer cannot edit grant proposals" : (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) ? "Only current editor can edit this grant proposal" : savingGrantProposal[p._id] ? "Saving..." : "Edit Details"}
+                                                        onClick={role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) || savingGrantProposal[p._id] ? undefined : () => handleEditGrantClick(realIdx, p)}
+                                                        disabled={role === "Viewer" || (role !== "company" && !(p.currentEditor && p.currentEditor.email === userEmail)) || savingGrantProposal[p._id]}
                                                     >
                                                         <MdOutlineEdit className="w-5 h-5" /> Edit
                                                     </button>
@@ -1531,20 +1596,27 @@ const Dashboard = () => {
                     {showGrantDeleteOptions && (
                         <div className="flex gap-4 mt-4 justify-end mb-4 px-4">
                             <button
-                                className="bg-red-500 text-white px-4 py-2 rounded"
+                                className="bg-red-500 text-white px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                 onClick={handleDeleteGrantProposals}
-                                disabled={paginatedGrantProposals.length === 0}
+                                disabled={paginatedGrantProposals.length === 0 || deletingGrantProposals}
                                 title={paginatedGrantProposals.length === 0 ? "No grant proposals to delete" : "Delete grant proposals"}
                             >
-                                Delete
+                                {deletingGrantProposals ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                        Deleting...
+                                    </>
+                                ) : (
+                                    'Delete'
+                                )}
                             </button>
                             <button
-                                className="bg-gray-300 text-gray-800 px-4 py-2 rounded"
+                                className="bg-gray-300 text-gray-800 px-4 py-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                                 onClick={() => {
                                     setShowGrantDeleteOptions(false);
                                     setSelectedGrantProposals([]);
                                 }}
-                                disabled={paginatedGrantProposals.length === 0}
+                                disabled={paginatedGrantProposals.length === 0 || deletingGrantProposals}
                                 title={paginatedGrantProposals.length === 0 ? "No grant proposals to delete" : "Cancel"}
                             >
                                 Cancel
@@ -1622,16 +1694,29 @@ const Dashboard = () => {
                                     <td className="px-4 py-2">{p.restoreIn}</td>
                                     <td className="px-4 py-2">
                                         <div className="flex items-center gap-2">
-                                            <button className="text-[#2563EB]" title="Restore" onClick={() => handleRestoreProposal(idx)}>
-                                                <MdOutlineRotateLeft className="w-5 h-5" />
+                                            <button
+                                                className="text-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                                                title="Restore"
+                                                onClick={() => handleRestoreProposal(idx)}
+                                                disabled={restoringProposal[idx]}
+                                            >
+                                                {restoringProposal[idx] ? (
+                                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
+                                                ) : (
+                                                    <MdOutlineRotateLeft className="w-5 h-5" />
+                                                )}
                                             </button>
                                             <button
-                                                className={`${role === "Viewer" ? "text-[#9CA3AF] cursor-not-allowed opacity-50" : "text-[#2563EB]"}`}
+                                                className={`${role === "Viewer" ? "text-[#9CA3AF] cursor-not-allowed opacity-50" : "text-[#2563EB]"} disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1`}
                                                 title={role === "Viewer" ? "Viewer cannot delete permanently" : "Delete Permanently"}
                                                 onClick={role === "Viewer" ? undefined : () => handleDeletePermanently(idx)}
-                                                disabled={role === "Viewer" || paginatedDeletedProposals.length === 0}
+                                                disabled={role === "Viewer" || paginatedDeletedProposals.length === 0 || deletingPermanently[idx]}
                                             >
-                                                <MdOutlineDeleteForever className="w-5 h-5" />
+                                                {deletingPermanently[idx] ? (
+                                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
+                                                ) : (
+                                                    <MdOutlineDeleteForever className="w-5 h-5" />
+                                                )}
                                             </button>
                                         </div>
                                     </td>
@@ -1696,16 +1781,29 @@ const Dashboard = () => {
                                     <td className="px-4 py-2">{p.restoreIn}</td>
                                     <td className="px-4 py-2">
                                         <div className="flex items-center gap-2">
-                                            <button className="text-[#2563EB]" title="Restore" onClick={() => handleRestoreGrantProposal(idx)}>
-                                                <MdOutlineRotateLeft className="w-5 h-5" />
+                                            <button
+                                                className="text-[#2563EB] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                                                title="Restore"
+                                                onClick={() => handleRestoreGrantProposal(idx)}
+                                                disabled={restoringGrantProposal[idx]}
+                                            >
+                                                {restoringGrantProposal[idx] ? (
+                                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
+                                                ) : (
+                                                    <MdOutlineRotateLeft className="w-5 h-5" />
+                                                )}
                                             </button>
                                             <button
-                                                className={`${role === "Viewer" ? "text-[#9CA3AF] cursor-not-allowed opacity-50" : "text-[#2563EB]"}`}
+                                                className={`${role === "Viewer" ? "text-[#9CA3AF] cursor-not-allowed opacity-50" : "text-[#2563EB]"} disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1`}
                                                 title={role === "Viewer" ? "Viewer cannot delete permanently" : "Delete Permanently"}
                                                 onClick={role === "Viewer" ? undefined : () => handleDeleteGrantPermanently(idx)}
-                                                disabled={role === "Viewer" || paginatedDeletedGrantProposals.length === 0}
+                                                disabled={role === "Viewer" || paginatedDeletedGrantProposals.length === 0 || deletingGrantPermanently[idx]}
                                             >
-                                                <MdOutlineDeleteForever className="w-5 h-5" />
+                                                {deletingGrantPermanently[idx] ? (
+                                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#2563EB]"></div>
+                                                ) : (
+                                                    <MdOutlineDeleteForever className="w-5 h-5" />
+                                                )}
                                             </button>
                                         </div>
                                     </td>

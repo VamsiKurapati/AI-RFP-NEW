@@ -608,7 +608,7 @@ const AddCaseStudyModal = ({ isOpen, onClose }) => {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Title <span className="text-red-500">*</span></label>
             <input
               type="text"
               value={formData.title}
@@ -620,7 +620,7 @@ const AddCaseStudyModal = ({ isOpen, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Company <span className="text-red-500">*</span></label>
             <input
               type="text"
               value={formData.company}
@@ -632,7 +632,7 @@ const AddCaseStudyModal = ({ isOpen, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Upload File (PDF or TXT)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Upload File (PDF or TXT) <span className="text-red-500">*</span></label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#2563EB] transition-colors">
               <input
                 type="file"
@@ -783,7 +783,7 @@ const AddCertificateModal = ({ isOpen, onClose }) => {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Certificate Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Certificate Name <span className="text-red-500">*</span></label>
             <input
               type="text"
               value={formData.name}
@@ -794,7 +794,7 @@ const AddCertificateModal = ({ isOpen, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Issuing Organization</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Issuing Organization <span className="text-red-500">*</span></label>
             <input
               type="text"
               value={formData.issuer}
@@ -805,7 +805,7 @@ const AddCertificateModal = ({ isOpen, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Valid Until</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Valid Until <span className="text-red-500">*</span></label>
             <input
               type="date"
               value={formData.validTill}
@@ -966,7 +966,7 @@ const AddDocumentModal = ({ isOpen, onClose }) => {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Document Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Document Name <span className="text-red-500">*</span></label>
             <input
               type="text"
               value={formData.name}
@@ -978,7 +978,7 @@ const AddDocumentModal = ({ isOpen, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Upload File</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Upload File <span className="text-red-500">*</span></label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#2563EB] transition-colors">
               <input
                 type="file"
@@ -1087,6 +1087,7 @@ const CompanyProfileDashboard = () => {
   const [deletingCertificate, setDeletingCertificate] = useState({});
   const [deletingDocument, setDeletingDocument] = useState({});
   const [deletingEmployee, setDeletingEmployee] = useState({});
+  const [savingLogo, setSavingLogo] = useState(false);
 
   // Payments tab state
   const [payments, setPayments] = useState([]);
@@ -1460,33 +1461,33 @@ const CompanyProfileDashboard = () => {
   };
 
   // Loading state
-  // if (loading) {
-  //   return (
-  //     <div className="h-full flex items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2563EB] mx-auto mb-4"></div>
-  //         <p className="text-[#6B7280]">Loading company profile...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2563EB] mx-auto mb-4"></div>
+          <p className="text-[#6B7280]">Loading company profile...</p>
+        </div>
+      </div>
+    );
+  }
 
-  // // Error state
-  // if (error && !companyData) {
-  //   return (
-  //     <div className="h-full flex items-center justify-center">
-  //       <div className="text-center">
-  //         <p className="text-red-600 mb-4">Error loading company profile: {error}</p>
-  //         <button
-  //           onClick={refreshProfile}
-  //           className="bg-[#2563EB] text-white px-4 py-2 rounded-lg"
-  //         >
-  //           Retry
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  // Error state
+  if (error && !companyData) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Error loading company profile: {error}</p>
+          <button
+            onClick={refreshProfile}
+            className="bg-[#2563EB] text-white px-4 py-2 rounded-lg"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -1522,6 +1523,7 @@ const CompanyProfileDashboard = () => {
 
   const handleSaveLogo = async () => {
     if (!selectedFile) return;
+    setSavingLogo(true);
     const formData = new FormData();
     formData.append('logo', selectedFile);
 
@@ -1556,6 +1558,8 @@ const CompanyProfileDashboard = () => {
         showConfirmButton: false,
         showCancelButton: false,
       });
+    } finally {
+      setSavingLogo(false);
     }
   };
 
@@ -1628,15 +1632,21 @@ const CompanyProfileDashboard = () => {
                     ) : (
                       <div className="flex gap-2">
                         <button
-                          className="bg-[#2563EB] p-2 rounded-full flex items-center justify-center hover:bg-[#1d4ed8]"
+                          className="bg-[#2563EB] p-2 rounded-full flex items-center justify-center hover:bg-[#1d4ed8] disabled:opacity-50 disabled:cursor-not-allowed"
                           onClick={handleSaveLogo}
+                          disabled={savingLogo}
                           title="Save"
                         >
-                          <MdOutlineCheck className="w-6 h-6 text-white" />
+                          {savingLogo ? (
+                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                          ) : (
+                            <MdOutlineCheck className="w-6 h-6 text-white" />
+                          )}
                         </button>
                         <button
-                          className="bg-white p-2 rounded-full flex items-center justify-center hover:bg-[#EFF6FF]"
+                          className="bg-white p-2 rounded-full flex items-center justify-center hover:bg-[#EFF6FF] disabled:opacity-50 disabled:cursor-not-allowed"
                           onClick={handleCancelLogo}
+                          disabled={savingLogo}
                           title="Cancel"
                         >
                           <MdOutlineClose className="w-6 h-6 text-[#2563EB]" />
@@ -1724,15 +1734,21 @@ const CompanyProfileDashboard = () => {
                     ) : (
                       <div className="flex gap-2">
                         <button
-                          className="bg-[#2563EB] p-2 rounded-full flex items-center justify-center hover:bg-[#1d4ed8]"
+                          className="bg-[#2563EB] p-2 rounded-full flex items-center justify-center hover:bg-[#1d4ed8] disabled:opacity-50 disabled:cursor-not-allowed"
                           onClick={handleSaveLogo}
+                          disabled={savingLogo}
                           title="Save"
                         >
-                          <MdOutlineCheck className="w-6 h-6 text-white" />
+                          {savingLogo ? (
+                            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                          ) : (
+                            <MdOutlineCheck className="w-6 h-6 text-white" />
+                          )}
                         </button>
                         <button
-                          className="bg-white p-2 rounded-full flex items-center justify-center hover:bg-[#EFF6FF]"
+                          className="bg-white p-2 rounded-full flex items-center justify-center hover:bg-[#EFF6FF] disabled:opacity-50 disabled:cursor-not-allowed"
                           onClick={handleCancelLogo}
+                          disabled={savingLogo}
                           title="Cancel"
                         >
                           <MdOutlineClose className="w-6 h-6 text-[#2563EB]" />
@@ -1971,9 +1987,13 @@ const CompanyProfileDashboard = () => {
                           <button
                             disabled={deletingEmployee[member.employeeId]}
                             onClick={() => handleDeleteEmployee(member)}
-                            className="text-red-500 hover:text-red-600 text-[15px] hover:underline transition-colors absolute top-2 right-2"
+                            className="text-red-500 hover:text-red-600 text-[15px] hover:underline transition-colors absolute top-2 right-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                           >
-                            <MdOutlineDelete className="w-5 h-5 text-red-500" />
+                            {deletingEmployee[member.employeeId] ? (
+                              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-500"></div>
+                            ) : (
+                              <MdOutlineDelete className="w-5 h-5 text-red-500" />
+                            )}
                           </button>
                           <div className="flex items-center gap-3 w-full">
                             <div className="w-10 h-10 rounded-full bg-[#E5E7EB] flex items-center justify-center text-xl font-bold text-gray-500 overflow-hidden">
@@ -2068,9 +2088,13 @@ const CompanyProfileDashboard = () => {
                         <button
                           disabled={deletingDocument[doc._id]}
                           onClick={() => handleDeleteDocument(doc)}
-                          className="text-red-500 hover:text-red-600 rounded-full p-1 shrink-0 transition-colors"
+                          className="text-red-500 hover:text-red-600 rounded-full p-1 shrink-0 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                         >
-                          {deletingDocument[doc._id] ? <MdOutlineDelete className="w-5 h-5 animate-spin" /> : <MdOutlineDelete className="w-5 h-5 text-red-500 hover:text-red-600" />}
+                          {deletingDocument[doc._id] ? (
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-500"></div>
+                          ) : (
+                            <MdOutlineDelete className="w-5 h-5 text-red-500 hover:text-red-600" />
+                          )}
                         </button>
                       </div>
                       <div className="flex items-center justify-between gap-2">
@@ -2119,9 +2143,13 @@ const CompanyProfileDashboard = () => {
                         <button
                           disabled={deletingCaseStudy[cs._id]}
                           onClick={() => handleDeleteCaseStudy(cs)}
-                          className="text-red-500 hover:text-red-600 rounded-full p-1 shrink-0 transition-colors"
+                          className="text-red-500 hover:text-red-600 rounded-full p-1 shrink-0 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                         >
-                          {deletingCaseStudy[cs._id] ? <MdOutlineDelete className="w-5 h-5 text-red-500 animate-spin" /> : <MdOutlineDelete className="w-5 h-5 text-red-500" />}
+                          {deletingCaseStudy[cs._id] ? (
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-500"></div>
+                          ) : (
+                            <MdOutlineDelete className="w-5 h-5 text-red-500" />
+                          )}
                         </button>
                       </div>
                       <div className="flex-1 flex flex-col p-4">
@@ -2167,9 +2195,13 @@ const CompanyProfileDashboard = () => {
                         <button
                           disabled={deletingCertificate[cert._id]}
                           onClick={() => handleDeleteCertificate(cert)}
-                          className="text-red-500 hover:text-red-600 rounded-full p-1 shrink-0 transition-colors"
+                          className="text-red-500 hover:text-red-600 rounded-full p-1 shrink-0 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                         >
-                          {deletingCertificate[cert._id] ? <MdOutlineDelete className="w-5 h-5 text-red-500 animate-spin" /> : <MdOutlineDelete className="w-5 h-5 text-red-500" />}
+                          {deletingCertificate[cert._id] ? (
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-red-500"></div>
+                          ) : (
+                            <MdOutlineDelete className="w-5 h-5 text-red-500" />
+                          )}
                         </button>
                       </div>
                       <MdOutlineVerifiedUser className="text-[#2563EB] w-6 h-6 shrink-0" />

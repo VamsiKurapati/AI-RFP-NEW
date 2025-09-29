@@ -339,8 +339,17 @@ const EmployeeProfileUpdate = () => {
                     disabled={isLoading}
                     className="px-4 py-2 bg-[#2563EB] text-white rounded-lg hover:bg-[#1d4ed8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
-                    <MdOutlineSave className="w-4 h-4" />
-                    {isLoading ? "Saving..." : "Save Changes"}
+                    {isLoading ? (
+                        <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            Saving...
+                        </>
+                    ) : (
+                        <>
+                            <MdOutlineSave className="w-4 h-4" />
+                            Save Changes
+                        </>
+                    )}
                 </button>
             </div>
         </div>

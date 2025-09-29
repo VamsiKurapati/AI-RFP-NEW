@@ -154,11 +154,18 @@ const LoginPage = () => {
         </div>
 
         <button
-          className="w-full mt-6 bg-[#2563EB] text-white py-3 rounded-md font-semibold text-[20px] hover:bg-blue-700 disabled:opacity-50"
+          className="w-full mt-6 bg-[#2563EB] text-white py-3 rounded-md font-semibold text-[20px] hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           onClick={handleLogin}
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Logging in..." : "Log In"}
+          {isSubmitting ? (
+            <>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              Logging in...
+            </>
+          ) : (
+            'Log In'
+          )}
         </button>
 
         <div className="mt-4 text-center text-[16px] text-gray-600 mb-4">

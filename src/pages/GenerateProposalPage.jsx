@@ -287,7 +287,20 @@ const GenerateProposalPage = () => {
         <div className="flex flex-col sm:flex-row justify-end gap-4">
           {/* Button to go to compliance page */}
           <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto mx-auto" onClick={() => navigate('/compliance-check', { state: { data: proposal } })}>Check Compliance</button>
-          <button className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto mx-auto" onClick={handleSaveAndNext}>Save & Generate</button>
+          <button
+            className="bg-[#2563EB] text-white px-8 py-2 rounded-lg font-medium text-lg hover:bg-[#1d4ed8] w-auto mx-auto disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            onClick={handleSaveAndNext}
+            disabled={isGeneratingProposal}
+          >
+            {isGeneratingProposal ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                Generating...
+              </>
+            ) : (
+              'Save & Generate'
+            )}
+          </button>
         </div>
       </div>
 

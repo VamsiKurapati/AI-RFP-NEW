@@ -476,11 +476,18 @@ const SignupForm = () => {
                 </div>
 
                 <button
-                  className="w-full mt-6 bg-[#2563EB] text-white py-3 px-4 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50"
+                  className="w-full mt-6 bg-[#2563EB] text-white py-3 px-4 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Submitting..." : "Sign Up"}
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      Submitting...
+                    </>
+                  ) : (
+                    'Sign Up'
+                  )}
                 </button>
               </>
             )}
