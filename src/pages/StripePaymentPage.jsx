@@ -25,12 +25,6 @@ const CheckoutForm = ({ selectedPlan, billingCycle, onSuccess, onError }) => {
     const stripeConfig = getStripeConfigStatus();
 
     // Debug: Log Stripe configuration
-    console.log('Stripe Config Debug:', {
-        publishableKey: STRIPE_CONFIG.PUBLISHABLE_KEY,
-        apiBaseUrl: import.meta.env.VITE_API_BASE_URL,
-        stripeConfig: stripeConfig,
-        environment: import.meta.env.MODE
-    });
 
     useEffect(() => {
         // Create payment intent on the server
@@ -59,11 +53,6 @@ const CheckoutForm = ({ selectedPlan, billingCycle, onSuccess, onError }) => {
                 );
 
                 if (response.data && response.data.clientSecret) {
-                    console.log('Payment Intent Created:', {
-                        clientSecret: response.data.clientSecret,
-                        paymentIntentId: response.data.paymentIntentId || 'Not provided',
-                        apiUrl: `${baseUrl}${STRIPE_CONFIG.API_ENDPOINTS.CREATE_PAYMENT_INTENT}`
-                    });
                     setClientSecret(response.data.clientSecret);
                 } else {
                     setError('Invalid response from payment server. Please try again.');

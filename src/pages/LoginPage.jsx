@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import ToastContainer from "./ToastContainer";
 import { useUser } from "../context/UserContext";
 import { useJWTVerifier } from "../context/JWTVerifier";
+import { sanitizeFormData, sanitizeEmail } from "../utils/sanitization";
 
 const LoginPage = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -25,7 +26,10 @@ const LoginPage = () => {
   }, []);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const sanitizedValue = e.target.name === 'email'
+      ? sanitizeEmail(e.target.value)
+      : e.target.value;
+    setForm({ ...form, [e.target.name]: sanitizedValue });
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
@@ -72,7 +76,9 @@ const LoginPage = () => {
 
     setIsSubmitting(true);
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, form);
+      // Sanitize form data before sending
+      const sanitizedForm = sanitizeFormData(form);
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, sanitizedForm);
       if (res.status === 200) {
         triggerRFPDiscovery(res.data.token, res.data.user.role);
         toast.success("Login successful");

@@ -329,7 +329,6 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
           }
         }
       );
-      //console.log('Response:', response.data.message);
       if (response.status === 201) {
         Swal.fire({
           title: response.data.message,
@@ -344,7 +343,6 @@ const AddTeamMemberModal = ({ isOpen, onClose }) => {
       }
       onClose();
     } catch (error) {
-      //console.error('Error adding team member:', error);
       Swal.fire({
         title: 'Failed to add team member. Please try again.',
         icon: 'error',
@@ -565,7 +563,6 @@ const AddCaseStudyModal = ({ isOpen, onClose }) => {
           }
         }
       );
-      //console.log('Response:', response.data.message);
       if (response.status === 201) {
         Swal.fire({
           title: response.data.message,
@@ -580,7 +577,6 @@ const AddCaseStudyModal = ({ isOpen, onClose }) => {
       }
       onClose();
     } catch (error) {
-      //console.error('Error adding case study:', error);
       Swal.fire({
         title: 'Failed to add case study. Please try again.',
         icon: 'error',
@@ -752,10 +748,8 @@ const AddCertificateModal = ({ isOpen, onClose }) => {
       setTimeout(() => {
         window.location.reload();
       }, 1500);
-      //console.log('Response:', response.data.message);
       onClose();
     } catch (error) {
-      //console.error('Error adding certificate:', error);
       Swal.fire({
         title: 'Failed to add certificate. Please try again.',
         icon: 'error',
@@ -919,7 +913,6 @@ const AddDocumentModal = ({ isOpen, onClose }) => {
           }
         }
       );
-      //console.log('Response:', response.data.message);
       if (response.status === 201) {
         Swal.fire({
           title: response.data.message,
@@ -934,7 +927,6 @@ const AddDocumentModal = ({ isOpen, onClose }) => {
       }
       onClose();
     } catch (error) {
-      //console.error('Error adding document:', error);
       Swal.fire({
         title: 'Failed to add document. Please try again.',
         icon: 'error',
@@ -1160,7 +1152,6 @@ const CompanyProfileDashboard = () => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {
-      //console.error('Error downloading document:', error);
       Swal.fire({
         title: 'Failed to download document. Please try again.',
         icon: 'error',

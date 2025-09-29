@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import PhoneNumberInput, { validatePhoneNumber } from '../components/PhoneNumberInput';
 import Swal from "sweetalert2";
+import { sanitizeFormData, sanitizeText, sanitizeUrl, sanitizeEmail } from '../utils/sanitization';
 
 // Reusable input component
 const FormInput = ({
@@ -220,9 +221,11 @@ const CreateProfile = () => {
     }
     setLoading(true);
     try {
+      // Sanitize form data before submission
+      const sanitizedForm = sanitizeFormData(form);
       const formData = new FormData();
       formData.append("role", role);
-      formData.append("email", form.email);
+      formData.append("email", sanitizedForm.email);
       if (signupData?.password) {
         formData.append("password", signupData?.password);
       } else {
@@ -237,24 +240,24 @@ const CreateProfile = () => {
         setTimeout(() => navigate("/sign_up"), 2000);
         return;
       }
-      formData.append("fullName", form.fullName);
-      formData.append("phone", form.phone);
+      formData.append("fullName", sanitizedForm.fullName);
+      formData.append("phone", sanitizedForm.phone);
 
       if (role === "company") {
-        formData.append("companyName", form.companyName);
-        formData.append("adminName", form.adminName);
-        formData.append("industry", form.industry === "Other" ? form.customIndustry : form.industry);
-        formData.append("numberOfEmployees", form.numberOfEmployees);
-        formData.append("bio", form.bio);
-        formData.append("website", normalizeUrl(form.website));
-        formData.append("linkedIn", form.linkedIn.trim() ? normalizeUrl(form.linkedIn) : "https://linkedin.com");
-        formData.append("location", form.location);
-        formData.append("establishedYear", form.establishedYear);
+        formData.append("companyName", sanitizedForm.companyName);
+        formData.append("adminName", sanitizedForm.adminName);
+        formData.append("industry", sanitizedForm.industry === "Other" ? sanitizedForm.customIndustry : sanitizedForm.industry);
+        formData.append("numberOfEmployees", sanitizedForm.numberOfEmployees);
+        formData.append("bio", sanitizedForm.bio);
+        formData.append("website", normalizeUrl(sanitizedForm.website));
+        formData.append("linkedIn", sanitizedForm.linkedIn.trim() ? normalizeUrl(sanitizedForm.linkedIn) : "https://linkedin.com");
+        formData.append("location", sanitizedForm.location);
+        formData.append("establishedYear", sanitizedForm.establishedYear);
       } else {
-        formData.append("companyName", form.companyName);
-        formData.append("location", form.location);
-        formData.append("jobTitle", form.jobTitle);
-        formData.append("linkedIn", form.linkedIn.trim() ? normalizeUrl(form.linkedIn) : "https://linkedin.com");
+        formData.append("companyName", sanitizedForm.companyName);
+        formData.append("location", sanitizedForm.location);
+        formData.append("jobTitle", sanitizedForm.jobTitle);
+        formData.append("linkedIn", sanitizedForm.linkedIn.trim() ? normalizeUrl(sanitizedForm.linkedIn) : "https://linkedin.com");
       }
 
       const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/signup`, formData);
@@ -287,7 +290,6 @@ const CreateProfile = () => {
         navigate("/login");
       }
     } catch (err) {
-      // console.error(err);
       Swal.fire({
         title: "Submission failed: " + (err.response?.data?.message || err.message),
         icon: "error",
@@ -330,7 +332,7 @@ const CreateProfile = () => {
               id="companyName"
               label="Company Name"
               value={form.companyName}
-              onChange={e => setForm({ ...form, companyName: e.target.value })}
+              onChange={e => setForm({ ...form, companyName: sanitizeText(e.target.value) })}
               error={errors.companyName}
               required
               disabled={isFormDisabled}
@@ -339,7 +341,7 @@ const CreateProfile = () => {
               id="adminName"
               label="Admin Name"
               value={form.adminName}
-              onChange={e => setForm({ ...form, adminName: e.target.value })}
+              onChange={e => setForm({ ...form, adminName: sanitizeText(e.target.value) })}
               error={errors.adminName}
               required
               disabled={isFormDisabled}
@@ -393,7 +395,7 @@ const CreateProfile = () => {
               label="Email"
               type="email"
               value={form.email}
-              onChange={e => setForm({ ...form, email: e.target.value })}
+              onChange={e => setForm({ ...form, email: sanitizeEmail(e.target.value) })}
               error={errors.email}
               required
               disabled={isFormDisabled}
@@ -468,7 +470,7 @@ const CreateProfile = () => {
               label="Website"
               type="url"
               value={form.website}
-              onChange={e => setForm({ ...form, website: e.target.value })}
+              onChange={e => setForm({ ...form, website: sanitizeUrl(e.target.value) })}
               error={errors.website}
               required
               disabled={isFormDisabled}
@@ -481,7 +483,7 @@ const CreateProfile = () => {
               label="LinkedIn (Optional)"
               type="url"
               value={form.linkedIn}
-              onChange={e => setForm({ ...form, linkedIn: e.target.value })}
+              onChange={e => setForm({ ...form, linkedIn: sanitizeUrl(e.target.value) })}
               error={errors.linkedIn}
               disabled={isFormDisabled}
               placeholder="linkedin.com/username"

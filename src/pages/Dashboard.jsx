@@ -162,7 +162,6 @@ const Dashboard = () => {
     };
 
     const handleEditChange = (field, value) => {
-        // console.log(field, value);
         setEditForm(prev => ({ ...prev, [field]: value }));
     };
 
@@ -194,7 +193,6 @@ const Dashboard = () => {
                 }, 1500);
             }
         } catch (err) {
-            // console.error("Error updating proposal:", err);
             Swal.fire({
                 title: 'Error!',
                 text: 'Failed to update proposal',
@@ -249,7 +247,6 @@ const Dashboard = () => {
                 }, 1500);
             }
         } catch (err) {
-            // console.error("Error updating grant proposal:", err);
             Swal.fire({
                 title: 'Error!',
                 text: 'Failed to update grant proposal',
@@ -436,13 +433,11 @@ const Dashboard = () => {
                 if (res.status === 200) {
                     // Add restoreIn field to proposals being moved to deletedProposals
                     const proposalsToDelete = proposalsState.filter((_, idx) => selectedProposals.includes(idx));
-                    // console.log("proposalsToDelete", proposalsToDelete);
                     const proposalsWithRestoreIn = proposalsToDelete.map(proposal => ({
                         ...proposal,
                         restoreIn: "15 days"
                     }));
 
-                    // console.log("proposalsWithRestoreIn", proposalsWithRestoreIn);
 
                     // Update summary stats when proposals are moved to deleted
                     setSummaryStats(prev => {

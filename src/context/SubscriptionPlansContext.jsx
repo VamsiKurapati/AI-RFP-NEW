@@ -37,7 +37,6 @@ export const SubscriptionPlansProvider = ({ children }) => {
                     setMostPopularPlan(null);
                 }
             } catch (error) {
-                console.error('Error fetching subscription plans:', error);
                 setSubscriptionPlans([]);
                 setMostPopularPlan(null);
             }

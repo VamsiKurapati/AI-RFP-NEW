@@ -433,27 +433,6 @@ const Proposals = () => {
     const [isFetchingProposal, setIsFetchingProposal] = useState({});
     const [isFetchingGrantProposal, setIsFetchingGrantProposal] = useState({});
 
-    // Validate that we're not showing more items than expected
-    const validatePagination = () => {
-        if (currentSavedProposals.length > itemsPerPage) {
-            console.warn('Saved proposals showing more items than expected:', currentSavedProposals.length, 'expected:', itemsPerPage);
-        }
-        if (currentDraftProposals.length > itemsPerPage) {
-            console.warn('Draft proposals showing more items than expected:', currentDraftProposals.length, 'expected:', itemsPerPage);
-        }
-        if (currentSavedGrants.length > itemsPerPage) {
-            console.warn('Saved grants showing more items than expected:', currentSavedGrants.length, 'expected:', itemsPerPage);
-        }
-        if (currentDraftGrants.length > itemsPerPage) {
-            console.warn('Draft grants showing more items than expected:', currentDraftGrants.length, 'expected:', itemsPerPage);
-        }
-    };
-
-    // Run validation on every render
-    useEffect(() => {
-        validatePagination();
-    }, []); // Add empty dependency array to run only once
-
     // Ensure current page doesn't exceed total pages
     useEffect(() => {
         if (currentSavedPage > totalSavedPages && totalSavedPages > 0) {

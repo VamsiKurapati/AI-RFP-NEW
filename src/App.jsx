@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-
 import { lazy, Suspense } from "react";
+import ErrorBoundary from './components/ErrorBoundary';
 
 const ProtectedRoutes = lazy(() => import('./pages/ProtectedRoutes'));
 
@@ -34,8 +34,12 @@ const StripePaymentPage = lazy(() => import("./pages/StripePaymentPage"));
 
 const App = () => {
   return (
-    <>
-      <Suspense fallback={<></>}>
+    <ErrorBoundary>
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      }>
         <Routes>
           <Route path="/" element={<><Home /></>} />
 
@@ -123,7 +127,7 @@ const App = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
-    </>
+    </ErrorBoundary>
   );
 };
 

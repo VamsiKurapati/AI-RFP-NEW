@@ -48,11 +48,9 @@ const handleWordGeneration = async (proposal) => {
 
         if (isValidBase64(project)) {
             // It's a base64 string, decode it
-            console.log('Processing as base64 string');
             binaryData = atob(project);
         } else {
             // It might already be binary data or JSON
-            console.log('Processing as direct data');
             if (typeof project === 'string') {
                 try {
                     // Try to parse as JSON first
@@ -88,7 +86,6 @@ const handleWordGeneration = async (proposal) => {
         URL.revokeObjectURL(docxUrl);
 
     } catch (error) {
-        console.error('Error generating Word document:', error);
 
         // Show error message to user
         Swal.fire({
