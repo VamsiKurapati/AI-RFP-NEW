@@ -93,7 +93,7 @@ const MobileDropdown = ({ activeTab, onSelect }) => {
 
 const Sidebar = ({ isMobile = false, onClose = () => { }, active = "Overview", onSelect }) => (
   <div
-    className={`fixed ${isMobile ? "top-0 w-64 h-full z-50" : "mt-9 w-64 h-full z-50"
+    className={`fixed ${isMobile ? "top-0 w-64 h-full z-50" : "mt-[52px] w-64 h-full z-50"
       } left-0 bg-white shadow-md overflow-hidden flex flex-col`}
   >
     {/* Scrollable content area */}
@@ -163,7 +163,7 @@ const RightSidebar = ({ deadlines, activity, isMobile, onClose }) => {
   }
 
   return (
-    <div className="hidden lg:block fixed mt-9 right-0 w-64 h-full bg-[#F8F9FA] shadow-md z-20 flex flex-col">
+    <div className="hidden lg:block fixed mt-[52px] right-0 w-64 h-full bg-[#F8F9FA] shadow-md z-20 flex flex-col">
       {content}
     </div>
   );
@@ -1460,33 +1460,33 @@ const CompanyProfileDashboard = () => {
   };
 
   // Loading state
-  if (loading) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2563EB] mx-auto mb-4"></div>
-          <p className="text-[#6B7280]">Loading company profile...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="h-full flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2563EB] mx-auto mb-4"></div>
+  //         <p className="text-[#6B7280]">Loading company profile...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  // Error state
-  if (error && !companyData) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">Error loading company profile: {error}</p>
-          <button
-            onClick={refreshProfile}
-            className="bg-[#2563EB] text-white px-4 py-2 rounded-lg"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // // Error state
+  // if (error && !companyData) {
+  //   return (
+  //     <div className="h-full flex items-center justify-center">
+  //       <div className="text-center">
+  //         <p className="text-red-600 mb-4">Error loading company profile: {error}</p>
+  //         <button
+  //           onClick={refreshProfile}
+  //           className="bg-[#2563EB] text-white px-4 py-2 rounded-lg"
+  //         >
+  //           Retry
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
