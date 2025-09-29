@@ -492,7 +492,7 @@ const Dashboard = () => {
             try {
                 const token = localStorage.getItem('token');
                 const res = await axios.put(`${BASE_URL}/deleteGrantProposals`, {
-                    proposalIds: selectedGrantProposals.map(idx => grantProposals[idx]._id)
+                    grantProposalIds: selectedGrantProposals.map(idx => grantProposals[idx]._id)
                 }, {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -1438,10 +1438,10 @@ const Dashboard = () => {
                                             <td className="px-4 py-2">
                                                 {editGrantIdx === realIdx ? (
                                                     <select className="w-full border border-[#111827] rounded px-3 py-2 text-[#111827] text-[16px] bg-[#F3F4F6] focus:outline-none focus:ring-2 focus:ring-[#2563EB] min-w-[140px]" value={editGrantForm.status} onChange={e => handleEditGrantChange("status", e.target.value)}>
-                                                        <option value="Posted">Posted</option>
-                                                        <option value="Forecasted">Forecasted</option>
-                                                        <option value="Closed">Closed</option>
-                                                        <option value="Archived">Archived</option>
+                                                        <option value="In Progress">In Progress</option>
+                                                        <option value="Submitted">Submitted</option>
+                                                        <option value="Won">Won</option>
+                                                        <option value="Rejected">Rejected</option>
                                                     </select>
                                                 ) : (
                                                     statusBadge(p.OPPORTUNITY_STATUS || p.status)
