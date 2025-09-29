@@ -118,7 +118,7 @@ const LoginPage = () => {
 
         <div className="space-y-4">
           <div>
-            <label className="block text-[24px] text-[#111827] font-medium mb-1">Email id</label>
+            <label className="block text-[24px] text-[#111827] font-medium mb-1">Email Id</label>
             <input
               type="email"
               name="email"

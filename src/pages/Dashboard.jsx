@@ -1159,7 +1159,7 @@ const Dashboard = () => {
                                                         className="border border-[#111827] rounded px-2 py-1 text-[#111827] text-[16px] w-full bg-[#F3F4F6] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                                                     />
                                                 ) : (
-                                                    p.submittedAt || p.SUBMITTED_AT ? new Date(p.submittedAt || p.SUBMITTED_AT).toLocaleDateString('en-US', {
+                                                    p.submittedAt ? new Date(p.submittedAt).toLocaleDateString('en-US', {
                                                         year: 'numeric',
                                                         month: 'short',
                                                         day: 'numeric'
@@ -1457,7 +1457,7 @@ const Dashboard = () => {
                                                         className="border border-[#111827] rounded px-2 py-1 text-[#111827] text-[16px] w-full bg-[#F3F4F6] focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
                                                     />
                                                 ) : (
-                                                    p.submittedAt || p.SUBMITTED_AT ? new Date(p.submittedAt || p.SUBMITTED_AT).toLocaleDateString('en-US', {
+                                                    p.submittedAt ? new Date(p.submittedAt).toLocaleDateString('en-US', {
                                                         year: 'numeric',
                                                         month: 'short',
                                                         day: 'numeric'
