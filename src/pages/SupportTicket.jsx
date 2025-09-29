@@ -217,7 +217,7 @@ const SupportTicket = () => {
                 }
             );
 
-            if (res.status === 200) {
+            if (res.status === 200 || res.status === 201) {
                 Swal.fire({
                     title: res.data.message || "Support ticket submitted successfully!",
                     icon: 'success',
