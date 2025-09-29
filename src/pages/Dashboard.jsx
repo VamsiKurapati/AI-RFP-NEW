@@ -213,7 +213,7 @@ const Dashboard = () => {
             const token = localStorage.getItem("token");
             const res = await axios.put(
                 `${BASE_URL}/updateGrantProposal`,
-                { proposalId, updates: editGrantForm },
+                { grantProposalId: proposalId, updates: editGrantForm },
                 {
                     headers: { Authorization: `Bearer ${token}` }
                 }
