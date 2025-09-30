@@ -116,6 +116,8 @@ const SuperAdmin = () => {
     let planManagementStats = { "Active Users": 0, "Revenue This Month": 0 };
     const [supportTicketsStats, setSupportTicketsStats] = useState({});
     const [supportTicketsData, setSupportTicketsData] = useState([]);
+    const [completedTicketsData, setCompletedTicketsData] = useState([]);
+    const [enterpriseTicketsData, setEnterpriseTicketsData] = useState([]);
     const [notificationsData, setNotificationsData] = useState([]);
 
     // Pagination state
@@ -156,6 +158,9 @@ const SuperAdmin = () => {
                 setCompaniesData(prev => (prev || []).map(u => u._id === userId ? { ...u, blocked: newBlockedStatus } : u));
                 setFilteredUsers(prev => (prev || []).map(u => u._id === userId ? { ...u, blocked: newBlockedStatus } : u));
                 toast.success(`User ${newBlockedStatus ? 'blocked' : 'unblocked'} successfully`);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
             }
         } catch (e) {
             toast.error('Failed to update user status');
@@ -186,29 +191,16 @@ const SuperAdmin = () => {
                 }
             });
             if (res.status === 200) {
-                // Update local state
-                const updatedTicket = {
-                    ...currentTicket,
-                    status: newStatus,
-                    adminMessages: currentAdminMessages,
-                    resolvedDescription: updateData.Resolved_Description || currentTicket.resolvedDescription
-                };
-
-                setSupportTicketsData(prev => (prev || []).map(t => t._id === ticketId ? updatedTicket : t));
-                setFilteredSupport(prev => (prev || []).map(t => t._id === ticketId ? updatedTicket : t));
-
-                // Update selectedSupport if it's the current ticket
-                if (selectedSupport && selectedSupport._id === ticketId) {
-                    setSelectedSupport(updatedTicket);
-                }
-
-                // Clear admin message field using ref
                 if (adminMessageRef.current) {
                     adminMessageRef.current.value = '';
                 }
                 // Don't clear resolved description - preserve it for display
 
                 toast.success(`Ticket status updated to ${newStatus}`);
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
             }
         } catch (e) {
             toast.error('Failed to update ticket status');
@@ -235,28 +227,16 @@ const SuperAdmin = () => {
                 }
             });
             if (res.status === 200) {
-                // Update local state
-                const updatedTicket = {
-                    ...selectedSupport,
-                    adminMessages: [...(selectedSupport.adminMessages || []), { message: newAdminMessage, createdAt: new Date().toISOString() }],
-                    resolvedDescription: selectedSupport.resolvedDescription
-                };
-
-                setSupportTicketsData(prev => (prev || []).map(t => t._id === ticketId ? updatedTicket : t));
-                setFilteredSupport(prev => (prev || []).map(t => t._id === ticketId ? updatedTicket : t));
-
-                // Update selectedSupport if it's the current ticket
-                if (selectedSupport && selectedSupport._id === ticketId) {
-                    setSelectedSupport(updatedTicket);
-                }
-
-                // Clear admin message field using ref
                 if (adminMessageRef.current) {
                     adminMessageRef.current.value = '';
                 }
                 // Don't clear resolved description - preserve it for display
 
                 toast.success('Message added successfully');
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
             }
         } catch (e) {
             toast.error('Failed to add message');
@@ -291,9 +271,6 @@ const SuperAdmin = () => {
                     if (supportResolvedDescriptionRef.current) {
                         supportResolvedDescriptionRef.current.value = updatedSupport.resolvedDescription || '';
                     }
-
-
-
                     setViewSupportModal(true);
                 }
             } else {
@@ -735,12 +712,27 @@ const SuperAdmin = () => {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
                 });
-                const supportTicketsData = response.data.TicketData;
+
+                // Set the three separate data sources
+                const supportTicketsData = response.data.supportTicketsData || [];
+                const completedTicketsData = response.data.completedTicketsData || [];
+                const enterpriseTicketsData = response.data.enterpriseTicketsData || [];
+
                 setSupportTicketsData(supportTicketsData);
+                setCompletedTicketsData(completedTicketsData);
+                setEnterpriseTicketsData(enterpriseTicketsData);
+
                 const supportTicketsStats = response.data.TicketStats;
                 setSupportTicketsStats(supportTicketsStats);
-                setFilteredSupport(supportTicketsData);
-                setFilteredEnterpriseSupport((supportTicketsData || []).filter(t => (t.plan_name || '').toLowerCase() === 'enterprise'));
+
+                // Set initial filtered data based on current tab
+                if (supportTab === 'active') {
+                    setFilteredSupport(supportTicketsData);
+                } else if (supportTab === 'Enterprise') {
+                    setFilteredEnterpriseSupport(enterpriseTicketsData);
+                } else if (supportTab === 'resolved') {
+                    setFilteredSupport(completedTicketsData);
+                }
             } catch (error) {
                 //console.log("error", error);
             } finally {
@@ -808,16 +800,28 @@ const SuperAdmin = () => {
         //console.log("supportSearchTerm", supportSearchTerm);
         //console.log("support", supportTicketsData);
         const term = (supportSearchTerm || '').toLowerCase();
-        const baseAll = supportTicketsData || [];
-        const baseEnterprise = baseAll.filter(t => (t.plan_name || '').toLowerCase() === 'enterprise');
+
+        // Get the appropriate data source based on current tab
+        let baseData = [];
+        if (supportTab === 'active') {
+            baseData = supportTicketsData || [];
+        } else if (supportTab === 'Enterprise') {
+            baseData = enterpriseTicketsData || [];
+        } else if (supportTab === 'resolved') {
+            baseData = completedTicketsData || [];
+        }
+
         const filterFn = (ticket) =>
             (ticket.type && ticket.type.toLowerCase().includes(term)) ||
             (ticket.subject && ticket.subject.toLowerCase().includes(term)) ||
             (ticket.ticket_id && ticket.ticket_id.toLowerCase().includes(term));
 
-        setFilteredSupport(term ? baseAll.filter(filterFn) : baseAll);
-        setFilteredEnterpriseSupport(term ? baseEnterprise.filter(filterFn) : baseEnterprise);
-    }, [supportSearchTerm]);
+        if (supportTab === 'Enterprise') {
+            setFilteredEnterpriseSupport(term ? baseData.filter(filterFn) : baseData);
+        } else {
+            setFilteredSupport(term ? baseData.filter(filterFn) : baseData);
+        }
+    }, [supportSearchTerm, supportTab, supportTicketsData, completedTicketsData, enterpriseTicketsData]);
 
     useEffect(() => {
         //console.log("notificationSearchTerm", notificationSearchTerm);
@@ -900,33 +904,51 @@ const SuperAdmin = () => {
     }, [paymentsData, transactionStatusFilter, transactionDateFilter]);
 
     useEffect(() => {
-        const baseAll = supportTicketsData || [];
-        const baseEnterprise = baseAll.filter(t => (t.plan_name || '').toLowerCase() === 'enterprise');
+        // Get the appropriate data source based on current tab
+        let baseData = [];
+        if (supportTab === 'active') {
+            baseData = supportTicketsData || [];
+        } else if (supportTab === 'Enterprise') {
+            baseData = enterpriseTicketsData || [];
+        } else if (supportTab === 'resolved') {
+            baseData = completedTicketsData || [];
+        }
 
         const filterPipeline = (base) => {
-            const byStatus = supportStatusFilter === 'all' ? base : base.filter(t => (t.status === supportStatusFilter));
-            const byPriority = supportPriorityFilter === 'all' ? byStatus : byStatus.filter(t => (t.priority || '').toLowerCase() === supportPriorityFilter.toLowerCase());
-            const byType = supportTypeFilter === 'all' ? byPriority : byPriority.filter(t => (t.category || '').toLowerCase() === supportTypeFilter.toLowerCase());
-            return byType;
+            // For completed tickets tab, don't apply status filter
+            if (supportTab === 'resolved') {
+                const byPriority = supportPriorityFilter === 'all' ? base : base.filter(t => (t.priority || '').toLowerCase() === supportPriorityFilter.toLowerCase());
+                const byType = supportTypeFilter === 'all' ? byPriority : byPriority.filter(t => (t.category || '').toLowerCase() === supportTypeFilter.toLowerCase());
+                return byType;
+            } else {
+                // For other tabs, apply all filters including status
+                const byStatus = supportStatusFilter === 'all' ? base : base.filter(t => (t.status === supportStatusFilter));
+                const byPriority = supportPriorityFilter === 'all' ? byStatus : byStatus.filter(t => (t.priority || '').toLowerCase() === supportPriorityFilter.toLowerCase());
+                const byType = supportTypeFilter === 'all' ? byPriority : byPriority.filter(t => (t.category || '').toLowerCase() === supportTypeFilter.toLowerCase());
+                return byType;
+            }
         };
 
-        setFilteredSupport(filterPipeline(baseAll));
-        setFilteredEnterpriseSupport(filterPipeline(baseEnterprise));
-    }, [supportTicketsData, supportStatusFilter, supportPriorityFilter, supportTypeFilter]);
+        if (supportTab === 'Enterprise') {
+            setFilteredEnterpriseSupport(filterPipeline(baseData));
+        } else {
+            setFilteredSupport(filterPipeline(baseData));
+        }
+    }, [supportTab, supportTicketsData, completedTicketsData, enterpriseTicketsData, supportStatusFilter, supportPriorityFilter, supportTypeFilter]);
+
+    // Handle tab changes and update filtered data
+    useEffect(() => {
+        if (supportTab === 'active') {
+            setFilteredSupport(supportTicketsData || []);
+        } else if (supportTab === 'Enterprise') {
+            setFilteredEnterpriseSupport(enterpriseTicketsData || []);
+        } else if (supportTab === 'resolved') {
+            setFilteredSupport(completedTicketsData || []);
+        }
+    }, [supportTab, supportTicketsData, completedTicketsData, enterpriseTicketsData]);
 
     // Removed duplicate notifications filter effect; combined above
 
-    useEffect(() => {
-        const baseAll = supportTicketsData || [];
-        const baseEnterprise = baseAll.filter(support => (support.plan_name || '').toLowerCase() === 'enterprise');
-        if (completedTickets) {
-            setFilteredSupport(baseAll.filter(support => support.status === 'Completed'));
-            setFilteredEnterpriseSupport(baseEnterprise.filter(support => support.status === 'Completed'));
-        } else {
-            setFilteredSupport(baseAll.filter(support => support.status !== 'Completed'));
-            setFilteredEnterpriseSupport(baseEnterprise.filter(support => support.status !== 'Completed'));
-        }
-    }, [completedTickets, supportTicketsData]);
 
     useEffect(() => {
         // Reset pagination when search terms change
@@ -2481,10 +2503,11 @@ const SuperAdmin = () => {
                                         await axios.delete(`${baseUrl}/admin/deleteContactData/${id}`, {
                                             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                                         });
-                                        setContactRequestData(prev => (prev || []).filter(r => r._id !== id));
-                                        setFilteredContactRequest(prev => (prev || []).filter(r => r._id !== id));
                                         setContactDetailsModalOpen(false);
                                         toast.success('Contact request deleted');
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 2000);
                                     } catch (e) {
                                         toast.error('Failed to delete');
                                     }
@@ -2501,11 +2524,11 @@ const SuperAdmin = () => {
                                             await axios.put(`${baseUrl}/admin/updateContactData/${id}`, { status: 'Connected' }, {
                                                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
                                             });
-                                            setContactRequestData(prev => (prev || []).map(r => r._id === id ? { ...r, status: 'Connected' } : r));
-                                            setFilteredContactRequest(prev => (prev || []).map(r => r._id === id ? { ...r, status: 'Connected' } : r));
-                                            setSelectedContactRequest(prev => prev ? { ...prev, status: 'Connected' } : prev);
                                             setContactDetailsModalOpen(false);
                                             toast.success('Marked as Connected');
+                                            setTimeout(() => {
+                                                window.location.reload();
+                                            }, 2000);
                                         } catch (e) {
                                             toast.error('Failed to update');
                                         }
@@ -2528,7 +2551,7 @@ const SuperAdmin = () => {
             <div className="mb-6">
                 <nav className="flex space-x-8">
                     <button
-                        onClick={() => { setSupportTab('active'); setCompletedTickets(false) }}
+                        onClick={() => { setSupportTab('active') }}
                         className={`py-2 px-1 border-b-2 font-medium text-[16px] transition-colors ${supportTab === 'active'
                             ? 'border-[#6C63FF] text-[#6C63FF]'
                             : 'border-transparent text-[#4B5563]'
@@ -2537,7 +2560,7 @@ const SuperAdmin = () => {
                         Active Tickets
                     </button>
                     <button
-                        onClick={() => { setSupportTab('Enterprise'); setCompletedTickets(false) }}
+                        onClick={() => { setSupportTab('Enterprise') }}
                         className={`py-2 px-1 border-b-2 font-medium text-[16px] transition-colors ${supportTab === 'Enterprise'
                             ? 'border-[#6C63FF] text-[#6C63FF]'
                             : 'border-transparent text-[#4B5563]'
@@ -2546,7 +2569,7 @@ const SuperAdmin = () => {
                         Enterprise Tickets
                     </button>
                     <button
-                        onClick={() => { setSupportTab('resolved'); setCompletedTickets(true) }}
+                        onClick={() => { setSupportTab('resolved') }}
                         className={`py-2 px-1 border-b-2 font-medium text-[16px] transition-colors ${supportTab === 'resolved'
                             ? 'border-[#6C63FF] text-[#6C63FF]'
                             : 'border-transparent text-[#4B5563]'
@@ -2644,52 +2667,64 @@ const SuperAdmin = () => {
                                     {/* All */}
                                     <div className="flex items-start space-x-2 hover:bg-gray-50 p-2 rounded cursor-pointer mb-2">
                                         <input type="radio" name="supportAll" id="support_all" value="all"
-                                            checked={supportStatusFilter === 'all' && supportPriorityFilter === 'all' && supportTypeFilter === 'all'}
-                                            onChange={() => { handleSupportStatusChangeFilter('all'); handleSupportPriorityChangeFilter('all'); handleSupportTypeChangeFilter('all'); }}
+                                            checked={
+                                                supportTab === 'resolved'
+                                                    ? supportPriorityFilter === 'all' && supportTypeFilter === 'all'
+                                                    : supportStatusFilter === 'all' && supportPriorityFilter === 'all' && supportTypeFilter === 'all'
+                                            }
+                                            onChange={() => {
+                                                handleSupportStatusChangeFilter('all');
+                                                handleSupportPriorityChangeFilter('all');
+                                                handleSupportTypeChangeFilter('all');
+                                            }}
                                             className="mt-1"
                                         />
                                         <label htmlFor="support_all" className="cursor-pointer leading-none">All</label>
                                     </div>
-                                    {/* Status */}
-                                    <span className="text-[16px] font-medium text-[#4B5563]">Status :</span>
-                                    <div className="ml-4">
-                                        <div className="flex items-start space-x-2 hover:bg-gray-50 p-2 rounded cursor-pointer mb-2">
-                                            <input type="radio" name="supportStatusFilter" id="pending" value="Pending"
-                                                checked={supportStatusFilter === 'Pending'}
-                                                onClick={(e) => { if (supportStatusFilter === e.target.value) handleSupportStatusChangeFilter('all'); }}
-                                                onChange={(e) => handleSupportStatusChangeFilter(e.target.value)}
-                                                className="mt-1"
-                                            />
-                                            <label htmlFor="pending" className="cursor-pointer leading-none">Pending</label>
-                                        </div>
-                                        <div className="flex items-start space-x-2 hover:bg-gray-50 p-2 rounded cursor-pointer mb-2">
-                                            <input type="radio" name="supportStatusFilter" id="inProgress" value="In Progress"
-                                                checked={supportStatusFilter === 'In Progress'}
-                                                onClick={(e) => { if (supportStatusFilter === e.target.value) handleSupportStatusChangeFilter('all'); }}
-                                                onChange={(e) => handleSupportStatusChangeFilter(e.target.value)}
-                                                className="mt-1"
-                                            />
-                                            <label htmlFor="inProgress" className="cursor-pointer leading-none">In Progress</label>
-                                        </div>
-                                        <div className="flex items-start space-x-2 hover:bg-gray-50 p-2 rounded cursor-pointer mb-2">
-                                            <input type="radio" name="supportStatusFilter" id="reopened" value="Re-Opened"
-                                                checked={supportStatusFilter === 'Re-Opened'}
-                                                onClick={(e) => { if (supportStatusFilter === e.target.value) handleSupportStatusChangeFilter('all'); }}
-                                                onChange={(e) => handleSupportStatusChangeFilter(e.target.value)}
-                                                className="mt-1"
-                                            />
-                                            <label htmlFor="reopened" className="cursor-pointer leading-none">Re-Opened</label>
-                                        </div>
-                                        <div className="flex items-start space-x-2 hover:bg-gray-50 p-2 rounded cursor-pointer mb-2">
-                                            <input type="radio" name="supportStatusFilter" id="completed" value="Completed"
-                                                checked={supportStatusFilter === 'Completed'}
-                                                onClick={(e) => { if (supportStatusFilter === e.target.value) handleSupportStatusChangeFilter('all'); }}
-                                                onChange={(e) => handleSupportStatusChangeFilter(e.target.value)}
-                                                className="mt-1"
-                                            />
-                                            <label htmlFor="completed" className="cursor-pointer leading-none">Completed</label>
-                                        </div>
-                                    </div>
+                                    {/* Status - Hide for resolved tickets tab */}
+                                    {supportTab !== 'resolved' && (
+                                        <>
+                                            <span className="text-[16px] font-medium text-[#4B5563]">Status :</span>
+                                            <div className="ml-4">
+                                                <div className="flex items-start space-x-2 hover:bg-gray-50 p-2 rounded cursor-pointer mb-2">
+                                                    <input type="radio" name="supportStatusFilter" id="pending" value="Pending"
+                                                        checked={supportStatusFilter === 'Pending'}
+                                                        onClick={(e) => { if (supportStatusFilter === e.target.value) handleSupportStatusChangeFilter('all'); }}
+                                                        onChange={(e) => handleSupportStatusChangeFilter(e.target.value)}
+                                                        className="mt-1"
+                                                    />
+                                                    <label htmlFor="pending" className="cursor-pointer leading-none">Pending</label>
+                                                </div>
+                                                <div className="flex items-start space-x-2 hover:bg-gray-50 p-2 rounded cursor-pointer mb-2">
+                                                    <input type="radio" name="supportStatusFilter" id="inProgress" value="In Progress"
+                                                        checked={supportStatusFilter === 'In Progress'}
+                                                        onClick={(e) => { if (supportStatusFilter === e.target.value) handleSupportStatusChangeFilter('all'); }}
+                                                        onChange={(e) => handleSupportStatusChangeFilter(e.target.value)}
+                                                        className="mt-1"
+                                                    />
+                                                    <label htmlFor="inProgress" className="cursor-pointer leading-none">In Progress</label>
+                                                </div>
+                                                <div className="flex items-start space-x-2 hover:bg-gray-50 p-2 rounded cursor-pointer mb-2">
+                                                    <input type="radio" name="supportStatusFilter" id="reopened" value="Re-Opened"
+                                                        checked={supportStatusFilter === 'Re-Opened'}
+                                                        onClick={(e) => { if (supportStatusFilter === e.target.value) handleSupportStatusChangeFilter('all'); }}
+                                                        onChange={(e) => handleSupportStatusChangeFilter(e.target.value)}
+                                                        className="mt-1"
+                                                    />
+                                                    <label htmlFor="reopened" className="cursor-pointer leading-none">Re-Opened</label>
+                                                </div>
+                                                <div className="flex items-start space-x-2 hover:bg-gray-50 p-2 rounded cursor-pointer mb-2">
+                                                    <input type="radio" name="supportStatusFilter" id="completed" value="Completed"
+                                                        checked={supportStatusFilter === 'Completed'}
+                                                        onClick={(e) => { if (supportStatusFilter === e.target.value) handleSupportStatusChangeFilter('all'); }}
+                                                        onChange={(e) => handleSupportStatusChangeFilter(e.target.value)}
+                                                        className="mt-1"
+                                                    />
+                                                    <label htmlFor="completed" className="cursor-pointer leading-none">Completed</label>
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
                                     {/* Priority */}
                                     <span className="text-[16px] font-medium text-[#4B5563]">Priority :</span>
                                     <div className="ml-4">
@@ -3277,31 +3312,12 @@ const SuperAdmin = () => {
     };
 
     const handleLogout = async () => {
-        try {
-            const res = await axios.post(`${baseUrl}/auth/logout`, {}, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            //console.log("Logout response: ", res);
-            if (res.status === 200) {
-                localStorage.clear();
-                sessionStorage.clear();
-                setTimeout(() => {
-                    navigate('/');
-                    window.location.reload();
-                }, 1000);
-            }
-        } catch (error) {
-            // console.error("Error in logout: ", error);
-            Swal.fire({
-                title: "Error in logout: ",
-                icon: "warning",
-                timer: 1500,
-                showConfirmButton: false,
-                showCancelButton: false,
-            });
-        }
+        localStorage.clear();
+        sessionStorage.clear();
+        setTimeout(() => {
+            navigate('/');
+            window.location.reload();
+        }, 1000);
     };
 
     // Modal Components
