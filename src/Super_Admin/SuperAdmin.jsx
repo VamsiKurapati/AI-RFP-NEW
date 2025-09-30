@@ -56,8 +56,10 @@ import ShowCustomDetails from '../components/SuperAdminComponents/ShowCustomDeta
 
 const SuperAdmin = () => {
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState('user-management');
-    const [sidebarHoverEnabled, setSidebarHoverEnabled] = useState(true);
+    const [activeTab, setActiveTab] = useState(() => {
+        // Load activeTab from URL hash or default to 'user-management'
+        return window.location.hash.slice(1) || 'user-management';
+    });
     // Search Terms
     const [searchTerm, setSearchTerm] = useState('');
     const [transactionSearchTerm, setTransactionSearchTerm] = useState('');
@@ -66,10 +68,7 @@ const SuperAdmin = () => {
 
     // Inner Tabs
     const [supportTab, setSupportTab] = useState('active');
-    const [paymentsTab, setPaymentsTab] = useState('payments');
 
-    // Completed Tickets
-    const [completedTickets, setCompletedTickets] = useState(false);
 
     // Profile
     const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -328,6 +327,17 @@ const SuperAdmin = () => {
             }
 
         }
+    }, []);
+
+    // Handle URL hash changes (browser back/forward buttons)
+    useEffect(() => {
+        const handleHashChange = () => {
+            const hash = window.location.hash.slice(1) || 'user-management';
+            setActiveTab(hash);
+        };
+
+        window.addEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('hashchange', handleHashChange);
     }, []);
 
     // Close modals with Escape key
@@ -2735,13 +2745,13 @@ const SuperAdmin = () => {
                                                     <label htmlFor="reopened" className="cursor-pointer leading-none">Re-Opened</label>
                                                 </div>
                                                 <div className="flex items-start space-x-2 hover:bg-gray-50 p-2 rounded cursor-pointer mb-2">
-                                                    <input type="radio" name="supportStatusFilter" id="completed" value="Completed"
-                                                        checked={supportStatusFilter === 'Completed'}
+                                                    <input type="radio" name="supportStatusFilter" id="withdrawn" value="Withdrawn"
+                                                        checked={supportStatusFilter === 'Withdrawn'}
                                                         onClick={(e) => { if (supportStatusFilter === e.target.value) handleSupportStatusChangeFilter('all'); }}
                                                         onChange={(e) => handleSupportStatusChangeFilter(e.target.value)}
                                                         className="mt-1"
                                                     />
-                                                    <label htmlFor="completed" className="cursor-pointer leading-none">Completed</label>
+                                                    <label htmlFor="withdrawn" className="cursor-pointer leading-none">Withdrawn</label>
                                                 </div>
                                             </div>
                                         </>
@@ -4271,6 +4281,7 @@ const SuperAdmin = () => {
                                         }`}
                                     onClick={() => {
                                         setActiveTab("user-management");
+                                        window.location.hash = "user-management";
                                         closeAllInvoiceRows();
                                         setShowMobileMenu(false);
                                     }}
@@ -4287,6 +4298,7 @@ const SuperAdmin = () => {
                                         }`}
                                     onClick={() => {
                                         setActiveTab("payments");
+                                        window.location.hash = "payments";
                                         closeAllInvoiceRows();
                                         setShowMobileMenu(false);
                                     }}
@@ -4335,6 +4347,7 @@ const SuperAdmin = () => {
                                         }`}
                                     onClick={() => {
                                         setActiveTab("support");
+                                        window.location.hash = "support";
                                         closeAllInvoiceRows();
                                         setShowMobileMenu(false);
                                     }}
@@ -4399,6 +4412,7 @@ const SuperAdmin = () => {
                                         }`}
                                     onClick={() => {
                                         setActiveTab('user-management');
+                                        window.location.hash = 'user-management';
                                         closeAllInvoiceRows();
                                     }}
                                 >
@@ -4413,6 +4427,7 @@ const SuperAdmin = () => {
                                         }`}
                                     onClick={() => {
                                         setActiveTab('payments');
+                                        window.location.hash = 'payments';
                                         closeAllInvoiceRows();
                                     }}
                                 >
@@ -4455,6 +4470,7 @@ const SuperAdmin = () => {
                                         }`}
                                     onClick={() => {
                                         setActiveTab('support');
+                                        window.location.hash = 'support';
                                         closeAllInvoiceRows();
                                     }}
                                 >
@@ -4530,7 +4546,9 @@ const SuperAdmin = () => {
                             <div className="flex items-center space-x-4">
                                 <button className="p-2 transition-colors relative"
                                     onClick={() => {
-                                        activeTab === 'notifications' ? setActiveTab('user-management') : setActiveTab('notifications');
+                                        const newTab = activeTab === 'notifications' ? 'user-management' : 'notifications';
+                                        setActiveTab(newTab);
+                                        window.location.hash = newTab;
                                         closeAllInvoiceRows();
                                     }}
                                 >
