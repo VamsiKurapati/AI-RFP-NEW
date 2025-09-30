@@ -115,6 +115,8 @@ const SuperAdmin = () => {
     const [paymentsData, setPaymentsData] = useState([]);
     let planManagementStats = { "Active Users": 0, "Revenue This Month": 0 };
     const [supportTicketsStats, setSupportTicketsStats] = useState({});
+    const [supportTicketsStatsCompleted, setSupportTicketsStatsCompleted] = useState({});
+    const [supportTicketsStatsEnterprise, setSupportTicketsStatsEnterprise] = useState({});
     const [supportTicketsData, setSupportTicketsData] = useState([]);
     const [completedTicketsData, setCompletedTicketsData] = useState([]);
     const [enterpriseTicketsData, setEnterpriseTicketsData] = useState([]);
@@ -722,8 +724,14 @@ const SuperAdmin = () => {
                 setCompletedTicketsData(completedTicketsData);
                 setEnterpriseTicketsData(enterpriseTicketsData);
 
-                const supportTicketsStats = response.data.TicketStats;
+                // Set the three separate stats objects
+                const supportTicketsStats = response.data.TicketStats || {};
+                const supportTicketsStatsCompleted = response.data.TicketStatsCompleted || {};
+                const supportTicketsStatsEnterprise = response.data.TicketStatsEnterprise || {};
+
                 setSupportTicketsStats(supportTicketsStats);
+                setSupportTicketsStatsCompleted(supportTicketsStatsCompleted);
+                setSupportTicketsStatsEnterprise(supportTicketsStatsEnterprise);
 
                 // Set initial filtered data based on current tab
                 if (supportTab === 'active') {
@@ -2583,48 +2591,61 @@ const SuperAdmin = () => {
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 {/* {console.log("kunal"+supportTicketsStats)} */}
-                {Object.keys(supportTicketsStats).map((key, index) => (
-                    <div
-                        key={index}
-                        className="h-[139px] rounded-2xl bg-gradient-to-b from-[#413B99] to-[#6C63FF] flex justify-between shadow-lg w-full"
-                    >
-                        {/* Left Section */}
-                        <div>
-                            <h2 className="pl-6 pt-6 text-white text-lg w-full">{key}</h2>
-                            <p className="pl-6 text-white text-4xl font-bold mt-2">
-                                {supportTicketsStats[key]}
-                            </p>
-                        </div>
+                {(() => {
+                    // Get the appropriate stats based on current tab
+                    let currentStats = {};
+                    if (supportTab === 'active') {
+                        currentStats = supportTicketsStats;
+                    } else if (supportTab === 'Enterprise') {
+                        currentStats = supportTicketsStatsEnterprise;
+                    } else if (supportTab === 'resolved') {
+                        currentStats = supportTicketsStatsCompleted;
+                    }
 
-                        {/* Right Section with Dynamic Icons */}
-                        <div className="flex items-center overflow-hidden relative">
-                            {key === "Billing & Payments" && (
-                                <img src={revenue} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
-                            )}
-                            {key === "Proposal Issues" && (
-                                <img src={proposalimg} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
-                            )}
-                            {key === "Account & Access" && (
-                                <img src={user} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
-                            )}
-                            {key === "Technical Errors" && (
-                                <img src={error} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
-                            )}
-                            {key === "Feature Requests" && (
-                                <img src={request} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
-                            )}
-                            {![
-                                "Billing & Payments",
-                                "Proposal Issues",
-                                "Account & Access",
-                                "Technical Errors",
-                                "Feature Requests",
-                            ].includes(key) && (
-                                    <img src={other} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
+                    return Object.keys(currentStats).map((key, index) => (
+                        <div
+                            key={index}
+                            className="h-[139px] rounded-2xl bg-gradient-to-b from-[#413B99] to-[#6C63FF] flex justify-between shadow-lg w-full"
+                        >
+                            {/* Left Section */}
+                            <div>
+                                <h2 className="pl-6 pt-6 text-white text-lg w-full">{key}</h2>
+                                <p className="pl-6 text-white text-4xl font-bold mt-2">
+                                    {currentStats[key]}
+                                </p>
+                            </div>
+
+                            {/* Right Section with Dynamic Icons */}
+                            <div className="flex items-center overflow-hidden relative">
+                                {key === "Billing & Payments" && (
+                                    <img src={revenue} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
                                 )}
+                                {key === "Proposal Issues" && (
+                                    <img src={proposalimg} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
+                                )}
+                                {key === "Account & Access" && (
+                                    <img src={user} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
+                                )}
+                                {key === "Technical Errors" && (
+                                    <img src={error} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
+                                )}
+                                {key === "Feature Requests" && (
+                                    <img src={request} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
+                                )}
+                                {![
+                                    "Billing & Payments",
+                                    "Proposal Issues",
+                                    "Account & Access",
+                                    "Technical Errors",
+                                    "Feature Requests",
+                                ].includes(key) && (
+                                        <img src={other} className="mt-[20px] ml-[50px] w-[180px] h-[120px]" />
+                                    )}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ));
+                })()
+                }
             </div>
 
 
