@@ -58,7 +58,7 @@ const SuperAdmin = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState(() => {
         // Load activeTab from URL hash or default to 'user-management'
-        return window.location.hash.slice(1) || 'user-management';
+        return window.location.hash.slice(1) ? window.location.hash.slice(1) : 'user-management';
     });
     // Search Terms
     const [searchTerm, setSearchTerm] = useState('');
@@ -67,8 +67,7 @@ const SuperAdmin = () => {
     const [notificationSearchTerm, setNotificationSearchTerm] = useState('');
 
     // Inner Tabs
-    const [supportTab, setSupportTab] = useState('active');
-
+    const [supportTab, setSupportTab] = useState('Enterprise');
 
     // Profile
     const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -329,10 +328,20 @@ const SuperAdmin = () => {
         }
     }, []);
 
+    // Set default URL hash on component mount if no hash exists or invalid hash
+    useEffect(() => {
+        const validTabs = ['user-management', 'payments', 'plan-management', 'contact-request', 'support', 'notifications'];
+        const currentHash = window.location.hash.slice(1);
+
+        if (!window.location.hash || window.location.hash === '#' || !validTabs.includes(currentHash)) {
+            window.location.hash = 'user-management';
+        }
+    }, []);
+
     // Handle URL hash changes (browser back/forward buttons)
     useEffect(() => {
         const handleHashChange = () => {
-            const hash = window.location.hash.slice(1) || 'user-management';
+            const hash = window.location.hash.slice(1) ? window.location.hash.slice(1) : 'user-management';
             setActiveTab(hash);
         };
 
@@ -4315,6 +4324,7 @@ const SuperAdmin = () => {
                                         }`}
                                     onClick={() => {
                                         setActiveTab("plan-management");
+                                        window.location.hash = "plan-management";
                                         closeAllInvoiceRows();
                                         setShowMobileMenu(false);
                                     }}
@@ -4331,6 +4341,7 @@ const SuperAdmin = () => {
                                         }`}
                                     onClick={() => {
                                         setActiveTab("contact-request");
+                                        window.location.hash = "contact-request";
                                         closeAllInvoiceRows();
                                         setShowMobileMenu(false);
                                     }}
