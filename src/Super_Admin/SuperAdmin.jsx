@@ -3969,7 +3969,7 @@ const SuperAdmin = () => {
             invoiceDiv.innerHTML = `
                 <div style="font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto;">
                     <div style="display: flex; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #2563eb; padding-bottom: 20px;">
-                        <img src="/logo_1.png" alt="Company Logo" style="width: 160px; height: 44px; margin-right: 20px;">
+                        <img src="/logo_1.png" alt="Company Logo" style="width: 180px; height: 72px; margin-right: 20px;">
                         <div>
                             <h1 style="color: #2563eb; margin: 0; font-size: 28px; font-weight: bold;">RFP2GRANTS</h1>
                             <p style="color: #6b7280; margin: 5px 0 0 0; font-size: 16px;">Professional Proposal Management</p>
@@ -4198,7 +4198,7 @@ const SuperAdmin = () => {
 
                         {/* Logo and Company Header */}
                         <div className="flex items-center mb-6 p-4 bg-gray-50 rounded-lg">
-                            <img src="/logo_1.png" alt="Company Logo" className="w-40 h-11 mr-4" />
+                            <img src="/logo_1.png" alt="Company Logo" className="w-[180px] h-[72px] mr-4" />
                             <div>
                                 <h4 className="text-xl font-bold text-[#2563eb]">RFP2GRANTS</h4>
                                 <p className="text-sm text-[#6b7280]">Professional Proposal Management</p>
@@ -4268,7 +4268,7 @@ const SuperAdmin = () => {
 
                         {/* Header Section */}
                         <div className="p-4 border-b border-[#4B5563] flex items-center justify-between">
-                            <div className="w-[160px] h-[44px]">
+                            <div className="w-[180px] h-[72px]">
                                 <img src="/logo_1.png" alt="logo" className="w-full h-full" />
                             </div>
                             <button
@@ -4413,7 +4413,7 @@ const SuperAdmin = () => {
                     <div className="p-4 h-screen flex flex-col justify-between">
                         {/* Top Section */}
                         <div>
-                            <div className="hidden group-hover:block w-[160px] h-[44px] mb-4">
+                            <div className="hidden group-hover:block w-[180px] h-[72px] mb-4">
                                 <img src={"/logo_1.png"} alt="logo" className="w-full h-full" />
                             </div>
 
