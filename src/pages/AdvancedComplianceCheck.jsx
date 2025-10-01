@@ -139,39 +139,98 @@ const AdvancedComplianceCheck = () => {
                         <h2 className="text-[18px] font-semibold text-[#111827] mb-6">Compliance Analysis Results</h2>
                         <div className="space-y-4">
                             {advancedComplianceCheck && Object.keys(advancedComplianceCheck).length > 0 ? (
-                                Object.entries(advancedComplianceCheck).map(([key, value], idx) => (
-                                    <div key={idx} className="border-b border-[#E5E7EB] pb-4 last:border-b-0">
-                                        <div className="flex items-start gap-3">
-                                            <div className="flex-1">
-                                                <h3 className="text-[16px] font-semibold text-[#111827] mb-2 text-left">
-                                                    {formatSection(key)}
-                                                </h3>
-                                                <p className="text-[14px] text-[#6B7280] leading-relaxed text-left ml-4">
-                                                    {value}
-                                                </p>
+                                Object.entries(advancedComplianceCheck)
+                                    .filter(([key]) => key !== "Suggest Pricing" && key !== "Winning Probability")
+                                    .map(([key, value], idx) => (
+                                        <div key={idx} className="border-b border-[#E5E7EB] pb-4 last:border-b-0">
+                                            <div className="flex items-start gap-3">
+                                                <div className="flex-1">
+                                                    <h3 className="text-[16px] font-semibold text-[#111827] mb-2 text-left">
+                                                        {formatSection(key)}
+                                                    </h3>
+                                                    <p className="text-[14px] text-[#6B7280] leading-relaxed text-left ml-4">
+                                                        {value}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))
+                                    ))
                             ) : (
                                 <div className="text-center py-8">
                                     <p className="text-[#6B7280] text-[16px]">No compliance data available</p>
                                 </div>
                             )}
+
+                            {/* Show message if only bid strategy insights are available */}
+                            {advancedComplianceCheck &&
+                                Object.keys(advancedComplianceCheck).length > 0 &&
+                                Object.entries(advancedComplianceCheck)
+                                    .filter(([key]) => key !== "Suggest Pricing" && key !== "Winning Probability")
+                                    .length === 0 && (
+                                    <div className="text-center py-8">
+                                        <p className="text-[#6B7280] text-[16px]">No additional compliance data available</p>
+                                    </div>
+                                )}
                         </div>
                     </div>
-                    {/* Navigation Buttons */}
-                    <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
-                        <button className="border border-[#4B5563] text-[#4B5563] px-6 py-2 rounded transition text-[16px] flex items-center gap-2"
-                            onClick={() => navigate(-1)}>
-                            <IoIosArrowBack className="text-[20px] text-[#4B5563] shrink-0" />
-                            Back
-                        </button>
-                        <button className="bg-[#2563EB] text-white px-8 py-2 rounded transition text-[16px]"
-                            onClick={() => navigate('/dashboard')}>
-                            Continue
-                        </button>
+                </div>
+
+                {/* Bid Strategy Insights Section */}
+                <div className="flex flex-col gap-4">
+                    <span className="text-black text-[20px] font-semibold mt-4 mb-4">
+                        Bid Strategy Insights
+                    </span>
+
+                    <div className="grid grid-cols-1 gap-6 mb-10">
+                        {/* Suggest Pricing */}
+                        {advancedComplianceCheck && advancedComplianceCheck["Suggest Pricing"] && (
+                            <div className="bg-[#F0F9FF] border-2 border-[#BAE6FD] rounded-lg p-6">
+                                <h2 className="text-[16px] font-semibold text-[#0369A1] mb-4">Suggested Pricing</h2>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-3 h-3 bg-[#0284C7] rounded-full"></div>
+                                    <p className="text-[#0F172A] text-[16px] font-medium">
+                                        {advancedComplianceCheck["Suggest Pricing"]}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Winning Probability */}
+                        {advancedComplianceCheck && advancedComplianceCheck["Winning Probability"] && (
+                            <div className="bg-[#F0FDF4] border-2 border-[#BBF7D0] rounded-lg p-6">
+                                <h2 className="text-[16px] font-semibold text-[#166534] mb-4">Winning Probability</h2>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-3 h-3 bg-[#16A34A] rounded-full"></div>
+                                    <p className="text-[#0F172A] text-[16px] font-medium">
+                                        {advancedComplianceCheck["Winning Probability"]}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
                     </div>
+
+                    {/* Show message if no bid strategy insights available */}
+                    {(!advancedComplianceCheck ||
+                        (!advancedComplianceCheck["Suggest Pricing"] && !advancedComplianceCheck["Winning Probability"])) && (
+                            <div className="bg-[#F9FAFB] border-2 border-[#E5E7EB] rounded-lg p-6 mb-10">
+                                <div className="text-center py-4">
+                                    <p className="text-[#6B7280] text-[16px]">No bid strategy insights available</p>
+                                </div>
+                            </div>
+                        )}
+                </div>
+
+                {/* Navigation Buttons */}
+                <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
+                    <button className="border border-[#4B5563] text-[#4B5563] px-6 py-2 rounded transition text-[16px] flex items-center gap-2"
+                        onClick={() => navigate(-1)}>
+                        <IoIosArrowBack className="text-[20px] text-[#4B5563] shrink-0" />
+                        Back
+                    </button>
+                    <button className="bg-[#2563EB] text-white px-8 py-2 rounded transition text-[16px]"
+                        onClick={() => navigate('/dashboard')}>
+                        Continue
+                    </button>
                 </div>
             </div>
         </div>
