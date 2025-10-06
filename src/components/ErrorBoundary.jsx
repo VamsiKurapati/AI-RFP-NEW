@@ -10,8 +10,7 @@ class ErrorBoundary extends React.Component {
         this.state = {
             hasError: false,
             error: null,
-            errorInfo: null,
-            retryCount: 0
+            errorInfo: null
         };
     }
 
@@ -34,12 +33,8 @@ class ErrorBoundary extends React.Component {
     }
 
     handleRetry = () => {
-        this.setState(prevState => ({
-            hasError: false,
-            error: null,
-            errorInfo: null,
-            retryCount: prevState.retryCount + 1
-        }));
+        // Refresh the page instead of just resetting state
+        window.location.reload();
     };
 
     handleGoHome = () => {
@@ -95,10 +90,9 @@ class ErrorBoundary extends React.Component {
                             <button
                                 onClick={this.handleRetry}
                                 className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                                disabled={this.state.retryCount >= 3}
                             >
                                 <RefreshCw className="w-4 h-4" />
-                                {this.state.retryCount >= 3 ? 'Max Retries Reached' : 'Try Again'}
+                                Refresh Page
                             </button>
 
                             <button
@@ -110,12 +104,6 @@ class ErrorBoundary extends React.Component {
                             </button>
                         </div>
 
-                        {/* Retry Count */}
-                        {this.state.retryCount > 0 && (
-                            <p className="text-sm text-gray-500 mt-4">
-                                Retry attempts: {this.state.retryCount}/3
-                            </p>
-                        )}
                     </div>
                 </div>
             );

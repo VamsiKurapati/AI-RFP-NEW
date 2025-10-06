@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
 
 const JWTVerifierContext = createContext();
 
@@ -20,7 +21,14 @@ export const JWTVerifierProvider = ({ children }) => {
         timeoutRef.current = setTimeout(() => {
             setIsTokenValid(false);
             localStorage.removeItem('token');
-            navigate('/login');
+            Swal.fire({
+                title: 'Token Expired',
+                text: 'Please login again',
+                confirmButtonColor: '#2563EB'
+            })
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
         }, delay);
     };
 
@@ -39,7 +47,14 @@ export const JWTVerifierProvider = ({ children }) => {
             if (expiryTime <= now) {
                 setIsTokenValid(false);
                 localStorage.removeItem('token');
-                navigate('/login');
+                Swal.fire({
+                    title: 'Token Expired',
+                    text: 'Please login again',
+                    confirmButtonColor: '#2563EB'
+                })
+                setTimeout(() => {
+                    navigate('/login');
+                }, 2000);
                 return;
             }
 
@@ -48,7 +63,14 @@ export const JWTVerifierProvider = ({ children }) => {
         } catch (error) {
             setIsTokenValid(false);
             localStorage.removeItem('token');
-            navigate('/login');
+            Swal.fire({
+                title: 'Error',
+                text: 'Please login again',
+                confirmButtonColor: '#2563EB'
+            })
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
         }
     };
 
