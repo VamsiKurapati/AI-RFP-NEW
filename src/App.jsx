@@ -4,6 +4,8 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 const ProtectedRoutes = lazy(() => import('./pages/ProtectedRoutes'));
 
+const Unauthorized = lazy(() => import('./pages/Unauthorized'));
+
 const Home = lazy(() => import("./pages/HomePage"));
 const Contact = lazy(() => import("./pages/Contact"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
@@ -44,6 +46,8 @@ const App = () => {
           <Route path="/" element={<><Home /></>} />
 
           <Route path="/contact" element={<Contact />} />
+
+          <Route path="/unauthorized" element={<Unauthorized />} />
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/sign_up" element={<SignUpPage />} />
@@ -119,7 +123,7 @@ const App = () => {
           } />
 
           <Route path="/payment" element={
-            <ProtectedRoutes allowedRoles={["company", "Editor", "Viewer"]}>
+            <ProtectedRoutes allowedRoles={["company"]}>
               <StripePaymentPage />
             </ProtectedRoutes>
           } />

@@ -949,7 +949,7 @@ const Dashboard = () => {
                             <p className="text-[#8300AB] font-medium mb-3">
                                 Current plan: {subscriptionData ? subscriptionData.plan_name : 'Loading...'}
                             </p>
-                            {subscriptionData && !["Enterprise", "Custom Enterprise Plan"].includes(subscriptionData.plan_name) && (
+                            {subscriptionData && !["Enterprise", "Custom Enterprise Plan"].includes(subscriptionData.plan_name) && (role === "company") && (
                                 <PaymentButton
                                     variant="primary"
                                     size="sm"

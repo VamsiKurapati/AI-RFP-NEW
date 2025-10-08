@@ -441,8 +441,8 @@ const StripePaymentPage = () => {
         setPaymentSuccess(true);
         // Redirect to dashboard after a delay
         setTimeout(() => {
-            navigate('/dashboard');
-        }, 3000);
+            navigate('/login');
+        }, 2500);
     };
 
     const handlePaymentError = (error) => {
@@ -481,7 +481,7 @@ const StripePaymentPage = () => {
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h2>
                     <p className="text-gray-600 mb-6">
-                        Your subscription has been activated. You'll be redirected to your dashboard shortly.
+                        Your subscription has been activated. You’ll be redirected to login shortly.
                     </p>
                     <div className="animate-pulse">
                         <div className="w-2 h-2 bg-green-500 rounded-full mx-auto"></div>
