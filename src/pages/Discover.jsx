@@ -2320,7 +2320,7 @@ const Discover = () => {
     <>
       {(flag && flag.plan_name == "None") ? (
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 overflow-y-auto">
-          <div className="min-h-full flex justify-center items-center md:items-start py-4 custom-scrollbar">
+          <div className="min-h-full flex justify-center items-start py-4 custom-scrollbar">
             <Subscription />
           </div>
         </div>
