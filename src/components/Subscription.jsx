@@ -23,7 +23,7 @@ export default function Subscription({ plan }) {
 
     return (
       <div
-        className={`border rounded-2xl p-4 w-[340px] h-[500px] shadow-md relative transition-transform hover:scale-105 flex flex-col bg-white mt-[100px] ${popularPlan === planName ? "border-blue-500" : "border-gray-300"
+        className={`border rounded-2xl p-4 w-full max-w-[340px] h-[500px] shadow-md relative transition-transform hover:scale-105 flex flex-col bg-white mt-[100px] ${popularPlan === planName ? "border-blue-500" : "border-gray-300"
           }`}
       >
         {popularPlan === planName && (
@@ -251,11 +251,12 @@ export default function Subscription({ plan }) {
 
   return (
     // <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 justify-center z-50">
-    <div className="flex flex-col lg:flex-row w-full min-h-screen overflow-y-auto overflow-x-hidden max-w-5xl gap-4 justify-center items-start lg:items-center p-6">
-      {getPlanSection("Basic")}
-      {getPlanSection("Pro")}
-      {getPlanSection("Enterprise")}
-
+    <div className="w-full max-w-6xl mx-auto p-4">
+      <div className="flex flex-col md:flex-row gap-4 justify-center items-start md:items-center">
+        {getPlanSection("Basic")}
+        {getPlanSection("Pro")}
+        {getPlanSection("Enterprise")}
+      </div>
     </div>
     // </div>
 
