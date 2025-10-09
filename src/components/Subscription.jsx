@@ -250,7 +250,7 @@ export default function Subscription({ plan }) {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 pt-24 pb-8">
+    <div className="w-full max-w-6xl mx-auto p-4 pt-20 pb-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center place-items-center mx-auto">
         {getPlanSection("Basic")}
         {getPlanSection("Pro")}
