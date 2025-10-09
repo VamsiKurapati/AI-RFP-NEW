@@ -27,7 +27,7 @@ export default function Subscription({ plan }) {
           }`}
       >
         {popularPlan === planName && (
-          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#2F3349] to-[#717AAF] text-white text-xs px-2 py-0.5 rounded-full">
+          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#2F3349] to-[#717AAF] text-white text-xs px-2 py-0.5 rounded-full z-[70]">
             Most Popular
           </div>
         )}
