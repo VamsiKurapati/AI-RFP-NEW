@@ -43,6 +43,10 @@
   scrollbar-color: #cbd5e1 #f1f5f9;
 }
 
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+
 html,
 body {
   margin: 0;
