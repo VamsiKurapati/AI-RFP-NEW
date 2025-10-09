@@ -23,7 +23,7 @@ export default function Subscription({ plan }) {
 
     return (
       <div
-        className={`mx-auto border rounded-2xl p-4 w-full max-w-[340px] h-[500px] shadow-md relative transition-transform hover:scale-105 flex flex-col bg-white mb-[100px] ${popularPlan === planName ? "border-blue-500" : "border-gray-300"
+        className={`mx-auto border rounded-2xl p-4 w-full max-w-[340px] h-[500px] shadow-md relative transition-transform hover:scale-105 flex flex-col bg-white mb-[40px] ${popularPlan === planName ? "border-blue-500" : "border-gray-300"
           }`}
       >
         {popularPlan === planName && (
