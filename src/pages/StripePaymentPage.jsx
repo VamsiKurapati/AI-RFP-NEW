@@ -550,7 +550,7 @@ const StripePaymentPage = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-row gap-8 mb-12 justify-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 justify-center place-items-center">
                     {subscriptionPlansData && subscriptionPlansData.length > 0 ? (
                         subscriptionPlansData.map((plan) => (
                             <div
