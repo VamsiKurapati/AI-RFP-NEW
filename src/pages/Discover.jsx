@@ -975,15 +975,36 @@ const Discover = () => {
   };
 
   useEffect(() => {
-    if (!fetchedRFPs) {
-      fetchRFPs();
-      setFetchedRFPs(true);
+    const storedUser = localStorage.getItem("user");
+    const storedSubscription = localStorage.getItem("subscription");
+
+    if (!storedUser || !storedSubscription || fetchedRFPs) return;
+
+    try {
+      const subscription = JSON.parse(storedSubscription);
+      const plan = subscription?.plan_name;
+
+      const validPlans = ["Basic", "Pro", "Enterprise", "Custom Enterprise Plan"];
+      if (validPlans.includes(plan)) {
+        fetchRFPs();
+        setFetchedRFPs(true);
+      }
+    } catch (error) {
+      console.error("Error parsing user or subscription data:", error);
     }
   }, [fetchedRFPs, fetchRFPs]);
 
   // Fetch grants when grants tab is active
   useEffect(() => {
-    if (activeTab === "grants" && !fetchedGrants) {
+    const storedUser = localStorage.getItem("user");
+    const storedSubscription = localStorage.getItem("subscription");
+
+    if (!storedUser || !storedSubscription || fetchedGrants) return;
+
+    const subscription = JSON.parse(storedSubscription);
+    if (!subscription) return;
+    const plan = subscription ? subscription.plan_name : null;
+    if (["Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(plan) && activeTab === "grants" && !fetchedGrants) {
       fetchGrants();
       setFetchedGrants(true);
     }

@@ -427,7 +427,7 @@ const StripePaymentPage = () => {
     // Set default selected plan when data is available
     useEffect(() => {
         if (subscriptionPlansData.length > 0 && !selectedPlan) {
-            setSelectedPlan(subscriptionPlansData[1]); // Default to Professional
+            // setSelectedPlan(subscriptionPlansData[1]); // Default to Pro
             setIsLoading(false);
         }
     }, [subscriptionPlansData, selectedPlan]);

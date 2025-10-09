@@ -106,8 +106,8 @@ export default function Subscription({ plan }) {
               </li>
             </ul>
             <button className="w-full py-1.5 rounded-lg bg-gradient-to-b from-[#6C63FF] to-[#3F73BD] text-white text-sm font-medium shadow mt-auto" onClick={() => navigate("/payment")}>
-          Get Started
-        </button>
+              Get Started
+            </button>
           </>
         ) : planName === "Pro" ? (
           <>
@@ -165,44 +165,44 @@ export default function Subscription({ plan }) {
               </li>
             </ul>
             <button className="w-full py-1.5 rounded-lg bg-gradient-to-b from-[#6C63FF] to-[#3F73BD] text-white text-sm font-medium shadow mt-auto" onClick={() => navigate("/payment")}>
-          Get Started
-        </button>
+              Get Started
+            </button>
           </>
         ) : planName === "Enterprise" ? (
           <>
 
             {!plan.isContact && (
-              
-            <div>
-            <div className="flex items-center mb-4 relative bg-gray-200 rounded-full w-[120px] p-1 ml-[50%] -translate-x-1/2">
-              <div
-                className={`absolute top-1 left-1 w-[55px] h-[22px] rounded-full bg-[#6C63FF] transition-transform duration-300 ${isYearlye ? "translate-x-[58px]" : "translate-x-0"
-                  }`}
-              ></div>
-              <span
-                className={`relative z-10 flex-1 text-center py-0.5 text-xs font-medium cursor-pointer transition-colors ${!isYearlye ? "text-white" : "text-[#6C63FF]"
-                  }`}
-                onClick={() => setIsYearlye(false)}
-                style={{ userSelect: "none" }}
-              >
-                Monthly
-              </span>
-              <span
-                className={`relative z-10 flex-1 text-center py-0.5 text-xs font-medium cursor-pointer transition-colors ${isYearlye ? "text-white" : "text-[#6C63FF]"
-                  }`}
-                onClick={() => setIsYearlye(true)}
-                style={{ userSelect: "none" }}
-              >
-                Yearly
-              </span>
-            </div>
 
-            <p className="text-xl font-bold mb-4 text-center">
-              ${isYearlye ? plan.yearlyPrice : plan.monthlyPrice}
-              <span className="text-xs font-normal">/{isYearlye ? "year" : "month"}</span>
-            </p>
+              <div>
+                <div className="flex items-center mb-4 relative bg-gray-200 rounded-full w-[120px] p-1 ml-[50%] -translate-x-1/2">
+                  <div
+                    className={`absolute top-1 left-1 w-[55px] h-[22px] rounded-full bg-[#6C63FF] transition-transform duration-300 ${isYearlye ? "translate-x-[58px]" : "translate-x-0"
+                      }`}
+                  ></div>
+                  <span
+                    className={`relative z-10 flex-1 text-center py-0.5 text-xs font-medium cursor-pointer transition-colors ${!isYearlye ? "text-white" : "text-[#6C63FF]"
+                      }`}
+                    onClick={() => setIsYearlye(false)}
+                    style={{ userSelect: "none" }}
+                  >
+                    Monthly
+                  </span>
+                  <span
+                    className={`relative z-10 flex-1 text-center py-0.5 text-xs font-medium cursor-pointer transition-colors ${isYearlye ? "text-white" : "text-[#6C63FF]"
+                      }`}
+                    onClick={() => setIsYearlye(true)}
+                    style={{ userSelect: "none" }}
+                  >
+                    Yearly
+                  </span>
+                </div>
 
-            </div>
+                <p className="text-xl font-bold mb-4 text-center">
+                  ${isYearlye ? plan.yearlyPrice : plan.monthlyPrice}
+                  <span className="text-xs font-normal">/{isYearlye ? "year" : "month"}</span>
+                </p>
+
+              </div>
 
             )}
 
@@ -215,12 +215,12 @@ export default function Subscription({ plan }) {
               <li className="flex items-center text-gray-700">
                 <span className="text-green-500 p-1"><FaRegCheckCircle className="w-3.5 h-3.5" /></span>
                 {plan.isContact ? "Custom AI-RFP Proposal Generations" :
-                <span>Up to {plan.maxRFPProposalGenerations} AI - RFP Proposal Generations</span>}
+                  <span>Up to {plan.maxRFPProposalGenerations} AI - RFP Proposal Generations</span>}
               </li>
               <li className="flex items-center text-gray-700">
                 <span className="text-green-500 p-1"><FaRegCheckCircle className="w-3.5 h-3.5" /></span>
                 {plan.isContact ? "Custom AI-Grant Proposal Generations" :
-                <span>Up to {plan.maxGrantProposalGenerations} AI - Grant Proposal Generations</span>}
+                  <span>Up to {plan.maxGrantProposalGenerations} AI - Grant Proposal Generations</span>}
               </li>
               <li className="flex items-center text-gray-700">
                 <span className="text-green-500 p-1"><FaRegCheckCircle className="w-3.5 h-3.5" /></span>
@@ -244,14 +244,14 @@ export default function Subscription({ plan }) {
           </>
         ) : null}
 
-       
+
       </div>
     );
   };
 
   return (
     // <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 justify-center z-50">
-    <div className="flex flex-col lg:flex-row w-full h-full overflow-y-auto max-w-5xl gap-4 justify-center items-start p-6  ">
+    <div className="flex flex-col lg:flex-row w-full min-h-screen overflow-y-auto overflow-x-hidden max-w-5xl gap-4 justify-center items-start lg:items-center p-6">
       {getPlanSection("Basic")}
       {getPlanSection("Pro")}
       {getPlanSection("Enterprise")}
