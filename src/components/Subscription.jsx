@@ -251,7 +251,7 @@ export default function Subscription({ plan }) {
 
   return (
     // <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 justify-center z-50">
-    <div className="w-full max-w-6xl mx-auto p-4">
+    <div className="w-full max-w-6xl mx-auto p-4 hide-scrollbar pt-20">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center place-items-center mx-auto">
         {getPlanSection("Basic")}
         {getPlanSection("Pro")}
