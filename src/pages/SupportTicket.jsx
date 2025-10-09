@@ -260,9 +260,9 @@ const SupportTicket = () => {
     };
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen h-full">
             <NavbarComponent />
-            <div className="max-w-4xl mx-auto mt-20">
+            <div className="max-w-4xl mx-auto mt-20 mb-8">
                 {/* Form */}
                 <div className="bg-white p-8 rounded-lg">
                     <h2 className="text-2xl text-blue-600 font-semibold mb-1">
@@ -401,7 +401,7 @@ const SupportTicket = () => {
                 </div>
 
                 {/* Ticket List */}
-                <div className="p-6 bg-gray-100 h-full">
+                <div className="p-6 bg-gray-100 mb-8">
                     <h2 className="text-xl text-blue-600 font-semibold mb-1">
                         Track Support Ticket
                     </h2>
