@@ -23,11 +23,11 @@ export default function Subscription({ plan }) {
 
     return (
       <div
-        className={`mx-auto border rounded-2xl p-4 w-full max-w-[340px] h-[500px] shadow-md relative transition-transform hover:scale-105 flex flex-col bg-white mb-[40px] overflow-y-auto subscription-scrollbar z-[70] ${popularPlan === planName ? "border-blue-500" : "border-gray-300"
+        className={`mx-auto border rounded-2xl p-4 w-full max-w-[340px] h-[500px] shadow-md relative transition-transform hover:scale-105 flex flex-col bg-white mb-[40px] mt-4 overflow-y-auto subscription-scrollbar z-[70] ${popularPlan === planName ? "border-blue-500" : "border-gray-300"
           }`}
       >
         {popularPlan === planName && (
-          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#2F3349] to-[#717AAF] text-white text-xs px-2 py-0.5 rounded-full z-[70]">
+          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[#2F3349] to-[#717AAF] text-white text-xs px-3 py-1 rounded-full z-[70] shadow-md">
             Most Popular
           </div>
         )}
@@ -250,7 +250,7 @@ export default function Subscription({ plan }) {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 pt-20">
+    <div className="w-full max-w-6xl mx-auto p-4 pt-20 pb-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center place-items-center mx-auto">
         {getPlanSection("Basic")}
         {getPlanSection("Pro")}

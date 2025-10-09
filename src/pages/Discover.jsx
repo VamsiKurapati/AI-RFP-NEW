@@ -2318,7 +2318,7 @@ const Discover = () => {
 
   // Prevent body scroll when subscription modal is open
   useEffect(() => {
-    if (flag && (flag.plan_name === "None" || flag.plan_name === "Free")) {
+    if (flag && !["Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(flag.plan_name)) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -2332,15 +2332,15 @@ const Discover = () => {
 
   return (
     <>
-      {(flag && (flag.plan_name == "None" || flag.plan_name === "Free")) ? (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-50 overflow-y-auto">
+      {(flag && !["Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(flag.plan_name)) ? (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-50 overflow-y-auto hide-scrollbar">
           <div className="min-h-full flex justify-center items-center pt-20">
             <Subscription />
           </div>
         </div>
       ) : null}
 
-      <div className={`${flag && (flag.plan_name === "None" || flag.plan_name === "Free") ? "h-screen" : "min-h-screen"} bg-[#FFFFFF]`}>
+      <div className={`${flag && !["Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(flag.plan_name) ? "h-screen" : "min-h-screen"} bg-[#FFFFFF]`}>
         {/* Loading Overlay */}
         {isGeneratingGrantProposal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
