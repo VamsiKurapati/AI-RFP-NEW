@@ -2333,7 +2333,7 @@ const Discover = () => {
   return (
     <>
       {(flag && !["Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(flag.plan_name)) ? (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-[50] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-[50] overflow-y-auto hide-scrollbar">
           <div className="min-h-full flex justify-center items-center pt-20 pb-8 z-[70]">
             <Subscription />
           </div>
