@@ -2318,15 +2318,15 @@ const Discover = () => {
 
   return (
     <>
-      {(flag && flag.plan_name == "None") ? (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 overflow-y-auto">
+      {(flag && (flag.plan_name == "None" || flag.plan_name === "Free")) ? (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-99 overflow-y-auto">
           <div className="min-h-full flex justify-center items-center scrollbar-hide">
             <Subscription />
           </div>
         </div>
       ) : null}
 
-      <div className="min-h-screen bg-[#FFFFFF]">
+      <div className={`${flag && (flag.plan_name === "None" || flag.plan_name === "Free") ? "h-screen" : "min-h-screen"} bg-[#FFFFFF]`}>
         {/* Loading Overlay */}
         {isGeneratingGrantProposal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
