@@ -330,7 +330,7 @@ const SupportTicket = () => {
 
                         {/* Attachment */}
                         <div className="mb-6">
-                            <label className="block font-medium mb-1">Upload Attachments *</label>
+                            <label className="block font-medium mb-1">Upload Attachments</label>
 
                             <div
                                 className="flex flex-col items-center justify-center border-2 border border-blue-600 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition"
