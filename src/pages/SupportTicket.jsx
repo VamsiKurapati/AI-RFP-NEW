@@ -401,15 +401,15 @@ const SupportTicket = () => {
                 </div>
 
                 {/* Ticket List */}
-                <div className="p-6 bg-gray-100">
-                    <h2 className="text-xl text-blue-600 font-semibold mb-1">
+                <div className="p-6 bg-gray-100 rounded-lg shadow-md">
+                    <h2 className="text-xl text-blue-600 font-semibold mb-1 text-center">
                         Track Support Ticket
                     </h2>
-                    <p className="text-gray-500 mb-6">
+                    <p className="text-gray-500 mb-6 text-center">
                         Track the status of your support ticket
                     </p>
 
-                    {tickets.map((ticket) => {
+                    {tickets.length > 0 ? tickets.map((ticket) => {
                         return (
                             <div
                                 key={ticket._id || ticket.id || Math.random()}
@@ -689,16 +689,6 @@ const SupportTicket = () => {
                                             </div>
                                         )}
 
-                                        {/* State and logic for conversation popup */}
-                                        {/* Place these hooks at the top level of your component (not inside render/return): */}
-                                        {/* 
-                    
-                    */}
-
-
-
-
-
                                         {/* Description */}
                                         <div className="mt-6 text-center p-4 bg-gray-100 border-2 border-blue-600 rounded-lg flex items-center">
                                             <span className="text-gray-500 mr-2">Resolved Description:</span>
@@ -743,7 +733,9 @@ const SupportTicket = () => {
                                 )}
                             </div>
                         );
-                    })}
+                    }) : <div className="text-center text-gray-500">
+                        No tickets found.
+                    </div>}
                 </div>
             </div>
         </div>
