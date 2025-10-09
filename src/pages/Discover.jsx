@@ -2316,11 +2316,25 @@ const Discover = () => {
 
   const flag = JSON.parse(localStorage.getItem("subscription"));
 
+  // Prevent body scroll when subscription modal is open
+  useEffect(() => {
+    if (flag && (flag.plan_name === "None" || flag.plan_name === "Free")) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [flag]);
+
   return (
     <>
       {(flag && (flag.plan_name == "None" || flag.plan_name === "Free")) ? (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-50 overflow-y-auto">
-          <div className="min-h-full flex justify-center items-center hide-scrollbar pt-20">
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-[60] overflow-y-auto">
+          <div className="min-h-full flex justify-center items-center pt-20">
             <Subscription />
           </div>
         </div>
