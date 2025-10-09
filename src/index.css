@@ -56,6 +56,15 @@
   /* Chrome, Safari, Opera */
 }
 
+.scrollbar-hide-x::-webkit-scrollbar:horizontal {
+  display: none;
+}
+
+.scrollbar-hide-y::-webkit-scrollbar:vertical {
+  display: none;
+}
+
+
 html,
 body {
   margin: 0;

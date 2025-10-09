@@ -2319,8 +2319,8 @@ const Discover = () => {
   return (
     <>
       {(flag && (flag.plan_name == "None" || flag.plan_name === "Free")) ? (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-99 overflow-y-auto">
-          <div className="min-h-full flex justify-center items-center scrollbar-hide">
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 overflow-y-auto">
+          <div className="min-h-full flex justify-center items-center scrollbar-hide-x">
             <Subscription />
           </div>
         </div>
