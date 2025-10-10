@@ -6,6 +6,7 @@ import axios from 'axios';
 import contact from '../assets/Contact.png';
 import { FaPlay } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 
 export default function Contact() {
@@ -73,14 +74,26 @@ export default function Contact() {
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/contact`, formData);
       if (response.status === 201 || response.status === 200) {
-        setMessage(response.data.message || 'Your request has been sent successfully!');
         setFormData({ name: "", company: "", email: "", description: "" });
+        Swal.fire({
+          title: "Request submitted successfully. Our team will get back to you soon.",
+          icon: "success",
+          timer: 3000,
+          showConfirmButton: false,
+          showCancelButton: false,
+        });
         setTimeout(() => {
           handleHomeClick();
-        }, 2000);
+        }, 3000);
       }
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Failed to send request. Please try again.');
+      Swal.fire({
+        title: "Failed to send request. Please try again.",
+        icon: "error",
+        timer: 3000,
+        showConfirmButton: false,
+        showCancelButton: false,
+      });
     } finally {
       setLoading(false);
     }
@@ -106,7 +119,7 @@ export default function Contact() {
             <div className="w-full md:w-1/2">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block font-medium text-gray-700 mb-1">Name</label>
+                  <label className="block font-medium text-gray-700 mb-1">Name <span className="text-red-500">*</span></label>
                   <input
                     type="text"
                     name="name"
@@ -119,7 +132,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-gray-700 mb-1">Company Name</label>
+                  <label className="block font-medium text-gray-700 mb-1">Company Name <span className="text-red-500">*</span></label>
                   <input
                     type="text"
                     name="company"
@@ -132,7 +145,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block font-medium text-gray-700 mb-1">Email <span className="text-red-500">*</span></label>
                   <input
                     type="email"
                     name="email"
@@ -145,7 +158,7 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label className="block font-medium text-gray-700 mb-1">Description</label>
+                  <label className="block font-medium text-gray-700 mb-1">Description <span className="text-red-500">*</span></label>
                   <textarea
                     name="description"
                     placeholder="Enter Description Of Your Request"
@@ -159,7 +172,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 w-full"
                 >
                   {loading ? (
                     <>
