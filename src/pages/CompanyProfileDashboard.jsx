@@ -91,7 +91,7 @@ const MobileDropdown = ({ activeTab, onSelect }) => {
   );
 };
 
-const Sidebar = ({ isMobile = false, onClose = () => { }, active = "Overview", onSelect }) => (
+const Sidebar = ({ isMobile = false, onClose = () => { }, active = "Overview", onSelect = () => { } }) => (
   <div
     className={`fixed ${isMobile ? "top-0 w-64 h-full z-50" : "mt-[52px] w-64 h-full z-50"
       } left-0 bg-white shadow-md overflow-hidden flex flex-col`}
@@ -1086,6 +1086,15 @@ const CompanyProfileDashboard = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
+  const handleSetActiveTab = (tab) => {
+    //scroll to the top of the page
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    setActiveTab(tab);
+  };
+
   // Remove useEffect for fetching company data
   // useEffect(() => { ... }, []);
 
@@ -1805,7 +1814,7 @@ const CompanyProfileDashboard = () => {
 
       <div className="relative hidden lg:block lg:mt-[20rem]">
         <div className="relative z-10">
-          <Sidebar active={activeTab} onSelect={setActiveTab} />
+          <Sidebar active={activeTab} onSelect={handleSetActiveTab} />
         </div>
         {showRightSidebar && (
           <div className="absolute inset-0 bg-black bg-opacity-40 z-50 pointer-events-auto"></div>
