@@ -236,11 +236,23 @@ const OnboardingGuide = () => {
         return flatSteps;
     }, []);
 
-    // Get current step index from localStorage or start from 0
+    // Get current step index from localStorage or start from any random step (for circular tour)
     const getCurrentStepIndex = useCallback(() => {
         const stored = localStorage.getItem('onboarding_step_index');
         return stored ? parseInt(stored, 10) : 0;
     }, []);
+
+    // Get starting step index - the point where the circular tour began
+    const getStartingStepIndex = useCallback(() => {
+        const stored = localStorage.getItem('onboarding_start_index');
+        if (stored !== null) {
+            return parseInt(stored, 10);
+        }
+        // If no start index, use current index as start (first time)
+        const current = getCurrentStepIndex();
+        localStorage.setItem('onboarding_start_index', current.toString());
+        return current;
+    }, [getCurrentStepIndex]);
 
     const setCurrentStepIndexStorage = useCallback((index) => {
         localStorage.setItem('onboarding_step_index', index.toString());
@@ -344,28 +356,45 @@ const OnboardingGuide = () => {
         }
 
         const storedIndex = getCurrentStepIndex();
+        const startIndex = getStartingStepIndex();
         const currentStep = allSteps[storedIndex];
 
-        // If we've completed all steps, mark onboarding as completed
-        if (storedIndex >= allSteps.length) {
-            console.log(`[OnboardingGuide] All steps completed (${storedIndex}/${allSteps.length})`);
+        // Check if we've completed the circular loop (shouldn't happen here, but safety check)
+        if (storedIndex === startIndex && localStorage.getItem('onboarding_step_index') && storedIndex !== 0) {
+            // Check if this is after completing a full loop (not the initial start)
+            // This is handled in the callback, so just return here
+            console.log(`[OnboardingGuide] Circular tour completed, marking as done`);
             if (userId) {
                 setOnboardingCompleted(true);
             }
             setRunTour(false);
             setIsReady(false);
             localStorage.removeItem('onboarding_step_index');
+            localStorage.removeItem('onboarding_start_index');
             return;
         }
 
-        // If no current step, start from beginning
+        // If no current step, initialize start index and current step
         if (!currentStep) {
-            console.log(`[OnboardingGuide] No current step, starting from beginning`);
+            console.log(`[OnboardingGuide] No current step, initializing circular tour`);
+            // Set start index to current page's first step, or 0
+            const pageStepsForCurrentPath = allSteps.filter(s => s.pagePath === location.pathname);
+            const firstStepOnPage = pageStepsForCurrentPath[0];
+            if (firstStepOnPage) {
+                const initialIndex = allSteps.findIndex(s => s.target === firstStepOnPage.target && s.pagePath === firstStepOnPage.pagePath);
+                if (initialIndex !== -1) {
+                    setCurrentStepIndexStorage(initialIndex);
+                    localStorage.setItem('onboarding_start_index', initialIndex.toString());
+                    return;
+                }
+            }
+            // Fallback to 0
             setCurrentStepIndexStorage(0);
+            localStorage.setItem('onboarding_start_index', '0');
             return;
         }
 
-        console.log(`[OnboardingGuide] Continuous tour - step ${storedIndex}/${allSteps.length}: ${currentStep.title} on ${currentStep.pagePath}`);
+        console.log(`[OnboardingGuide] Circular tour - Started at ${startIndex}, current step ${storedIndex}/${allSteps.length}: ${currentStep.title} on ${currentStep.pagePath}`);
         console.log(`[OnboardingGuide] Current refs:`, Object.keys(refs));
         console.log(`[OnboardingGuide] RefsUpdateTrigger: ${refsUpdateTrigger}`);
 
@@ -581,36 +610,43 @@ const OnboardingGuide = () => {
         }
 
         if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
-            // Mark onboarding as completed
+            // Mark onboarding as completed (user finished or skipped the tour)
             if (userId) {
                 setOnboardingCompleted(true);
             }
             setRunTour(false);
             setCurrentStepIndexStorage(0);
             localStorage.removeItem('onboarding_step_index');
+            localStorage.removeItem('onboarding_start_index');
             return;
         }
 
-        // Handle step advancement - move to next step in allSteps
+        // Handle step advancement - move to next step in circular tour
         if (type === EVENTS.STEP_AFTER) {
             const currentIndex = getCurrentStepIndex();
-            const nextIndex = currentIndex + 1;
+            const startIndex = getStartingStepIndex();
+            let nextIndex = (currentIndex + 1) % allSteps.length; // Wrap around using modulo
 
             console.log(`[OnboardingGuide] Step ${currentIndex} completed, moving to step ${nextIndex}`);
+            console.log(`[OnboardingGuide] Circular tour: started at ${startIndex}, currently at ${currentIndex}, next will be ${nextIndex}`);
 
-            if (nextIndex >= allSteps.length) {
-                // All steps completed
-                console.log(`[OnboardingGuide] 🎉 All ${allSteps.length} steps completed!`);
+            // Check if we've completed the circular loop (returned to starting point)
+            if (nextIndex === startIndex) {
+                // We've completed the full circle - tour is done
+                console.log(`[OnboardingGuide] 🎉 Circular tour completed! Returned to starting step ${startIndex}`);
                 if (userId) {
                     setOnboardingCompleted(true);
                 }
                 setRunTour(false);
                 setCurrentStepIndexStorage(0);
                 localStorage.removeItem('onboarding_step_index');
+                localStorage.removeItem('onboarding_start_index');
             } else {
-                // Continue to next step
+                // Continue to next step (wrapping around if needed)
                 setCurrentStepIndexStorage(nextIndex);
                 const nextStep = allSteps[nextIndex];
+
+                console.log(`[OnboardingGuide] Next step: ${nextIndex} "${nextStep.title}" on ${nextStep.pagePath}`);
 
                 // If next step is on a different page, stop tour and let navigation effect handle it
                 if (nextStep.pagePath !== location.pathname) {
@@ -629,20 +665,23 @@ const OnboardingGuide = () => {
             if (type === EVENTS.STEP_NOT_FOUND || type === EVENTS.TARGET_NOT_FOUND) {
                 console.warn(`Tour step ${index} target not found, moving to next step`);
                 const currentIndex = getCurrentStepIndex();
-                const nextIndex = currentIndex + 1;
+                const startIndex = getStartingStepIndex();
+                const nextIndex = (currentIndex + 1) % allSteps.length; // Wrap around
 
-                if (nextIndex >= allSteps.length) {
+                if (nextIndex === startIndex) {
+                    // Completed the circle
                     if (userId) {
                         setOnboardingCompleted(true);
                     }
                     setRunTour(false);
                     localStorage.removeItem('onboarding_step_index');
+                    localStorage.removeItem('onboarding_start_index');
                 } else {
                     setCurrentStepIndexStorage(nextIndex);
                 }
             }
         }
-    }, [userId, setOnboardingCompleted, allSteps, location.pathname, getCurrentStepIndex, setCurrentStepIndexStorage]);
+    }, [userId, setOnboardingCompleted, allSteps, location.pathname, getCurrentStepIndex, getStartingStepIndex, setCurrentStepIndexStorage]);
 
     // Compute steps for rendering - recalculate whenever runTour or refsUpdateTrigger changes
     // IMPORTANT: This MUST recalculate when runTour becomes true, using fresh refsRef.current
