@@ -369,9 +369,11 @@ const Proposals = () => {
 
     // Register refs with onboarding context
     useEffect(() => {
+        console.log(`[Proposals] Registering refs - header: ${!!proposalsHeaderRef.current}, list: ${!!proposalsListRef.current}, actions: ${!!proposalsActionsRef.current}`);
         registerRef('proposals-header', proposalsHeaderRef);
         registerRef('proposals-list', proposalsListRef);
         registerRef('proposals-actions', proposalsActionsRef);
+        console.log(`[Proposals] Refs registered`);
     }, [registerRef]);
 
     // Calculate items per page based on screen size

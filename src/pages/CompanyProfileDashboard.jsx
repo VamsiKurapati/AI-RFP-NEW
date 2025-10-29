@@ -1077,12 +1077,14 @@ const CompanyProfileDashboard = () => {
   const profileDeadlinesRef = useRef(null);
 
   // Register refs with onboarding context
-  useEffect(() => {
-    registerRef('profile-overview', profileOverviewRef);
-    registerRef('profile-completion', profileCompletionRef);
-    registerRef('profile-sidebar', profileSidebarRef);
-    registerRef('profile-deadlines', profileDeadlinesRef);
-  }, [registerRef]);
+    useEffect(() => {
+        console.log(`[CompanyProfileDashboard] Registering refs - overview: ${!!profileOverviewRef.current}, completion: ${!!profileCompletionRef.current}, sidebar: ${!!profileSidebarRef.current}, deadlines: ${!!profileDeadlinesRef.current}`);
+        registerRef('profile-overview', profileOverviewRef);
+        registerRef('profile-completion', profileCompletionRef);
+        registerRef('profile-sidebar', profileSidebarRef);
+        registerRef('profile-deadlines', profileDeadlinesRef);
+        console.log(`[CompanyProfileDashboard] Refs registered`);
+    }, [registerRef]);
 
   // Modal states
   const [selectedMember, setSelectedMember] = useState(null);

@@ -581,10 +581,12 @@ const Discover = () => {
 
   // Register refs with onboarding context
   useEffect(() => {
+    console.log(`[Discover] Registering refs - header: ${!!discoverHeaderRef.current}, filters: ${!!discoverFiltersRef.current}, results: ${!!discoverResultsRef.current}, actions: ${!!discoverActionsRef.current}`);
     registerRef('discover-header', discoverHeaderRef);
     registerRef('discover-filters', discoverFiltersRef);
     registerRef('discover-results', discoverResultsRef);
     registerRef('discover-actions', discoverActionsRef);
+    console.log(`[Discover] Refs registered`);
   }, [registerRef]);
 
   // Grant-specific state variables

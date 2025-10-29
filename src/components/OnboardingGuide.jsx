@@ -192,27 +192,46 @@ const OnboardingGuide = () => {
     // Get steps for current page, filtered by available refs
     const getStepsForCurrentPage = useCallback(() => {
         const steps = pageSteps[currentPath] || [];
-        return steps.filter(step => {
-            // Check if ref exists for this step
-            return hasRef(step.target);
-        }).map((step) => {
+        console.log(`[OnboardingGuide] getStepsForCurrentPage - Path: ${currentPath}, Total steps defined: ${steps.length}`);
+
+        const availableSteps = steps.filter(step => {
+            const hasStepRef = hasRef(step.target);
+            console.log(`[OnboardingGuide] Step "${step.target}": hasRef = ${hasStepRef}`);
+            return hasStepRef;
+        });
+
+        console.log(`[OnboardingGuide] Available steps with refs: ${availableSteps.length}`);
+
+        const mappedSteps = availableSteps.map((step) => {
             const ref = refs[step.target];
+            const targetElement = ref?.current;
+            console.log(`[OnboardingGuide] Mapping step "${step.target}": ref exists = ${!!ref}, current exists = ${!!targetElement}`);
             return {
                 ...step,
                 // Convert ref key to actual DOM element for Joyride
-                target: ref?.current || null,
+                target: targetElement || null,
             };
         }).filter(step => step.target !== null);
+
+        console.log(`[OnboardingGuide] Final steps count: ${mappedSteps.length}`);
+        return mappedSteps;
     }, [currentPath, refs, hasRef]);
 
     // Single unified effect to handle tour initialization - simplified approach
     useEffect(() => {
+        console.log(`[OnboardingGuide] Effect triggered - Path: ${currentPath}, UserId: ${userId}, Role: ${role}, OnboardingCompleted: ${onboardingCompleted}`);
+
         // Early return if conditions aren't met
         if (!userId || (role !== 'company' && role !== 'Editor' && role !== 'Viewer') || onboardingCompleted) {
+            console.log(`[OnboardingGuide] Early return - conditions not met`);
             setRunTour(false);
             setIsReady(false);
             return;
         }
+
+        console.log(`[OnboardingGuide] Conditions met, proceeding with tour setup`);
+        console.log(`[OnboardingGuide] Current refs:`, Object.keys(refs));
+        console.log(`[OnboardingGuide] RefsUpdateTrigger: ${refsUpdateTrigger}`);
 
         // Reset state when path changes
         setRunTour(false);
@@ -220,7 +239,9 @@ const OnboardingGuide = () => {
         setCurrentStepIndex(0);
 
         const steps = pageSteps[currentPath] || [];
+        console.log(`[OnboardingGuide] Steps for path ${currentPath}: ${steps.length}`);
         if (steps.length === 0) {
+            console.log(`[OnboardingGuide] No steps defined for this path, returning`);
             // No steps for this page
             return;
         }
@@ -231,17 +252,28 @@ const OnboardingGuide = () => {
 
         // Function to check and start tour
         const checkAndStartTour = () => {
-            if (hasStarted) return true;
+            if (hasStarted) {
+                console.log(`[OnboardingGuide] checkAndStartTour: Already started, skipping`);
+                return true;
+            }
+
+            console.log(`[OnboardingGuide] checkAndStartTour: Checking ${steps.length} steps...`);
 
             // Check refs directly instead of using hasRef callback
             const availableSteps = steps.filter(step => {
                 const ref = refs[step.target];
-                return ref && ref.current !== null && ref.current !== undefined;
+                const hasCurrent = ref && ref.current !== null && ref.current !== undefined;
+                console.log(`[OnboardingGuide] Step "${step.target}": ref exists = ${!!ref}, ref.current exists = ${hasCurrent}`);
+                return hasCurrent;
             });
 
+            console.log(`[OnboardingGuide] Available steps: ${availableSteps.length}/${steps.length}`);
+
             if (availableSteps.length > 0) {
+                console.log(`[OnboardingGuide] Starting tour! Available steps:`, availableSteps.map(s => s.target));
                 hasStarted = true;
                 setIsReady(true);
+                console.log(`[OnboardingGuide] Set isReady = true`);
 
                 // Clear interval if it exists
                 if (intervalId) {
@@ -251,19 +283,24 @@ const OnboardingGuide = () => {
 
                 // Use a delay to ensure everything is fully rendered
                 setTimeout(() => {
+                    console.log(`[OnboardingGuide] Setting runTour = true`);
                     setRunTour(true);
                 }, 800);
                 return true;
             }
+            console.log(`[OnboardingGuide] Not enough steps available yet, will retry...`);
             return false;
         };
 
         // Immediate check
+        console.log(`[OnboardingGuide] Performing immediate check...`);
         checkAndStartTour();
 
         // Set up continuous checking every 200ms
+        console.log(`[OnboardingGuide] Setting up interval check every 200ms`);
         intervalId = setInterval(() => {
             if (checkAndStartTour()) {
+                console.log(`[OnboardingGuide] Tour started, clearing interval`);
                 clearInterval(intervalId);
                 intervalId = null;
             }
@@ -388,25 +425,31 @@ const OnboardingGuide = () => {
 
     // Don't render if user hasn't loaded or shouldn't see the tour
     if (!userId || (role !== 'company' && role !== 'Editor' && role !== 'Viewer')) {
+        console.log(`[OnboardingGuide] Not rendering - userId or role check failed`);
         return null;
     }
 
     // Don't render if onboarding is already completed
     if (onboardingCompleted) {
+        console.log(`[OnboardingGuide] Not rendering - onboarding already completed`);
         return null;
     }
 
     // Render Joyride even if no steps yet - it will handle it gracefully
     // But only if we have at least one step available
     if (!steps || steps.length === 0) {
+        console.log(`[OnboardingGuide] Not rendering - no steps available (${steps?.length || 0})`);
         // Still render nothing if no steps available
         return null;
     }
 
+    const shouldRun = runTour && isReady && steps.length > 0;
+    console.log(`[OnboardingGuide] Render check - runTour: ${runTour}, isReady: ${isReady}, steps: ${steps.length}, shouldRun: ${shouldRun}`);
+
     return (
         <Joyride
             steps={steps}
-            run={runTour && isReady && steps.length > 0}
+            run={shouldRun}
             continuous={true}
             showProgress={true}
             showSkipButton={true}

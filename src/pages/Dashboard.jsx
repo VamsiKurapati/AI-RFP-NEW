@@ -118,6 +118,7 @@ const Dashboard = () => {
 
     // Register refs with onboarding context
     useEffect(() => {
+        console.log(`[Dashboard] Registering refs - overview: ${!!dashboardOverviewRef.current}, proposals: ${!!dashboardProposalsRef.current}, calendar: ${!!dashboardCalendarRef.current}, stats: ${!!dashboardStatsRef.current}`);
         registerRef('dashboard-overview', dashboardOverviewRef);
         registerRef('dashboard-proposals', dashboardProposalsRef);
         registerRef('dashboard-calendar', dashboardCalendarRef);

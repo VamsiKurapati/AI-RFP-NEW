@@ -86,9 +86,11 @@ const SupportTicket = () => {
 
     // Register refs with onboarding context
     useEffect(() => {
+        console.log(`[SupportTicket] Registering refs - header: ${!!supportHeaderRef.current}, create: ${!!supportCreateRef.current}, tickets: ${!!supportTicketsRef.current}`);
         registerRef('support-header', supportHeaderRef);
         registerRef('support-create', supportCreateRef);
         registerRef('support-tickets', supportTicketsRef);
+        console.log(`[SupportTicket] Refs registered`);
     }, [registerRef]);
 
     const fetchConversationMessages = async (ticketId) => {
