@@ -205,117 +205,153 @@ const OnboardingGuide = () => {
         }).filter(step => step.target !== null);
     }, [currentPath, refs, hasRef]);
 
-    // Wait for all target elements to be available
+    // Wait for target elements to be available - start tour with available steps
     const waitForElements = useCallback(() => {
-        const maxAttempts = 20;
+        const maxAttempts = 30;
         let attempts = 0;
 
         const checkElements = () => {
             const steps = pageSteps[currentPath] || [];
 
-            // Check if at least one step has a ref registered (even if current is null)
-            const hasRegisteredRefs = steps.some(step => {
-                const ref = refs[step.target];
-                return ref !== undefined && ref !== null;
-            });
+            if (steps.length === 0) {
+                // No steps for this page, no need to wait
+                return;
+            }
 
-            // Check if all steps have refs with current elements
-            const allStepsHaveRefs = steps.length > 0 && steps.every(step => {
-                return hasRef(step.target);
-            });
+            // Check if at least one step has a ref with a current element (i.e., available)
+            const availableSteps = steps.filter(step => hasRef(step.target));
 
-            if (allStepsHaveRefs || attempts >= maxAttempts) {
+            // Start tour if we have at least one available step, or if we've tried enough times
+            const shouldStart = availableSteps.length > 0 || attempts >= maxAttempts;
+
+            if (shouldStart) {
                 setIsReady(true);
-                if (allStepsHaveRefs && !onboardingCompleted && steps.length > 0) {
-                    // Additional delay to ensure everything is rendered
+                if (availableSteps.length > 0 && !onboardingCompleted) {
+                    // Start the tour with a small delay to ensure DOM is ready
                     setTimeout(() => {
                         setRunTour(true);
-                    }, 300);
-                } else if (attempts >= maxAttempts && hasRegisteredRefs) {
-                    // If we've waited long enough but refs still don't have current, check one more time after a delay
-                    setIsReady(true);
+                    }, 500);
                 }
             } else {
                 attempts++;
-                // Use shorter delay initially, longer after a few attempts
-                const delay = attempts < 5 ? 200 : attempts < 10 ? 400 : 600;
+                // Check more frequently in the beginning
+                const delay = attempts < 10 ? 150 : attempts < 20 ? 300 : 500;
                 setTimeout(checkElements, delay);
             }
         };
 
         // Start checking immediately
         checkElements();
-    }, [currentPath, hasRef, onboardingCompleted, refs]);
+    }, [currentPath, hasRef, onboardingCompleted]);
 
-    // Trigger re-check when refs are updated or refs become available
+    // Main effect to start the tour - runs when path changes or refs update
     useEffect(() => {
-        if (userId && (role === 'company' || role === 'Editor' || role === 'Viewer') && !onboardingCompleted) {
-            // If refs are being updated, re-check elements
-            if (refsUpdateTrigger > 0) {
-                const timer = setTimeout(() => {
-                    // Force re-check when refs are registered
-                    if (!isReady) {
-                        waitForElements();
-                    }
-                }, 150);
-                return () => clearTimeout(timer);
-            }
+        // Check if user should see onboarding
+        if (!userId || (role !== 'company' && role !== 'Editor' && role !== 'Viewer')) {
+            return;
         }
-    }, [refsUpdateTrigger, userId, role, onboardingCompleted, isReady, waitForElements]);
 
-    // Watch for when refs become available after registration
+        // Check if onboarding already completed
+        if (onboardingCompleted) {
+            return;
+        }
+
+        // Reset state when path changes
+        setRunTour(false);
+        setIsReady(false);
+        setCurrentStepIndex(0);
+
+        // Start checking for elements
+        waitForElements();
+    }, [currentPath, userId, role, onboardingCompleted, waitForElements]);
+
+    // Trigger when refs are updated
     useEffect(() => {
-        if (userId && (role === 'company' || role === 'Editor' || role === 'Viewer') && !onboardingCompleted && !isReady) {
-            // Set up an interval to check if refs.current becomes available
-            const checkInterval = setInterval(() => {
+        if (!userId || (role !== 'company' && role !== 'Editor' && role !== 'Viewer') || onboardingCompleted) {
+            return;
+        }
+
+        if (refsUpdateTrigger > 0) {
+            const timer = setTimeout(() => {
+                waitForElements();
+            }, 200);
+            return () => clearTimeout(timer);
+        }
+    }, [refsUpdateTrigger, userId, role, onboardingCompleted, waitForElements]);
+
+    // Continuous check for refs availability - more aggressive and persistent
+    useEffect(() => {
+        if (!userId || (role !== 'company' && role !== 'Editor' && role !== 'Viewer') || onboardingCompleted) {
+            return;
+        }
+
+        let attempts = 0;
+        const maxAttempts = 80; // Check for 20 seconds (80 * 250ms)
+
+        // Continuous interval check for refs becoming available
+        const checkInterval = setInterval(() => {
+            attempts++;
+            const steps = pageSteps[currentPath] || [];
+
+            if (steps.length > 0) {
+                const availableSteps = steps.filter(step => hasRef(step.target));
+
+                if (availableSteps.length > 0) {
+                    setIsReady((ready) => {
+                        if (!ready) {
+                            // Small delay to ensure DOM is settled, then start tour
+                            setTimeout(() => {
+                                setRunTour(true);
+                            }, 300);
+                            return true;
+                        }
+                        return ready;
+                    });
+
+                    // Stop checking once we've started
+                    clearInterval(checkInterval);
+                }
+            }
+
+            // Stop after max attempts
+            if (attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+            }
+        }, 250);
+
+        // Also listen to window load event as backup
+        const handleLoad = () => {
+            setTimeout(() => {
                 const steps = pageSteps[currentPath] || [];
                 if (steps.length > 0) {
-                    const allStepsHaveRefs = steps.every(step => hasRef(step.target));
-                    if (allStepsHaveRefs) {
-                        clearInterval(checkInterval);
+                    const availableSteps = steps.filter(step => hasRef(step.target));
+                    if (availableSteps.length > 0 && !isReady) {
                         setIsReady(true);
                         setTimeout(() => {
                             setRunTour(true);
-                        }, 300);
+                        }, 500);
                     }
                 }
-            }, 200);
+            }, 300);
+        };
 
-            // Clean up after max 10 seconds (50 checks)
-            const timeout = setTimeout(() => {
-                clearInterval(checkInterval);
-            }, 10000);
-
-            return () => {
-                clearInterval(checkInterval);
-                clearTimeout(timeout);
-            };
+        if (document.readyState === 'complete') {
+            handleLoad();
+        } else {
+            window.addEventListener('load', handleLoad);
         }
-    }, [currentPath, userId, role, onboardingCompleted, isReady, hasRef]);
 
-    useEffect(() => {
-        // Check if user has completed onboarding
-        if (userId && (role === 'company' || role === 'Editor' || role === 'Viewer')) {
-            if (!onboardingCompleted) {
-                // Reset when path changes
-                setRunTour(false);
-                setIsReady(false);
-                setCurrentStepIndex(0);
+        // Clean up after 25 seconds
+        const timeout = setTimeout(() => {
+            clearInterval(checkInterval);
+        }, 25000);
 
-                // Start checking immediately, but also after page load
-                waitForElements();
-
-                // Also check after page is fully loaded
-                if (document.readyState !== 'complete') {
-                    const handleLoad = () => {
-                        setTimeout(waitForElements, 200);
-                    };
-                    window.addEventListener('load', handleLoad);
-                    return () => window.removeEventListener('load', handleLoad);
-                }
-            }
-        }
-    }, [userId, role, onboardingCompleted, waitForElements, currentPath]);
+        return () => {
+            clearInterval(checkInterval);
+            clearTimeout(timeout);
+            window.removeEventListener('load', handleLoad);
+        };
+    }, [currentPath, userId, role, onboardingCompleted, hasRef, isReady]);
 
     const handleJoyrideCallback = useCallback((data) => {
         const { status, type, index, step } = data;
@@ -405,15 +441,17 @@ const OnboardingGuide = () => {
         return null;
     }
 
-    // Don't render if no steps for current page
+    // Render Joyride even if no steps yet - it will handle it gracefully
+    // But only if we have at least one step available
     if (!steps || steps.length === 0) {
+        // Still render nothing if no steps available
         return null;
     }
 
     return (
         <Joyride
             steps={steps}
-            run={runTour && isReady}
+            run={runTour && isReady && steps.length > 0}
             continuous={true}
             showProgress={true}
             showSkipButton={true}
