@@ -13,7 +13,7 @@ export const UserProvider = ({ children }) => {
     const [onboardingCompleted, setOnboardingCompleted] = useState(() => {
         const storedUser = localStorage.getItem("user");
         const parsedUser = storedUser ? JSON.parse(storedUser) : null;
-        return parsedUser?.onboardingCompleted || false;
+        return parsedUser?.onboarding_status || false;
     });
 
     useEffect(() => {
