@@ -221,15 +221,26 @@ const OnboardingGuide = () => {
     useEffect(() => {
         console.log(`[OnboardingGuide] Effect triggered - Path: ${currentPath}, UserId: ${userId}, Role: ${role}, OnboardingCompleted: ${onboardingCompleted}`);
 
-        // Early return if conditions aren't met
-        if (!userId || (role !== 'company' && role !== 'Editor' && role !== 'Viewer') || onboardingCompleted) {
-            console.log(`[OnboardingGuide] Early return - conditions not met`);
+        // Wait for userId to load - don't start until we have it
+        // But allow the effect to run to prepare for when userId arrives
+        if (onboardingCompleted) {
+            console.log(`[OnboardingGuide] Early return - onboarding already completed`);
             setRunTour(false);
             setIsReady(false);
             return;
         }
 
-        console.log(`[OnboardingGuide] Conditions met, proceeding with tour setup`);
+        // If we have userId, validate role
+        if (userId && role !== 'company' && role !== 'Editor' && role !== 'Viewer') {
+            console.log(`[OnboardingGuide] Early return - invalid role: ${role}`);
+            setRunTour(false);
+            setIsReady(false);
+            return;
+        }
+
+        // Continue to set up the checking mechanism even if userId isn't loaded yet
+        // This allows the tour to start automatically when both userId and refs are ready
+        console.log(`[OnboardingGuide] Proceeding with tour setup (userId will be checked in checkAndStartTour)`);
         console.log(`[OnboardingGuide] Current refs:`, Object.keys(refs));
         console.log(`[OnboardingGuide] RefsUpdateTrigger: ${refsUpdateTrigger}`);
 
@@ -252,25 +263,33 @@ const OnboardingGuide = () => {
 
         // Function to check and start tour
         const checkAndStartTour = () => {
+            // First check if we have userId - if not, wait
+            if (!userId) {
+                console.log(`[OnboardingGuide] checkAndStartTour: userId still not loaded, waiting...`);
+                return false;
+            }
+
             if (hasStarted) {
                 console.log(`[OnboardingGuide] checkAndStartTour: Already started, skipping`);
                 return true;
             }
 
             console.log(`[OnboardingGuide] checkAndStartTour: Checking ${steps.length} steps...`);
+            console.log(`[OnboardingGuide] Current refs keys:`, Object.keys(refs));
 
             // Check refs directly instead of using hasRef callback
             const availableSteps = steps.filter(step => {
                 const ref = refs[step.target];
+                const hasRefObj = !!ref;
                 const hasCurrent = ref && ref.current !== null && ref.current !== undefined;
-                console.log(`[OnboardingGuide] Step "${step.target}": ref exists = ${!!ref}, ref.current exists = ${hasCurrent}`);
+                console.log(`[OnboardingGuide] Step "${step.target}": ref exists = ${hasRefObj}, ref.current exists = ${hasCurrent}, ref.current =`, ref?.current);
                 return hasCurrent;
             });
 
             console.log(`[OnboardingGuide] Available steps: ${availableSteps.length}/${steps.length}`);
 
             if (availableSteps.length > 0) {
-                console.log(`[OnboardingGuide] Starting tour! Available steps:`, availableSteps.map(s => s.target));
+                console.log(`[OnboardingGuide] ✅ Starting tour! Available steps:`, availableSteps.map(s => s.target));
                 hasStarted = true;
                 setIsReady(true);
                 console.log(`[OnboardingGuide] Set isReady = true`);
@@ -288,7 +307,7 @@ const OnboardingGuide = () => {
                 }, 800);
                 return true;
             }
-            console.log(`[OnboardingGuide] Not enough steps available yet, will retry...`);
+            console.log(`[OnboardingGuide] Not enough steps available yet (${availableSteps.length}/${steps.length}), will retry...`);
             return false;
         };
 
@@ -343,7 +362,7 @@ const OnboardingGuide = () => {
             window.removeEventListener('load', checkOnEvent);
             document.removeEventListener('DOMContentLoaded', checkOnEvent);
         };
-    }, [currentPath, userId, role, onboardingCompleted, refs, refsUpdateTrigger]);
+    }, [currentPath, userId, role, onboardingCompleted, refs, refsUpdateTrigger, steps]);
 
     const handleJoyrideCallback = useCallback((data) => {
         const { status, type, index, step } = data;
@@ -423,9 +442,10 @@ const OnboardingGuide = () => {
         return getStepsForCurrentPage();
     }, [getStepsForCurrentPage]);
 
-    // Don't render if user hasn't loaded or shouldn't see the tour
-    if (!userId || (role !== 'company' && role !== 'Editor' && role !== 'Viewer')) {
-        console.log(`[OnboardingGuide] Not rendering - userId or role check failed`);
+    // Don't render if role is explicitly invalid (but wait for userId to load)
+    // Only block if we have a userId and the role is invalid
+    if (userId && role !== 'company' && role !== 'Editor' && role !== 'Viewer') {
+        console.log(`[OnboardingGuide] Not rendering - invalid role: ${role}`);
         return null;
     }
 
@@ -444,7 +464,7 @@ const OnboardingGuide = () => {
     }
 
     const shouldRun = runTour && isReady && steps.length > 0;
-    console.log(`[OnboardingGuide] Render check - runTour: ${runTour}, isReady: ${isReady}, steps: ${steps.length}, shouldRun: ${shouldRun}`);
+    console.log(`[OnboardingGuide] Render check - userId: ${userId}, runTour: ${runTour}, isReady: ${isReady}, steps: ${steps.length}, shouldRun: ${shouldRun}`);
 
     return (
         <Joyride
