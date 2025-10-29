@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useRef, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export const OnboardingContext = createContext();
@@ -14,14 +14,23 @@ export const useOnboarding = () => {
 export const OnboardingProvider = ({ children }) => {
     const location = useLocation();
     const [refs, setRefs] = useState({});
+    const [refsUpdateTrigger, setRefsUpdateTrigger] = useState(0);
 
-    // Register a ref for a specific step key
+    // Register a ref for a specific step key - register immediately even if current is null
     const registerRef = useCallback((key, ref) => {
-        if (ref && ref.current) {
-            setRefs(prev => ({
-                ...prev,
-                [key]: ref
-            }));
+        if (ref) {
+            setRefs(prev => {
+                // Only update if it's a new ref or different
+                if (!prev[key] || prev[key] !== ref) {
+                    return {
+                        ...prev,
+                        [key]: ref
+                    };
+                }
+                return prev;
+            });
+            // Trigger update to re-check refs
+            setRefsUpdateTrigger(prev => prev + 1);
         }
     }, []);
 
@@ -30,10 +39,10 @@ export const OnboardingProvider = ({ children }) => {
         return refs[key];
     }, [refs]);
 
-    // Check if a ref exists
+    // Check if a ref exists and has a current element
     const hasRef = useCallback((key) => {
         const ref = refs[key];
-        return ref && ref.current !== null;
+        return ref && ref.current !== null && ref.current !== undefined;
     }, [refs]);
 
     // Get current page path
@@ -45,7 +54,8 @@ export const OnboardingProvider = ({ children }) => {
             getRef,
             hasRef,
             refs,
-            currentPath
+            currentPath,
+            refsUpdateTrigger
         }}>
             {children}
         </OnboardingContext.Provider>

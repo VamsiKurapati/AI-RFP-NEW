@@ -9,7 +9,7 @@ const OnboardingGuide = () => {
     const [isReady, setIsReady] = useState(false);
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const { userId, role, onboardingCompleted, setOnboardingCompleted } = useUser();
-    const { refs, currentPath, hasRef } = useOnboarding();
+    const { refs, currentPath, hasRef, refsUpdateTrigger } = useOnboarding();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -189,12 +189,20 @@ const OnboardingGuide = () => {
 
     // Wait for all target elements to be available
     const waitForElements = useCallback(() => {
-        const maxAttempts = 15;
+        const maxAttempts = 20;
         let attempts = 0;
 
         const checkElements = () => {
             const steps = pageSteps[currentPath] || [];
-            const allStepsHaveRefs = steps.every(step => {
+
+            // Check if at least one step has a ref registered (even if current is null)
+            const hasRegisteredRefs = steps.some(step => {
+                const ref = refs[step.target];
+                return ref !== undefined && ref !== null;
+            });
+
+            // Check if all steps have refs with current elements
+            const allStepsHaveRefs = steps.length > 0 && steps.every(step => {
                 return hasRef(step.target);
             });
 
@@ -204,16 +212,68 @@ const OnboardingGuide = () => {
                     // Additional delay to ensure everything is rendered
                     setTimeout(() => {
                         setRunTour(true);
-                    }, 800);
+                    }, 300);
+                } else if (attempts >= maxAttempts && hasRegisteredRefs) {
+                    // If we've waited long enough but refs still don't have current, check one more time after a delay
+                    setIsReady(true);
                 }
             } else {
                 attempts++;
-                setTimeout(checkElements, 400);
+                // Use shorter delay initially, longer after a few attempts
+                const delay = attempts < 5 ? 200 : attempts < 10 ? 400 : 600;
+                setTimeout(checkElements, delay);
             }
         };
 
+        // Start checking immediately
         checkElements();
-    }, [currentPath, hasRef, onboardingCompleted]);
+    }, [currentPath, hasRef, onboardingCompleted, refs]);
+
+    // Trigger re-check when refs are updated or refs become available
+    useEffect(() => {
+        if (userId && (role === 'company' || role === 'Editor' || role === 'Viewer') && !onboardingCompleted) {
+            // If refs are being updated, re-check elements
+            if (refsUpdateTrigger > 0) {
+                const timer = setTimeout(() => {
+                    // Force re-check when refs are registered
+                    if (!isReady) {
+                        waitForElements();
+                    }
+                }, 150);
+                return () => clearTimeout(timer);
+            }
+        }
+    }, [refsUpdateTrigger, userId, role, onboardingCompleted, isReady, waitForElements]);
+
+    // Watch for when refs become available after registration
+    useEffect(() => {
+        if (userId && (role === 'company' || role === 'Editor' || role === 'Viewer') && !onboardingCompleted && !isReady) {
+            // Set up an interval to check if refs.current becomes available
+            const checkInterval = setInterval(() => {
+                const steps = pageSteps[currentPath] || [];
+                if (steps.length > 0) {
+                    const allStepsHaveRefs = steps.every(step => hasRef(step.target));
+                    if (allStepsHaveRefs) {
+                        clearInterval(checkInterval);
+                        setIsReady(true);
+                        setTimeout(() => {
+                            setRunTour(true);
+                        }, 300);
+                    }
+                }
+            }, 200);
+
+            // Clean up after max 10 seconds (50 checks)
+            const timeout = setTimeout(() => {
+                clearInterval(checkInterval);
+            }, 10000);
+
+            return () => {
+                clearInterval(checkInterval);
+                clearTimeout(timeout);
+            };
+        }
+    }, [currentPath, userId, role, onboardingCompleted, isReady, hasRef]);
 
     useEffect(() => {
         // Check if user has completed onboarding
@@ -224,12 +284,16 @@ const OnboardingGuide = () => {
                 setIsReady(false);
                 setCurrentStepIndex(0);
 
-                // Wait for page to be fully loaded before checking elements
-                if (document.readyState === 'complete') {
-                    setTimeout(waitForElements, 500);
-                } else {
-                    window.addEventListener('load', () => setTimeout(waitForElements, 500));
-                    return () => window.removeEventListener('load', waitForElements);
+                // Start checking immediately, but also after page load
+                waitForElements();
+
+                // Also check after page is fully loaded
+                if (document.readyState !== 'complete') {
+                    const handleLoad = () => {
+                        setTimeout(waitForElements, 200);
+                    };
+                    window.addEventListener('load', handleLoad);
+                    return () => window.removeEventListener('load', handleLoad);
                 }
             }
         }
