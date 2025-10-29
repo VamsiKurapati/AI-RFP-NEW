@@ -723,57 +723,68 @@ const OnboardingGuide = () => {
     // Compute steps for rendering - recalculate whenever runTour or refsUpdateTrigger changes
     // IMPORTANT: This MUST recalculate when runTour becomes true, using fresh refsRef.current
     const steps = useMemo(() => {
-        // Ensure refsRef is synced before computing steps
-        refsRef.current = refs;
+        try {
+            // Ensure refsRef is synced before computing steps
+            refsRef.current = refs;
 
-        // Get current step for rendering
-        let computedSteps = getStepsForRender();
-
-        // For circular tour: add a placeholder "next" step so Joyride shows "Next" instead of "Finish"
-        // This tricks Joyride into thinking there's another step coming
-        if (computedSteps.length > 0) {
-            const currentIndex = getCurrentStepIndex();
-            const startIndex = getStartingStepIndex();
-            const nextIndex = (currentIndex + 1) % allSteps.length;
-            const isCompletingLoop = nextIndex === startIndex;
-
-            // If not completing the loop, add a dummy next step so "Next" button shows
-            if (!isCompletingLoop) {
-                const nextStep = allSteps[nextIndex];
-                // Add a placeholder step (without a valid target) so Joyride knows there's more
-                // We'll handle skipping this in the callback
-                computedSteps.push({
-                    ...nextStep,
-                    target: null, // No target - this will trigger an error that we'll catch
-                    content: '...', // Minimal content
-                });
+            // Get current step for rendering - wrap in try-catch to handle any errors gracefully
+            let computedSteps = [];
+            if (typeof getStepsForRender === 'function') {
+                computedSteps = getStepsForRender();
+            } else {
+                console.error(`[OnboardingGuide] getStepsForRender is not a function! Type: ${typeof getStepsForRender}`);
+                return [];
             }
-            // If completing loop, leave it as single step so "Finish" shows correctly
 
-            console.log(`[OnboardingGuide] 🔄 Steps memo computed: ${computedSteps.length} steps`);
-            console.log(`[OnboardingGuide]   - Current step index: ${currentIndex}`);
-            console.log(`[OnboardingGuide]   - Next step index: ${nextIndex}`);
-            console.log(`[OnboardingGuide]   - Start index: ${startIndex}`);
-            console.log(`[OnboardingGuide]   - Is completing loop: ${isCompletingLoop}`);
-        } else {
-            console.warn(`[OnboardingGuide] ⚠️ Steps memo returned 0 steps!`);
+            // For circular tour: add a placeholder "next" step so Joyride shows "Next" instead of "Finish"
+            // This tricks Joyride into thinking there's another step coming
+            if (computedSteps.length > 0) {
+                const currentIndex = getCurrentStepIndex();
+                const startIndex = getStartingStepIndex();
+                const nextIndex = (currentIndex + 1) % allSteps.length;
+                const isCompletingLoop = nextIndex === startIndex;
+
+                // If not completing the loop, add a dummy next step so "Next" button shows
+                if (!isCompletingLoop) {
+                    const nextStep = allSteps[nextIndex];
+                    // Add a placeholder step (without a valid target) so Joyride knows there's more
+                    // We'll handle skipping this in the callback
+                    computedSteps.push({
+                        ...nextStep,
+                        target: null, // No target - this will trigger an error that we'll catch
+                        content: '...', // Minimal content
+                    });
+                }
+                // If completing loop, leave it as single step so "Finish" shows correctly
+
+                console.log(`[OnboardingGuide] 🔄 Steps memo computed: ${computedSteps.length} steps`);
+                console.log(`[OnboardingGuide]   - Current step index: ${currentIndex}`);
+                console.log(`[OnboardingGuide]   - Next step index: ${nextIndex}`);
+                console.log(`[OnboardingGuide]   - Start index: ${startIndex}`);
+                console.log(`[OnboardingGuide]   - Is completing loop: ${isCompletingLoop}`);
+            } else {
+                console.warn(`[OnboardingGuide] ⚠️ Steps memo returned 0 steps!`);
+            }
+
+            console.log(`[OnboardingGuide]   - runTour: ${runTour}`);
+            console.log(`[OnboardingGuide]   - isReady: ${isReady}`);
+            console.log(`[OnboardingGuide]   - refsUpdateTrigger: ${refsUpdateTrigger}`);
+
+            if (computedSteps.length > 0) {
+                console.log(`[OnboardingGuide] ✅ Step targets:`, computedSteps.map((s, i) => ({
+                    stepIndex: i,
+                    target: s.target ? `${s.target.tagName || typeof s.target}` : 'NULL/PLACEHOLDER',
+                    title: s.title,
+                    hasTarget: !!s.target,
+                    targetInDOM: s.target ? document.body.contains(s.target) : false
+                })));
+            }
+
+            return computedSteps;
+        } catch (error) {
+            console.error(`[OnboardingGuide] Error computing steps:`, error);
+            return [];
         }
-
-        console.log(`[OnboardingGuide]   - runTour: ${runTour}`);
-        console.log(`[OnboardingGuide]   - isReady: ${isReady}`);
-        console.log(`[OnboardingGuide]   - refsUpdateTrigger: ${refsUpdateTrigger}`);
-
-        if (computedSteps.length > 0) {
-            console.log(`[OnboardingGuide] ✅ Step targets:`, computedSteps.map((s, i) => ({
-                stepIndex: i,
-                target: s.target ? `${s.target.tagName || typeof s.target}` : 'NULL/PLACEHOLDER',
-                title: s.title,
-                hasTarget: !!s.target,
-                targetInDOM: s.target ? document.body.contains(s.target) : false
-            })));
-        }
-
-        return computedSteps;
     }, [getStepsForRender, refsUpdateTrigger, runTour, isReady, refs, allSteps, getCurrentStepIndex, getStartingStepIndex]);
 
     // Don't render if role is invalid (when userId is available)
