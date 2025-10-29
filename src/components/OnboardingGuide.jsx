@@ -249,9 +249,10 @@ const OnboardingGuide = () => {
         setIsReady(false);
         setCurrentStepIndex(0);
 
-        const steps = pageSteps[currentPath] || [];
-        console.log(`[OnboardingGuide] Steps for path ${currentPath}: ${steps.length}`);
-        if (steps.length === 0) {
+        // Get steps from pageSteps directly (not from computed function to avoid circular deps)
+        const stepsForPage = pageSteps[currentPath] || [];
+        console.log(`[OnboardingGuide] Steps for path ${currentPath}: ${stepsForPage.length}`);
+        if (stepsForPage.length === 0) {
             console.log(`[OnboardingGuide] No steps defined for this path, returning`);
             // No steps for this page
             return;
@@ -274,11 +275,11 @@ const OnboardingGuide = () => {
                 return true;
             }
 
-            console.log(`[OnboardingGuide] checkAndStartTour: Checking ${steps.length} steps...`);
+            console.log(`[OnboardingGuide] checkAndStartTour: Checking ${stepsForPage.length} steps...`);
             console.log(`[OnboardingGuide] Current refs keys:`, Object.keys(refs));
 
             // Check refs directly instead of using hasRef callback
-            const availableSteps = steps.filter(step => {
+            const availableSteps = stepsForPage.filter(step => {
                 const ref = refs[step.target];
                 const hasRefObj = !!ref;
                 const hasCurrent = ref && ref.current !== null && ref.current !== undefined;
@@ -286,7 +287,7 @@ const OnboardingGuide = () => {
                 return hasCurrent;
             });
 
-            console.log(`[OnboardingGuide] Available steps: ${availableSteps.length}/${steps.length}`);
+            console.log(`[OnboardingGuide] Available steps: ${availableSteps.length}/${stepsForPage.length}`);
 
             if (availableSteps.length > 0) {
                 console.log(`[OnboardingGuide] ✅ Starting tour! Available steps:`, availableSteps.map(s => s.target));
@@ -362,7 +363,7 @@ const OnboardingGuide = () => {
             window.removeEventListener('load', checkOnEvent);
             document.removeEventListener('DOMContentLoaded', checkOnEvent);
         };
-    }, [currentPath, userId, role, onboardingCompleted, refs, refsUpdateTrigger, steps]);
+    }, [currentPath, userId, role, onboardingCompleted, refs, refsUpdateTrigger]);
 
     const handleJoyrideCallback = useCallback((data) => {
         const { status, type, index, step } = data;
