@@ -5,9 +5,10 @@ import { useOnboarding } from '../context/OnboardingContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // Version identifier to force cache bust
-const ONBOARDING_VERSION = '2.0.0-circular-tour';
+const ONBOARDING_VERSION = '2.0.1-circular-tour-fix';
 
 const OnboardingGuide = () => {
+    console.log(`[OnboardingGuide] Component loaded - version: ${ONBOARDING_VERSION}`);
     const [runTour, setRunTour] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -842,7 +843,7 @@ const OnboardingGuide = () => {
         <Joyride
             steps={steps}
             run={shouldRun}
-            key={`joyride-${currentPath}-${runTour ? 'run' : 'stop'}-${steps.length}`}
+            key={`joyride-${currentPath}-${runTour ? 'run' : 'stop'}-${steps.length}-${ONBOARDING_VERSION}`}
             continuous={true}
             showProgress={true}
             showSkipButton={true}
