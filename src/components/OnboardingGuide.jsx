@@ -269,15 +269,22 @@ const OnboardingGuide = () => {
         return step;
     }, [allSteps, getCurrentStepIndex]);
 
-    // Get steps for rendering - only the current step from allSteps
+    // Get steps for rendering - only the current step from allSteps (circular tour)
     const getStepsForRender = useCallback(() => {
         const actualPath = location.pathname;
         const storedIndex = getCurrentStepIndex();
+
+        // Validate index is within bounds
+        if (storedIndex < 0 || storedIndex >= allSteps.length) {
+            console.log(`[OnboardingGuide] Invalid step index: ${storedIndex}, total steps: ${allSteps.length}`);
+            return [];
+        }
+
         const currentStep = allSteps[storedIndex];
 
-        // If we're past the last step, return empty
-        if (storedIndex >= allSteps.length) {
-            console.log(`[OnboardingGuide] Tour completed - step index ${storedIndex} >= total ${allSteps.length}`);
+        // If current step doesn't exist, return empty
+        if (!currentStep) {
+            console.log(`[OnboardingGuide] No step at index ${storedIndex}`);
             return [];
         }
 
