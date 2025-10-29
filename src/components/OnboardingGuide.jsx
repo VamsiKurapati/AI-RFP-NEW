@@ -16,7 +16,12 @@ const OnboardingGuide = () => {
     // Use a ref to store the latest refs so we can access them in closures without stale values
     const refsRef = useRef(refs);
     useEffect(() => {
+        const oldKeys = Object.keys(refsRef.current);
         refsRef.current = refs;
+        const newKeys = Object.keys(refs);
+        if (oldKeys.length !== newKeys.length || JSON.stringify(oldKeys.sort()) !== JSON.stringify(newKeys.sort())) {
+            console.log(`[OnboardingGuide] refsRef updated - old keys (${oldKeys.length}):`, oldKeys, `new keys (${newKeys.length}):`, newKeys);
+        }
     }, [refs]);
 
     // Define steps for different pages
@@ -197,31 +202,71 @@ const OnboardingGuide = () => {
 
     // Get steps for current page, filtered by available refs
     const getStepsForCurrentPage = useCallback(() => {
-        const steps = pageSteps[currentPath] || [];
-        console.log(`[OnboardingGuide] getStepsForCurrentPage - Path: ${currentPath}, Total steps defined: ${steps.length}`);
+        // Use location.pathname as source of truth
+        const actualPath = location.pathname;
+        const contextPathSteps = pageSteps[currentPath] || [];
+        const locationPathSteps = pageSteps[actualPath] || [];
+        const steps = locationPathSteps.length > 0 ? locationPathSteps : contextPathSteps;
+
+        console.log(`[OnboardingGuide] getStepsForCurrentPage - actualPath: ${actualPath}, contextPath: ${currentPath}, Total steps: ${steps.length}, refsUpdateTrigger: ${refsUpdateTrigger}`);
+
+        // ALWAYS use fresh refs from refsRef to avoid stale values
+        const currentRefs = refsRef.current;
+        console.log(`[OnboardingGuide] getStepsForCurrentPage - currentRefs keys:`, Object.keys(currentRefs));
 
         const availableSteps = steps.filter(step => {
-            const hasStepRef = hasRef(step.target);
-            console.log(`[OnboardingGuide] Step "${step.target}": hasRef = ${hasStepRef}`);
-            return hasStepRef;
+            const ref = currentRefs[step.target];
+            const hasRefObj = !!ref;
+            const hasCurrent = ref && ref.current !== null && ref.current !== undefined;
+            const isValid = hasRefObj && hasCurrent;
+
+            // Additional validation
+            let isInDOM = false;
+            let isVisible = false;
+            if (hasCurrent) {
+                try {
+                    isInDOM = document.body.contains(ref.current);
+                    const rect = ref.current.getBoundingClientRect();
+                    isVisible = rect.width > 0 || rect.height > 0;
+                } catch (e) {
+                    console.warn(`[OnboardingGuide] Error checking element for "${step.target}":`, e);
+                }
+            }
+
+            const fullyValid = isValid && isInDOM && isVisible;
+            console.log(`[OnboardingGuide] Step "${step.target}": ref=${hasRefObj}, current=${hasCurrent}, inDOM=${isInDOM}, visible=${isVisible}, fullyValid=${fullyValid}`);
+            return fullyValid;
         });
 
         console.log(`[OnboardingGuide] Available steps with refs: ${availableSteps.length}`);
 
         const mappedSteps = availableSteps.map((step) => {
-            const ref = refs[step.target];
+            const ref = currentRefs[step.target];
             const targetElement = ref?.current;
-            console.log(`[OnboardingGuide] Mapping step "${step.target}": ref exists = ${!!ref}, current exists = ${!!targetElement}`);
+            console.log(`[OnboardingGuide] Mapping step "${step.target}": ref=${!!ref}, current=${!!targetElement}`);
             return {
                 ...step,
                 // Convert ref key to actual DOM element for Joyride
                 target: targetElement || null,
             };
-        }).filter(step => step.target !== null);
+        }).filter(step => {
+            if (!step.target) {
+                console.log(`[OnboardingGuide] Filtering out step - target is null`);
+                return false;
+            }
+            const isInDOM = document.body.contains(step.target);
+            if (!isInDOM) {
+                console.log(`[OnboardingGuide] ⚠️ Filtering out step "${step.title}" - target not in DOM`);
+            }
+            return isInDOM;
+        });
 
-        console.log(`[OnboardingGuide] Final steps count: ${mappedSteps.length}`);
+        console.log(`[OnboardingGuide] ✅✅✅ Final steps count for render: ${mappedSteps.length}`);
+        if (mappedSteps.length > 0) {
+            console.log(`[OnboardingGuide] Final step targets:`, mappedSteps.map(s => s.target?.tagName || 'unknown'));
+        }
         return mappedSteps;
-    }, [currentPath, refs, hasRef]);
+    }, [currentPath, location.pathname, refsUpdateTrigger]);
 
     // Single unified effect to handle tour initialization - simplified approach
     useEffect(() => {
@@ -355,9 +400,21 @@ const OnboardingGuide = () => {
                     observer = null;
                 }
 
+                // Force steps recalculation by updating refsRef immediately
+                refsRef.current = refs;
+
                 setTimeout(() => {
                     console.log(`[OnboardingGuide] 🚀 Setting runTour = true`);
+                    console.log(`[OnboardingGuide] Current refsRef keys before setting runTour:`, Object.keys(refsRef.current));
+
+                    // Force a state update that will trigger steps recalculation
                     setRunTour(true);
+
+                    // Also force steps to recalculate by triggering a small delay update
+                    setTimeout(() => {
+                        // This ensures getStepsForCurrentPage gets called with fresh refs
+                        console.log(`[OnboardingGuide] Post-runTour check - forcing steps recalculation`);
+                    }, 100);
                 }, 500);
 
                 return true;
@@ -540,10 +597,31 @@ const OnboardingGuide = () => {
         }
     }, [userId, setOnboardingCompleted, getStepsForCurrentPage]);
 
-    // Compute steps for rendering
+    // Compute steps for rendering - recalculate whenever runTour or refsUpdateTrigger changes
+    // Don't use memoization when runTour is true to ensure we always get fresh steps
     const steps = useMemo(() => {
-        return getStepsForCurrentPage();
-    }, [getStepsForCurrentPage]);
+        // Force recalculation by calling getStepsForCurrentPage fresh
+        const computedSteps = getStepsForCurrentPage();
+        console.log(`[OnboardingGuide] Steps memo computed: ${computedSteps.length} steps (runTour: ${runTour}, isReady: ${isReady}, refsUpdateTrigger: ${refsUpdateTrigger})`);
+        if (computedSteps.length > 0) {
+            console.log(`[OnboardingGuide] ✅ Step targets:`, computedSteps.map(s => ({
+                target: s.target ? `${s.target.tagName || typeof s.target}` : 'NULL',
+                title: s.title,
+                hasTarget: !!s.target,
+                targetInDOM: s.target ? document.body.contains(s.target) : false
+            })));
+        } else {
+            console.warn(`[OnboardingGuide] ⚠️ Steps memo returned 0 steps but runTour=${runTour}, isReady=${isReady}`);
+            console.warn(`[OnboardingGuide] Current refs in refsRef:`, Object.keys(refsRef.current));
+            console.warn(`[OnboardingGuide] Checking refs directly:`, Object.entries(refsRef.current).map(([key, ref]) => ({
+                key,
+                hasRef: !!ref,
+                hasCurrent: !!ref?.current,
+                inDOM: ref?.current ? document.body.contains(ref.current) : false
+            })));
+        }
+        return computedSteps;
+    }, [getStepsForCurrentPage, refsUpdateTrigger, runTour, isReady]);
 
     // Don't render if role is invalid (when userId is available)
     if (userId && role !== 'company' && role !== 'Editor' && role !== 'Viewer') {
@@ -563,12 +641,41 @@ const OnboardingGuide = () => {
     }
 
     const shouldRun = runTour && isReady && steps.length > 0;
-    console.log(`[OnboardingGuide] Render - userId: ${userId}, runTour: ${runTour}, isReady: ${isReady}, steps: ${steps.length}, shouldRun: ${shouldRun}`);
+    console.log(`[OnboardingGuide] 🎯 RENDER CHECK:`);
+    console.log(`  - userId: ${userId}`);
+    console.log(`  - runTour: ${runTour}`);
+    console.log(`  - isReady: ${isReady}`);
+    console.log(`  - steps.length: ${steps.length}`);
+    if (steps.length > 0) {
+        console.log(`  - steps with targets:`, steps.map(s => ({
+            target: s.target ? `${s.target.tagName || typeof s.target}` : 'NULL',
+            title: s.title
+        })));
+    }
+    console.log(`  - shouldRun: ${shouldRun}`);
+
+    // Additional check - if we should run but steps have no targets, log warning
+    if (runTour && isReady && steps.length === 0) {
+        console.warn(`[OnboardingGuide] ⚠️ WARNING: runTour and isReady are true but no steps available!`);
+        console.warn(`[OnboardingGuide] This suggests getStepsForCurrentPage returned empty - checking refs now:`, Object.keys(refsRef.current));
+    }
+
+    // Log when Joyride is about to render
+    if (shouldRun && steps.length > 0) {
+        console.log(`[OnboardingGuide] 🎉 RENDERING JOYRIDE COMPONENT with ${steps.length} steps`);
+        console.log(`[OnboardingGuide] First step:`, {
+            targetExists: !!steps[0].target,
+            targetType: steps[0].target?.constructor?.name,
+            targetTagName: steps[0].target?.tagName,
+            title: steps[0].title
+        });
+    }
 
     return (
         <Joyride
             steps={steps}
             run={shouldRun}
+            key={`joyride-${currentPath}-${runTour ? 'run' : 'stop'}-${steps.length}`}
             continuous={true}
             showProgress={true}
             showSkipButton={true}
