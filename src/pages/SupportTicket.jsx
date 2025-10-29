@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useUser } from "../context/UserContext";
+import { useOnboarding } from "../context/OnboardingContext";
 import { FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa";
 
 import { TbTrashX } from "react-icons/tb";
@@ -8,6 +9,7 @@ import { TbTrashX } from "react-icons/tb";
 import NavbarComponent from "./NavbarComponent";
 import axios from "axios";
 import Swal from "sweetalert2";
+import OnboardingGuide from "../components/OnboardingGuide";
 
 const categories = [
     "Billing & Payments",
@@ -55,6 +57,7 @@ const statusSteps = ["Created", "In Progress", "Completed"];
 
 const SupportTicket = () => {
     const { role, userId } = useUser();
+    const { registerRef } = useOnboarding();
 
     const [category, setCategory] = useState("");
     const [subCategory, setSubCategory] = useState("");
@@ -75,6 +78,18 @@ const SupportTicket = () => {
     const [sendingMessage, setSendingMessage] = useState(false);
 
     const baseUrl = `${import.meta.env.VITE_API_BASE_URL}/support`;
+
+    // Onboarding refs
+    const supportHeaderRef = useRef(null);
+    const supportCreateRef = useRef(null);
+    const supportTicketsRef = useRef(null);
+
+    // Register refs with onboarding context
+    useEffect(() => {
+        registerRef('support-header', supportHeaderRef);
+        registerRef('support-create', supportCreateRef);
+        registerRef('support-tickets', supportTicketsRef);
+    }, [registerRef]);
 
     const fetchConversationMessages = async (ticketId) => {
         setLoadingMessages(true);
@@ -262,9 +277,10 @@ const SupportTicket = () => {
     return (
         <div className="min-h-screen h-full">
             <NavbarComponent />
+            <OnboardingGuide />
             <div className="max-w-4xl mx-auto mt-20 pb-8">
                 {/* Form */}
-                <div className="bg-white p-8 rounded-lg">
+                <div ref={supportHeaderRef} className="bg-white p-8 rounded-lg">
                     <h2 className="text-2xl text-blue-600 font-semibold mb-1">
                         Create Support Ticket
                     </h2>
@@ -369,7 +385,7 @@ const SupportTicket = () => {
                         )}
 
                         {/* Buttons */}
-                        <div className="flex gap-4">
+                        <div ref={supportCreateRef} className="flex gap-4">
                             <button
                                 type="button"
                                 onClick={() => {
@@ -401,7 +417,7 @@ const SupportTicket = () => {
                 </div>
 
                 {/* Ticket List */}
-                <div className="p-6 bg-gray-100 rounded-lg shadow-md">
+                <div ref={supportTicketsRef} className="p-6 bg-gray-100 rounded-lg shadow-md">
                     <h2 className="text-xl text-blue-600 font-semibold mb-1 text-center">
                         Track Support Ticket
                     </h2>

@@ -1,12 +1,14 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import NavbarComponent from './NavbarComponent';
 import { MdOutlineBookmark, MdOutlineBookmarkBorder, MdOutlineShare, MdOutlineCalendarMonth, MdOutlineChevronLeft, MdOutlineChevronRight } from 'react-icons/md';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import { useOnboarding } from '../context/OnboardingContext';
 import Swal from 'sweetalert2';
 import GrantProposalForm from '../components/GrantProposalForm';
 import handleWordGeneration from '../components/Generate_Word';
+import OnboardingGuide from '../components/OnboardingGuide';
 
 // Constants
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}`;
@@ -358,6 +360,19 @@ const Proposals = () => {
     const [isGeneratingProposal, setIsGeneratingProposal] = useState(false);
 
     const navigate = useNavigate();
+    const { registerRef } = useOnboarding();
+
+    // Onboarding refs
+    const proposalsHeaderRef = useRef(null);
+    const proposalsListRef = useRef(null);
+    const proposalsActionsRef = useRef(null);
+
+    // Register refs with onboarding context
+    useEffect(() => {
+        registerRef('proposals-header', proposalsHeaderRef);
+        registerRef('proposals-list', proposalsListRef);
+        registerRef('proposals-actions', proposalsActionsRef);
+    }, [registerRef]);
 
     // Calculate items per page based on screen size
     const calculateItemsPerPage = useCallback(() => {
@@ -1052,6 +1067,7 @@ const Proposals = () => {
         <>
             <div>
                 <NavbarComponent />
+                <OnboardingGuide />
             </div>
             <div className="w-full mx-auto mt-16 px-8 py-8">
                 {isLoading ? (
@@ -1064,13 +1080,15 @@ const Proposals = () => {
                     </div>
                 ) : (
                     <>
-                        <h2 className="text-[24px] font-semibold mb-2">Saved Proposals</h2>
+                        <div ref={proposalsHeaderRef}>
+                            <h2 className="text-[24px] font-semibold mb-2">Saved Proposals</h2>
+                        </div>
                         <div className="flex justify-between items-center mb-4">
                             <span className="text-sm text-gray-600">
                                 Showing {savedProposals.length > 0 ? savedProposalsStartIndex + 1 : 0} to {Math.min(savedProposalsEndIndex, savedProposals.length)} of {savedProposals.length} proposals
                             </span>
                         </div>
-                        <div className={`grid ${getGridLayoutClass()} gap-5 mb-6`}>
+                        <div ref={proposalsListRef} className={`grid ${getGridLayoutClass()} gap-5 mb-6`}>
                             {currentSavedProposals.length > 0 ? (
                                 <>
                                     {currentSavedProposals.length > itemsPerPage && (
@@ -1102,13 +1120,15 @@ const Proposals = () => {
                             </div>}
                         </div>
 
-                        {totalSavedPages > 1 && (
-                            <Pagination
-                                currentPage={currentSavedPage}
-                                totalPages={totalSavedPages}
-                                onPageChange={handleSavedPageChange}
-                            />
-                        )}
+                        <div ref={proposalsActionsRef} className="flex items-center gap-4">
+                            {totalSavedPages > 1 && (
+                                <Pagination
+                                    currentPage={currentSavedPage}
+                                    totalPages={totalSavedPages}
+                                    onPageChange={handleSavedPageChange}
+                                />
+                            )}
+                        </div>
 
                         <h2 className="text-[24px] font-semibold mb-2 mt-10">Draft Proposals</h2>
                         <div className="flex justify-between items-center mb-4">

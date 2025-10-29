@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaRegBookmark } from "react-icons/fa";
@@ -18,8 +18,10 @@ import {
 } from "react-icons/md";
 import NavbarComponent from "./NavbarComponent";
 import { useUser } from "../context/UserContext";
+import { useOnboarding } from "../context/OnboardingContext";
 import GrantProposalForm from "../components/GrantProposalForm";
 import Subscription from "../components/Subscription";
+import OnboardingGuide from "../components/OnboardingGuide";
 
 // Constants
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/rfp`;
@@ -569,6 +571,21 @@ const Discover = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [fetchedRFPs, setFetchedRFPs] = useState(false);
   const { role } = useUser();
+  const { registerRef } = useOnboarding();
+
+  // Onboarding refs
+  const discoverHeaderRef = useRef(null);
+  const discoverFiltersRef = useRef(null);
+  const discoverResultsRef = useRef(null);
+  const discoverActionsRef = useRef(null);
+
+  // Register refs with onboarding context
+  useEffect(() => {
+    registerRef('discover-header', discoverHeaderRef);
+    registerRef('discover-filters', discoverFiltersRef);
+    registerRef('discover-results', discoverResultsRef);
+    registerRef('discover-actions', discoverActionsRef);
+  }, [registerRef]);
 
   // Grant-specific state variables
   const [recentGrants, setRecentGrants] = useState([]);
@@ -2366,7 +2383,10 @@ const Discover = () => {
         )}
 
         <NavbarComponent />
+        <OnboardingGuide />
 
+        {/* Hidden div to maintain ref when sidebar is closed */}
+        <div ref={discoverFiltersRef} className="fixed top-16 left-0 h-[calc(100vh-4rem)] z-40 hidden" />
         <LeftSidebar
           isOpen={isSearchFocused && activeTab === "rfp"}
           onClose={() => setIsSearchFocused(false)}
@@ -2382,7 +2402,7 @@ const Discover = () => {
         />
         <main className="pt-20 px-8 md:px-12 py-6 ml-0">
           {/* Search Bar Section */}
-          <div className="flex  justify-center mx-auto text-lg space-x-6 border-b border-gray-200 p-4">
+          <div ref={discoverHeaderRef} className="flex  justify-center mx-auto text-lg space-x-6 border-b border-gray-200 p-4">
             <button
               className={`pb-2 px-6 rounded-t-lg transition-all duration-200 focus:outline-none ${activeTab === "rfp"
                 ? "text-[#2563EB] font-bold border-b-2 border-[#2563EB] bg-[#E5E7EB] shadow"
@@ -2450,101 +2470,39 @@ const Discover = () => {
                   </div>
 
                   {/* Upload RFP Button */}
-                  <button className="flex items-center gap-2 text-[16px] text-white bg-[#2563EB] px-4 py-3 rounded-md hover:cursor-pointer transition-colors"
-                    onClick={() => setUploadModalOpen(true)}
-                  >
-                    <MdOutlineUpload className="w-5 h-5 shrink-0" title="Upload RFP" />
-                    Upload RFP
-                  </button>
-                </div>
-              </div>
-
-              <h2 className="text-[24px] text-[#000000] font-semibold mb-4">AI Recommended RFPs</h2>
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 text-center">
-                  <p className="text-red-700">{error}</p>
-                  <button
-                    onClick={handleRetry}
-                    className="mt-2 text-red-600 hover:text-red-800 underline"
-                  >
-                    {retryCount > 0 ? `Try again (${retryCount}/3)` : "Try again"}
-                  </button>
-                </div>
-              )}
-              {loadingRecommended ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2563EB]"></div>
-                  <span className="ml-3 text-[16px] text-[#4B5563]">Loading recommended RFPs...</span>
-                </div>
-              ) : filteredRecommended.length ? (
-                <div className="flex overflow-x-auto pb-2 custom-scroll">
-                  {applyFilters(filteredRecommended).map((rfp) => (
-                    <RFPCard
-                      key={rfp._id}
-                      rfp={rfp}
-                      isSaved={!!saved.find((s) => s._id === rfp._id)}
-                      handleGenerateProposal={handleGenerateProposal}
-                    />
-                  ))}
-                </div>
-              ) : (
-                (!error && (
-                  <p className="text-[16px] text-[#4B5563]">Oops! Nothing here. Please fill the profile to get recommended RFPs.</p>
-                ))
-              )}
-
-              <h2 className="text-[24px] text-[#000000] font-semibold mt-10 mb-4">Other RFPs</h2>
-              <div className="mb-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
-                  {/* Industry Selection */}
-                  <div>
-                    <label className="block text-[16px] font-medium text-[#111827] mb-2">
-                      {/* Select Industries to Filter RFPs */}
-                      Select from the list to Filter RFPs by different set-asides(categories)
-                    </label>
-                    <IndustryMultiSelect
-                      selectedIndustries={selectedIndustries}
-                      onIndustryChange={setSelectedIndustries}
-                      industries={availableIndustries}
-                    />
-                  </div>
-
-                  {/* Search Button */}
-                  <div className="flex justify-start md:justify-end">
-                    <button
-                      onClick={fetchOtherRFPs}
-                      disabled={selectedIndustries.length === 0 || loadingOtherRFPs}
-                      className={`flex items-center gap-2 px-6 py-3 rounded-md text-[16px] font-medium transition-colors ${selectedIndustries.length === 0 || loadingOtherRFPs
-                        ? "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed"
-                        : "bg-[#2563EB] text-white hover:bg-[#1d4ed8] cursor-pointer"
-                        }`}
+                  <div ref={discoverActionsRef}>
+                    <button className="flex items-center gap-2 text-[16px] text-white bg-[#2563EB] px-4 py-3 rounded-md hover:cursor-pointer transition-colors"
+                      onClick={() => setUploadModalOpen(true)}
                     >
-                      {loadingOtherRFPs ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                          <span>Searching...</span>
-                        </>
-                      ) : (
-                        <>
-                          <MdOutlineSearch className="w-5 h-5 shrink-0" title="Search RFPs" />
-                          <span>Search RFPs</span>
-                        </>
-                      )}
+                      <MdOutlineUpload className="w-5 h-5 shrink-0" title="Upload RFP" />
+                      Upload RFP
                     </button>
                   </div>
                 </div>
               </div>
 
-              {loadingOtherRFPs ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2563EB]"></div>
-                  <span className="ml-3 text-[16px] text-[#4B5563]">Loading RFPs...</span>
-                </div>
-              ) : filteredOtherRFPs.length > 0 ? (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pb-2 ">
-                    {getCurrentPageItems(applyFilters(filteredOtherRFPs), currentOtherRFPsPage, itemsPerPage).map((rfp) => (
-                      <RecentRFPCard
+              <div ref={discoverResultsRef}>
+                <h2 className="text-[24px] text-[#000000] font-semibold mb-4">AI Recommended RFPs</h2>
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 text-center">
+                    <p className="text-red-700">{error}</p>
+                    <button
+                      onClick={handleRetry}
+                      className="mt-2 text-red-600 hover:text-red-800 underline"
+                    >
+                      {retryCount > 0 ? `Try again (${retryCount}/3)` : "Try again"}
+                    </button>
+                  </div>
+                )}
+                {loadingRecommended ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2563EB]"></div>
+                    <span className="ml-3 text-[16px] text-[#4B5563]">Loading recommended RFPs...</span>
+                  </div>
+                ) : filteredRecommended.length ? (
+                  <div className="flex overflow-x-auto pb-2 custom-scroll">
+                    {applyFilters(filteredRecommended).map((rfp) => (
+                      <RFPCard
                         key={rfp._id}
                         rfp={rfp}
                         isSaved={!!saved.find((s) => s._id === rfp._id)}
@@ -2552,25 +2510,91 @@ const Discover = () => {
                       />
                     ))}
                   </div>
-                  <div className="mt-6">
-                    <Pagination
-                      currentPage={currentOtherRFPsPage}
-                      totalPages={getTotalPages(applyFilters(filteredOtherRFPs).length, itemsPerPage)}
-                      onPageChange={(page) => handlePageChange(page, setCurrentOtherRFPsPage)}
-                    />
+                ) : (
+                  (!error && (
+                    <p className="text-[16px] text-[#4B5563]">Oops! Nothing here. Please fill the profile to get recommended RFPs.</p>
+                  ))
+                )}
+
+                <h2 className="text-[24px] text-[#000000] font-semibold mt-10 mb-4">Other RFPs</h2>
+                <div className="mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                    {/* Industry Selection */}
+                    <div>
+                      <label className="block text-[16px] font-medium text-[#111827] mb-2">
+                        {/* Select Industries to Filter RFPs */}
+                        Select from the list to Filter RFPs by different set-asides(categories)
+                      </label>
+                      <IndustryMultiSelect
+                        selectedIndustries={selectedIndustries}
+                        onIndustryChange={setSelectedIndustries}
+                        industries={availableIndustries}
+                      />
+                    </div>
+
+                    {/* Search Button */}
+                    <div className="flex justify-start md:justify-end">
+                      <button
+                        onClick={fetchOtherRFPs}
+                        disabled={selectedIndustries.length === 0 || loadingOtherRFPs}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-md text-[16px] font-medium transition-colors ${selectedIndustries.length === 0 || loadingOtherRFPs
+                          ? "bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed"
+                          : "bg-[#2563EB] text-white hover:bg-[#1d4ed8] cursor-pointer"
+                          }`}
+                      >
+                        {loadingOtherRFPs ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            <span>Searching...</span>
+                          </>
+                        ) : (
+                          <>
+                            <MdOutlineSearch className="w-5 h-5 shrink-0" title="Search RFPs" />
+                            <span>Search RFPs</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
-                </>
-              ) : filteredOtherRFPs.length === 0 && selectedIndustries.length > 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-[16px] text-[#4B5563] mb-2">No RFPs found for the selected set-asides(categories).</p>
-                  <p className="text-[14px] text-[#6B7280]">Try selecting different set-asides(categories) or check back later for new opportunities.</p>
                 </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-[16px] text-[#4B5563] mb-2">Select from the list to filter RFPs by different set-asides(categories) and click "Search RFPs" to discover relevant opportunities.</p>
-                  <p className="text-[14px] text-[#6B7280]">Choose from the available set-asides(categories) to filter and find RFPs that match your expertise.</p>
-                </div>
-              )}
+
+                {loadingOtherRFPs ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2563EB]"></div>
+                    <span className="ml-3 text-[16px] text-[#4B5563]">Loading RFPs...</span>
+                  </div>
+                ) : filteredOtherRFPs.length > 0 ? (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pb-2 ">
+                      {getCurrentPageItems(applyFilters(filteredOtherRFPs), currentOtherRFPsPage, itemsPerPage).map((rfp) => (
+                        <RecentRFPCard
+                          key={rfp._id}
+                          rfp={rfp}
+                          isSaved={!!saved.find((s) => s._id === rfp._id)}
+                          handleGenerateProposal={handleGenerateProposal}
+                        />
+                      ))}
+                    </div>
+                    <div className="mt-6">
+                      <Pagination
+                        currentPage={currentOtherRFPsPage}
+                        totalPages={getTotalPages(applyFilters(filteredOtherRFPs).length, itemsPerPage)}
+                        onPageChange={(page) => handlePageChange(page, setCurrentOtherRFPsPage)}
+                      />
+                    </div>
+                  </>
+                ) : filteredOtherRFPs.length === 0 && selectedIndustries.length > 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-[16px] text-[#4B5563] mb-2">No RFPs found for the selected set-asides(categories).</p>
+                    <p className="text-[14px] text-[#6B7280]">Try selecting different set-asides(categories) or check back later for new opportunities.</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-[16px] text-[#4B5563] mb-2">Select from the list to filter RFPs by different set-asides(categories) and click "Search RFPs" to discover relevant opportunities.</p>
+                    <p className="text-[14px] text-[#6B7280]">Choose from the available set-asides(categories) to filter and find RFPs that match your expertise.</p>
+                  </div>
+                )}
+              </div>
 
               <h2 className="text-[24px] text-[#000000] font-semibold mt-10 mb-4">Saved RFPs</h2>
               {error && (

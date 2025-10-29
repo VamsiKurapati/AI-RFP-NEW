@@ -23,6 +23,7 @@ const OnboardingGuide = () => {
                 title: 'Dashboard Overview',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'dashboard-proposals',
@@ -31,6 +32,7 @@ const OnboardingGuide = () => {
                 title: 'Your Proposals',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'dashboard-calendar',
@@ -39,6 +41,7 @@ const OnboardingGuide = () => {
                 title: 'Calendar View',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'dashboard-stats',
@@ -47,6 +50,7 @@ const OnboardingGuide = () => {
                 title: 'Key Statistics',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
         ],
         '/company-profile': [
@@ -57,6 +61,7 @@ const OnboardingGuide = () => {
                 title: 'Dashboard Overview',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'profile-completion',
@@ -65,6 +70,7 @@ const OnboardingGuide = () => {
                 title: 'Profile Completion',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'profile-sidebar',
@@ -73,6 +79,7 @@ const OnboardingGuide = () => {
                 title: 'Navigation',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'profile-deadlines',
@@ -81,6 +88,7 @@ const OnboardingGuide = () => {
                 title: 'Upcoming Deadlines',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
         ],
         '/discover': [
@@ -91,6 +99,7 @@ const OnboardingGuide = () => {
                 title: 'Discover RFPs & Grants',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'discover-filters',
@@ -99,6 +108,7 @@ const OnboardingGuide = () => {
                 title: 'Search Filters',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'discover-results',
@@ -107,6 +117,7 @@ const OnboardingGuide = () => {
                 title: 'RFP & Grant Results',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'discover-actions',
@@ -115,6 +126,7 @@ const OnboardingGuide = () => {
                 title: 'Quick Actions',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
         ],
         '/proposals': [
@@ -125,6 +137,7 @@ const OnboardingGuide = () => {
                 title: 'Proposals Management',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'proposals-list',
@@ -133,6 +146,7 @@ const OnboardingGuide = () => {
                 title: 'Proposals List',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'proposals-actions',
@@ -141,6 +155,7 @@ const OnboardingGuide = () => {
                 title: 'Proposal Actions',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
         ],
         '/support-ticket': [
@@ -151,6 +166,7 @@ const OnboardingGuide = () => {
                 title: 'Support Center',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'support-create',
@@ -159,6 +175,7 @@ const OnboardingGuide = () => {
                 title: 'Create Ticket',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
             {
                 target: 'support-tickets',
@@ -167,6 +184,7 @@ const OnboardingGuide = () => {
                 title: 'Ticket History',
                 disableBeacon: true,
                 disableScrolling: false,
+                scrollOffset: 80,
             },
         ],
     };
@@ -300,7 +318,49 @@ const OnboardingGuide = () => {
     }, [userId, role, onboardingCompleted, waitForElements, currentPath]);
 
     const handleJoyrideCallback = useCallback((data) => {
-        const { status, type, index } = data;
+        const { status, type, index, step } = data;
+
+        // Scroll to the top of the target element before showing each step
+        if (type === EVENTS.STEP_BEFORE) {
+            if (step && step.target) {
+                // Wait a bit to ensure the element is rendered and Joyride has processed it
+                setTimeout(() => {
+                    const element = step.target;
+                    // Check if it's a DOM element
+                    if (element && element.nodeType === 1 && typeof element.scrollIntoView === 'function') {
+                        try {
+                            // Get element's position
+                            const rect = element.getBoundingClientRect();
+                            const scrollY = window.scrollY || window.pageYOffset || 0;
+                            const elementTop = rect.top + scrollY;
+                            const offset = 80; // Offset for fixed navbar/header
+
+                            // Scroll to position with offset
+                            window.scrollTo({
+                                top: Math.max(0, elementTop - offset),
+                                behavior: 'smooth'
+                            });
+                        } catch (error) {
+                            // Fallback to simple scrollIntoView if getBoundingClientRect fails
+                            element.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start',
+                                inline: 'nearest'
+                            });
+                            // Apply offset after scrollIntoView
+                            setTimeout(() => {
+                                const scrollY = window.scrollY || window.pageYOffset || 0;
+                                const offset = 80;
+                                window.scrollTo({
+                                    top: Math.max(0, scrollY - offset),
+                                    behavior: 'smooth'
+                                });
+                            }, 100);
+                        }
+                    }
+                }, 150);
+            }
+        }
 
         if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
             // Mark onboarding as completed
@@ -358,6 +418,7 @@ const OnboardingGuide = () => {
             showProgress={true}
             showSkipButton={true}
             scrollToFirstStep={true}
+            scrollOffset={80}
             disableCloseOnEsc={false}
             disableOverlayClose={false}
             callback={handleJoyrideCallback}
