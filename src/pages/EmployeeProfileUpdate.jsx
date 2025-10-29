@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MdOutlineSave, MdOutlineBusinessCenter, MdOutlineDomain } from "react-icons/md";
 import PhoneNumberInput, { validatePhoneNumber } from '../components/PhoneNumberInput';
+import LocationInput from '../components/LocationInput';
 import { useEmployeeProfile } from "../context/EmployeeProfileContext";
 import Swal from "sweetalert2";
 
@@ -251,7 +252,7 @@ const EmployeeProfileUpdate = () => {
                             </div>
 
                             <div className="col-span-2 md:col-span-1">
-                                <FormInput
+                                <LocationInput
                                     id="location"
                                     label="Location"
                                     value={form.location}

@@ -6,6 +6,8 @@ import NavbarComponent from "./NavbarComponent";
 import { useProfile } from "../context/ProfileContext";
 import PhoneNumberInput, { validatePhoneNumber } from '../components/PhoneNumberInput';
 import Swal from "sweetalert2";
+import OnboardingGuide from "../components/OnboardingGuide";
+import ProfileCompletionPercentage from "../components/ProfileCompletionPercentage";
 
 // Unified Badge Styles
 const badgeStyles = {
@@ -122,7 +124,7 @@ const RightSidebar = ({ deadlines, activity, isMobile, onClose }) => {
   const content = (
     <div className="flex-1 h-full overflow-y-auto custom-scrollbar p-6">
       <div className="min-h-[80vh] lg:min-h-[125vh]">
-        <h4 className="font-semibold text-[16px] mb-4">Upcoming Deadlines</h4>
+        <h4 className="font-semibold text-[16px] mb-4" data-tour="deadlines-section">Upcoming Deadlines</h4>
         {deadlines && deadlines.length > 0 ? (deadlines.map((deadline, i) => (
           <ul key={i} className="list-disc mb-2">
             <li key={i} className="flex flex-col justify-between rounded-lg items-center bg-[#FFFFFF] p-2 mb-2 w-full">
@@ -1591,8 +1593,9 @@ const CompanyProfileDashboard = () => {
   return (
     <div className="h-full relative">
       <NavbarComponent />
+      <OnboardingGuide />
 
-      <div className="bg-[#F8F9FA] w-full mt-20 lg:mt-0 lg:fixed lg:top-20 left-0 right-0 z-10 shadow-md px-8 lg:px-12 py-[14px]">
+      <div className="bg-[#F8F9FA] w-full mt-20 lg:mt-0 lg:fixed lg:top-20 left-0 right-0 z-10 shadow-md px-8 lg:px-12 py-[14px]" data-tour="overview-section">
         {/* Profile image and info */}
         <div className="w-full">
           {/* For <lg: Row 1 - image and edit button */}
@@ -1812,7 +1815,7 @@ const CompanyProfileDashboard = () => {
         </div>
       </div>
 
-      <div className="relative hidden lg:block lg:mt-[20rem]">
+      <div className="relative hidden lg:block lg:mt-[20rem]" data-tour="sidebar-navigation">
         <div className="relative z-10">
           <Sidebar active={activeTab} onSelect={handleSetActiveTab} />
         </div>
@@ -1846,6 +1849,7 @@ const CompanyProfileDashboard = () => {
           <div className="relative lg:hidden right-0 -mt-12 mb-4"><MobileDropdown activeTab={activeTab} onSelect={setActiveTab} /></div>
           {activeTab === "Overview" && (
             <div className="grid grid-cols-1 gap-6">
+              <ProfileCompletionPercentage />
               <div>
                 <h3 className="text-[24px] font-semibold mb-2">Company Profile</h3>
                 <p className="text-[#4B5563] text-[16px] mb-4">{companyData?.profile?.bio || 'Loading...'}</p>
@@ -1969,7 +1973,7 @@ const CompanyProfileDashboard = () => {
                   ))}
                 </div>
                 {/* Team Members Section */}
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4" data-tour="team-section">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="text-[20px] font-semibold">Team Members</h3>
                     <button
@@ -2035,7 +2039,7 @@ const CompanyProfileDashboard = () => {
             </div>
           )}
           {activeTab === "Proposals" && (
-            <div className="bg-white rounded-xl p-2">
+            <div className="bg-white rounded-xl p-2" data-tour="proposals-section">
               <h2 className="text-[24px] font-semibold mb-2">Proposals</h2>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
                 <div className="flex flex-1 gap-4 sm:justify-end items-center">
@@ -2070,7 +2074,7 @@ const CompanyProfileDashboard = () => {
             </div>
           )}
           {activeTab === "Documents" && (
-            <div className="bg-white rounded-xl p-2">
+            <div className="bg-white rounded-xl p-2" data-tour="documents-section">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-[24px] font-semibold">Company Documents</h2>
                 <button

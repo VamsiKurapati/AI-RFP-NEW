@@ -83,7 +83,10 @@ Before running this application, make sure you have the following installed:
    Create a `.env` file in the root directory:
    ```env
    VITE_API_BASE_URL=https://proposal-form-backend.vercel.app/api
+   VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
    ```
+   
+   **Note**: To enable Google Maps location autocomplete in profile forms, you'll need a Google Maps API key with the Places API enabled. You can get one from [Google Cloud Console](https://console.cloud.google.com/). The location input will still work without the API key, but autocomplete suggestions will be disabled.
 
 4. **Start the development server**
    ```bash
@@ -195,7 +198,18 @@ rfp-app-new/
 Create a `.env` file in the root directory with the following variables:
 ```env
 VITE_API_BASE_URL=https://proposal-form-backend.vercel.app/api
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
 ```
+
+**Google Maps API Setup**:
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable the **Places API** (and Maps JavaScript API if needed)
+4. Create credentials (API Key)
+5. Restrict the API key to your domain for security
+6. Add the API key to your `.env` file as `VITE_GOOGLE_MAPS_API_KEY`
+
+The location input fields in profile forms will use Google Places Autocomplete for better user experience. If no API key is provided, the input will function as a regular text field.
 
 ### Tailwind CSS
 The project uses Tailwind CSS for styling. Configuration can be found in `tailwind.config.js`.

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import PhoneNumberInput, { validatePhoneNumber } from '../components/PhoneNumberInput';
+import LocationInput from '../components/LocationInput';
 import Swal from "sweetalert2";
 import { sanitizeFormData, sanitizeText, sanitizeUrl, sanitizeEmail } from '../utils/sanitization';
 
@@ -378,7 +379,7 @@ const CreateProfile = () => {
             {errors.industry && <div className="text-red-500 text-sm mt-1">{errors.industry}</div>}
           </div>
           <div className="col-span-2 md:col-span-1">
-            <FormInput
+            <LocationInput
               id="location"
               label="Location"
               value={form.location}
@@ -494,29 +495,78 @@ const CreateProfile = () => {
 
       {role === "freelancer" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            { key: "fullName", label: "Full Name", type: "text" },
-            { key: "location", label: "Location", type: "text" },
-            { key: "companyName", label: "Company Name", type: "text" },
-            { key: "email", label: "Email", type: "email" },
-            { key: "jobTitle", label: "Job Title", type: "text" },
-            { key: "linkedIn", label: "LinkedIn (Optional)", type: "url", placeholder: "linkedin.com/username" },
-          ].map(field => (
+          <div className="col-span-2 md:col-span-1">
             <FormInput
-              key={field.key}
-              id={field.key}
-              label={field.label}
-              type={field.type}
-              value={form[field.key]}
-              onChange={e => setForm({ ...form, [field.key]: e.target.value })}
-              error={errors[field.key]}
-              required={field.key !== "linkedIn"}
+              id="fullName"
+              label="Full Name"
+              type="text"
+              value={form.fullName}
+              onChange={e => setForm({ ...form, fullName: e.target.value })}
+              error={errors.fullName}
+              required
               disabled={isFormDisabled}
-              {...(field.placeholder ? { placeholder: field.placeholder } : {})}
-              {...(field.pattern ? { pattern: field.pattern } : {})}
-              {...(field.maxLength ? { maxLength: field.maxLength } : {})}
             />
-          ))}
+          </div>
+          <div className="col-span-2 md:col-span-1">
+            <LocationInput
+              id="location"
+              label="Location"
+              value={form.location}
+              onChange={e => setForm({ ...form, location: e.target.value })}
+              placeholder="E.g., California, USA"
+              error={errors.location}
+              required
+              disabled={isFormDisabled}
+            />
+          </div>
+          <div className="col-span-2 md:col-span-1">
+            <FormInput
+              id="companyName"
+              label="Company Name"
+              type="text"
+              value={form.companyName}
+              onChange={e => setForm({ ...form, companyName: e.target.value })}
+              error={errors.companyName}
+              required
+              disabled={isFormDisabled}
+            />
+          </div>
+          <div className="col-span-2 md:col-span-1">
+            <FormInput
+              id="email"
+              label="Email"
+              type="email"
+              value={form.email}
+              onChange={e => setForm({ ...form, email: sanitizeEmail(e.target.value) })}
+              error={errors.email}
+              required
+              disabled={isFormDisabled}
+            />
+          </div>
+          <div className="col-span-2 md:col-span-1">
+            <FormInput
+              id="jobTitle"
+              label="Job Title"
+              type="text"
+              value={form.jobTitle}
+              onChange={e => setForm({ ...form, jobTitle: e.target.value })}
+              error={errors.jobTitle}
+              required
+              disabled={isFormDisabled}
+            />
+          </div>
+          <div className="col-span-2 md:col-span-1">
+            <FormInput
+              id="linkedIn"
+              label="LinkedIn (Optional)"
+              type="url"
+              value={form.linkedIn}
+              onChange={e => setForm({ ...form, linkedIn: sanitizeUrl(e.target.value) })}
+              error={errors.linkedIn}
+              disabled={isFormDisabled}
+              placeholder="linkedin.com/username"
+            />
+          </div>
           <div className="col-span-2 md:col-span-1">
             <PhoneInputField
               value={form.phone}

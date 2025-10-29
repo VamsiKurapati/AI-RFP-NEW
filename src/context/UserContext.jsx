@@ -10,6 +10,11 @@ export const UserProvider = ({ children }) => {
         const storedUser = localStorage.getItem("user");
         return storedUser ? JSON.parse(storedUser)._id : null;
     });
+    const [onboardingCompleted, setOnboardingCompleted] = useState(() => {
+        const storedUser = localStorage.getItem("user");
+        const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+        return parsedUser?.onboardingCompleted || false;
+    });
 
     useEffect(() => {
         const handleStorageChange = () => {
@@ -35,7 +40,7 @@ export const UserProvider = ({ children }) => {
         };
     }, [role]);
 
-    const contextValue = useMemo(() => ({ role, setRole, userId, setUserId }), [role, userId]);
+    const contextValue = useMemo(() => ({ role, setRole, userId, setUserId, onboardingCompleted, setOnboardingCompleted }), [role, userId, onboardingCompleted]);
 
     return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;
 };
