@@ -1,9 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MdOutlineEdit, MdOutlineSearch, MdOutlineAddAPhoto, MdOutlineBusinessCenter, MdOutlineHome, MdOutlineLocationOn, MdOutlineMail, MdOutlineCall, MdOutlineLanguage, MdOutlineGroups, MdOutlineDocumentScanner, MdOutlineFolder, MdOutlineAssignment, MdOutlineVerifiedUser, MdOutlineDownload, MdOutlineOpenInNew, MdOutlineGroup, MdOutlineCalendarToday, MdOutlineAdd, MdOutlineClose, MdOutlinePhone, MdOutlineEmail, MdOutlineCheck, MdOutlinePayments, MdOutlineDelete } from "react-icons/md";
 import NavbarComponent from "./NavbarComponent";
 import { useProfile } from "../context/ProfileContext";
+import { useOnboarding } from "../context/OnboardingContext";
 import PhoneNumberInput, { validatePhoneNumber } from '../components/PhoneNumberInput';
 import Swal from "sweetalert2";
 import OnboardingGuide from "../components/OnboardingGuide";
@@ -120,11 +121,11 @@ const Sidebar = ({ isMobile = false, onClose = () => { }, active = "Overview", o
   </div>
 );
 
-const RightSidebar = ({ deadlines, activity, isMobile, onClose }) => {
+const RightSidebar = ({ deadlines, activity, isMobile, onClose, deadlinesRef }) => {
   const content = (
     <div className="flex-1 h-full overflow-y-auto custom-scrollbar p-6">
       <div className="min-h-[80vh] lg:min-h-[125vh]">
-        <h4 className="font-semibold text-[16px] mb-4" data-tour="deadlines-section">Upcoming Deadlines</h4>
+        <h4 ref={deadlinesRef} className="font-semibold text-[16px] mb-4">Upcoming Deadlines</h4>
         {deadlines && deadlines.length > 0 ? (deadlines.map((deadline, i) => (
           <ul key={i} className="list-disc mb-2">
             <li key={i} className="flex flex-col justify-between rounded-lg items-center bg-[#FFFFFF] p-2 mb-2 w-full">
@@ -1059,6 +1060,7 @@ const CompanyProfileDashboard = () => {
 
   // Use context
   const { companyData, loading, error, refreshProfile } = useProfile();
+  const { registerRef } = useOnboarding();
 
   // Logo upload state and ref
   const [logoUrl, setLogoUrl] = useState(null);
@@ -1067,6 +1069,20 @@ const CompanyProfileDashboard = () => {
   const [editMode, setEditMode] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+
+  // Onboarding refs
+  const profileOverviewRef = useRef(null);
+  const profileCompletionRef = useRef(null);
+  const profileSidebarRef = useRef(null);
+  const profileDeadlinesRef = useRef(null);
+
+  // Register refs with onboarding context
+  useEffect(() => {
+    registerRef('profile-overview', profileOverviewRef);
+    registerRef('profile-completion', profileCompletionRef);
+    registerRef('profile-sidebar', profileSidebarRef);
+    registerRef('profile-deadlines', profileDeadlinesRef);
+  }, [registerRef]);
 
   // Modal states
   const [selectedMember, setSelectedMember] = useState(null);
@@ -1595,7 +1611,7 @@ const CompanyProfileDashboard = () => {
       <NavbarComponent />
       <OnboardingGuide />
 
-      <div className="bg-[#F8F9FA] w-full mt-20 lg:mt-0 lg:fixed lg:top-20 left-0 right-0 z-10 shadow-md px-8 lg:px-12 py-[14px]" data-tour="overview-section">
+      <div ref={profileOverviewRef} className="bg-[#F8F9FA] w-full mt-20 lg:mt-0 lg:fixed lg:top-20 left-0 right-0 z-10 shadow-md px-8 lg:px-12 py-[14px]">
         {/* Profile image and info */}
         <div className="w-full">
           {/* For <lg: Row 1 - image and edit button */}
@@ -1815,7 +1831,7 @@ const CompanyProfileDashboard = () => {
         </div>
       </div>
 
-      <div className="relative hidden lg:block lg:mt-[20rem]" data-tour="sidebar-navigation">
+      <div ref={profileSidebarRef} className="relative hidden lg:block lg:mt-[20rem]">
         <div className="relative z-10">
           <Sidebar active={activeTab} onSelect={handleSetActiveTab} />
         </div>
@@ -1824,13 +1840,14 @@ const CompanyProfileDashboard = () => {
         )}
       </div>
 
-      <div className="hidden lg:block mt-[20rem]"><RightSidebar deadlines={companyData?.deadlines || []} activity={companyData?.activity || []} /></div>
+      <div className="hidden lg:block mt-[20rem]"><RightSidebar deadlines={companyData?.deadlines || []} activity={companyData?.activity || []} deadlinesRef={profileDeadlinesRef} /></div>
       {showRightSidebar && (
         <RightSidebar
           isMobile
           deadlines={companyData?.deadlines || []}
           activity={companyData?.activity || []}
           onClose={() => setShowRightSidebar(false)}
+          deadlinesRef={profileDeadlinesRef}
         />
       )}
 
@@ -1849,7 +1866,9 @@ const CompanyProfileDashboard = () => {
           <div className="relative lg:hidden right-0 -mt-12 mb-4"><MobileDropdown activeTab={activeTab} onSelect={setActiveTab} /></div>
           {activeTab === "Overview" && (
             <div className="grid grid-cols-1 gap-6">
-              <ProfileCompletionPercentage />
+              <div ref={profileCompletionRef}>
+                <ProfileCompletionPercentage />
+              </div>
               <div>
                 <h3 className="text-[24px] font-semibold mb-2">Company Profile</h3>
                 <p className="text-[#4B5563] text-[16px] mb-4">{companyData?.profile?.bio || 'Loading...'}</p>

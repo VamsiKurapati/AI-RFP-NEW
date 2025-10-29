@@ -14,21 +14,24 @@ import { ProfileProvider } from './context/ProfileContext';
 import { EmployeeProfileProvider } from './context/EmployeeProfileContext';
 import { SubscriptionPlansProvider } from './context/SubscriptionPlansContext';
 import { JWTVerifierProvider } from './context/JWTVerifier';
+import { OnboardingProvider } from './context/OnboardingContext';
 import ErrorBoundary from './components/ErrorBoundary';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ErrorBoundary>
     <BrowserRouter>
       <UserProvider>
-        <ProfileProvider>
-          <EmployeeProfileProvider>
-            <SubscriptionPlansProvider>
-              <JWTVerifierProvider>
-                <App />
-              </JWTVerifierProvider>
-            </SubscriptionPlansProvider>
-          </EmployeeProfileProvider>
-        </ProfileProvider>
+        <OnboardingProvider>
+          <ProfileProvider>
+            <EmployeeProfileProvider>
+              <SubscriptionPlansProvider>
+                <JWTVerifierProvider>
+                  <App />
+                </JWTVerifierProvider>
+              </SubscriptionPlansProvider>
+            </EmployeeProfileProvider>
+          </ProfileProvider>
+        </OnboardingProvider>
       </UserProvider>
     </BrowserRouter>
   </ErrorBoundary>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import NavbarComponent from './NavbarComponent';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
@@ -6,8 +6,10 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { MdOutlineEdit, MdOutlineSearch, MdOutlineRotateLeft, MdOutlineDeleteForever, MdPersonAddAlt1, MdOutlineClose } from "react-icons/md";
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
+import { useOnboarding } from '../context/OnboardingContext';
 import Swal from 'sweetalert2';
 import PaymentButton from '../components/PaymentButton';
+import OnboardingGuide from '../components/OnboardingGuide';
 
 const localizer = momentLocalizer(moment);
 
@@ -106,6 +108,21 @@ const Dashboard = () => {
     const userName = user ? (JSON.parse(user).fullName) : "Unknown User";
     const userEmail = user ? (JSON.parse(user).email) : "No email found";
     const { role } = useUser();
+    const { registerRef } = useOnboarding();
+
+    // Onboarding refs
+    const dashboardOverviewRef = useRef(null);
+    const dashboardProposalsRef = useRef(null);
+    const dashboardCalendarRef = useRef(null);
+    const dashboardStatsRef = useRef(null);
+
+    // Register refs with onboarding context
+    useEffect(() => {
+        registerRef('dashboard-overview', dashboardOverviewRef);
+        registerRef('dashboard-proposals', dashboardProposalsRef);
+        registerRef('dashboard-calendar', dashboardCalendarRef);
+        registerRef('dashboard-stats', dashboardStatsRef);
+    }, [registerRef]);
 
     // State for backend data
     const [proposalsState, setProposalsState] = useState([]);
@@ -905,10 +922,11 @@ const Dashboard = () => {
     return (
         <div className="min-h-screen">
             <NavbarComponent />
+            <OnboardingGuide />
             <main className="w-full mx-auto py-8 px-4 md:px-12 mt-20">
 
                 {/* Proposals Data */}
-                <div className="rounded-lg p-6 mb-6" style={{ background: "url('/dashboard-bg.png') no-repeat center center", backgroundSize: "cover" }}>
+                <div ref={dashboardOverviewRef} className="rounded-lg p-6 mb-6" style={{ background: "url('/dashboard-bg.png') no-repeat center center", backgroundSize: "cover" }}>
                     <div className="flex justify-between items-start gap-4">
                         <div className="flex-1">
                             <h1 className="text-[36px] text-[#000000] mb-4">Welcome <span className="font-semibold">{userName}</span>!</h1>
@@ -965,7 +983,7 @@ const Dashboard = () => {
                 <h2 className="text-[24px] font-semibold mb-4">Tracking Dashboard</h2>
 
                 {/* Summary Cards */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mt-4 mb-4">
+                <div ref={dashboardStatsRef} className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mt-4 mb-4">
                     {summaryStats.map((stat) => (
                         <div key={stat.label} className={`p-3 sm:p-4 rounded shadow text-left`} style={{
                             background: getSummaryCardBgColor(stat.label),
@@ -1008,7 +1026,7 @@ const Dashboard = () => {
 
                 {/* RFP Proposals Table */}
                 <h3 className="text-[18px] sm:text-[24px] font-semibold mb-2">RFP Proposals</h3>
-                <div className="bg-white rounded-lg shadow overflow-x-auto mb-8">
+                <div ref={dashboardProposalsRef} className="bg-white rounded-lg shadow overflow-x-auto mb-8">
                     <table className="min-w-full text-sm">
                         <thead>
                             <tr className="bg-[#F8FAFC]">
@@ -1622,7 +1640,7 @@ const Dashboard = () => {
 
                 {/* Calendar Section */}
                 <h3 className="text-[18px] sm:text-[24px] font-semibold mt-4 mb-2">Calendar</h3>
-                <div className="bg-white rounded-lg shadow p-2 sm:p-4 mb-8 overflow-x-auto">
+                <div ref={dashboardCalendarRef} className="bg-white rounded-lg shadow p-2 sm:p-4 mb-8 overflow-x-auto">
                     <div className="flex flex-col xs:flex-row items-center justify-between mb-4">
                         <div className="flex gap-2 mb-4">
                             <select value={calendarMonth} onChange={e => setCalendarMonth(Number(e.target.value))} className="bg-[#F3F4F6] border rounded-md px-2 py-1 text-[#111827] text-xs sm:text-base">
