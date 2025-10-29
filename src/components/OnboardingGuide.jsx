@@ -205,54 +205,12 @@ const OnboardingGuide = () => {
         }).filter(step => step.target !== null);
     }, [currentPath, refs, hasRef]);
 
-    // Wait for target elements to be available - start tour with available steps
-    const waitForElements = useCallback(() => {
-        const maxAttempts = 30;
-        let attempts = 0;
-
-        const checkElements = () => {
-            const steps = pageSteps[currentPath] || [];
-
-            if (steps.length === 0) {
-                // No steps for this page, no need to wait
-                return;
-            }
-
-            // Check if at least one step has a ref with a current element (i.e., available)
-            const availableSteps = steps.filter(step => hasRef(step.target));
-
-            // Start tour if we have at least one available step, or if we've tried enough times
-            const shouldStart = availableSteps.length > 0 || attempts >= maxAttempts;
-
-            if (shouldStart) {
-                setIsReady(true);
-                if (availableSteps.length > 0 && !onboardingCompleted) {
-                    // Start the tour with a small delay to ensure DOM is ready
-                    setTimeout(() => {
-                        setRunTour(true);
-                    }, 500);
-                }
-            } else {
-                attempts++;
-                // Check more frequently in the beginning
-                const delay = attempts < 10 ? 150 : attempts < 20 ? 300 : 500;
-                setTimeout(checkElements, delay);
-            }
-        };
-
-        // Start checking immediately
-        checkElements();
-    }, [currentPath, hasRef, onboardingCompleted]);
-
-    // Main effect to start the tour - runs when path changes or refs update
+    // Single unified effect to handle tour initialization - simplified approach
     useEffect(() => {
-        // Check if user should see onboarding
-        if (!userId || (role !== 'company' && role !== 'Editor' && role !== 'Viewer')) {
-            return;
-        }
-
-        // Check if onboarding already completed
-        if (onboardingCompleted) {
+        // Early return if conditions aren't met
+        if (!userId || (role !== 'company' && role !== 'Editor' && role !== 'Viewer') || onboardingCompleted) {
+            setRunTour(false);
+            setIsReady(false);
             return;
         }
 
@@ -261,97 +219,94 @@ const OnboardingGuide = () => {
         setIsReady(false);
         setCurrentStepIndex(0);
 
-        // Start checking for elements
-        waitForElements();
-    }, [currentPath, userId, role, onboardingCompleted, waitForElements]);
-
-    // Trigger when refs are updated
-    useEffect(() => {
-        if (!userId || (role !== 'company' && role !== 'Editor' && role !== 'Viewer') || onboardingCompleted) {
+        const steps = pageSteps[currentPath] || [];
+        if (steps.length === 0) {
+            // No steps for this page
             return;
         }
 
-        if (refsUpdateTrigger > 0) {
-            const timer = setTimeout(() => {
-                waitForElements();
-            }, 200);
-            return () => clearTimeout(timer);
-        }
-    }, [refsUpdateTrigger, userId, role, onboardingCompleted, waitForElements]);
+        // Use a ref to track if we've started, to avoid dependency issues
+        let hasStarted = false;
+        let intervalId = null;
 
-    // Continuous check for refs availability - more aggressive and persistent
-    useEffect(() => {
-        if (!userId || (role !== 'company' && role !== 'Editor' && role !== 'Viewer') || onboardingCompleted) {
-            return;
-        }
+        // Function to check and start tour
+        const checkAndStartTour = () => {
+            if (hasStarted) return true;
 
-        let attempts = 0;
-        const maxAttempts = 80; // Check for 20 seconds (80 * 250ms)
+            // Check refs directly instead of using hasRef callback
+            const availableSteps = steps.filter(step => {
+                const ref = refs[step.target];
+                return ref && ref.current !== null && ref.current !== undefined;
+            });
 
-        // Continuous interval check for refs becoming available
-        const checkInterval = setInterval(() => {
-            attempts++;
-            const steps = pageSteps[currentPath] || [];
+            if (availableSteps.length > 0) {
+                hasStarted = true;
+                setIsReady(true);
 
-            if (steps.length > 0) {
-                const availableSteps = steps.filter(step => hasRef(step.target));
-
-                if (availableSteps.length > 0) {
-                    setIsReady((ready) => {
-                        if (!ready) {
-                            // Small delay to ensure DOM is settled, then start tour
-                            setTimeout(() => {
-                                setRunTour(true);
-                            }, 300);
-                            return true;
-                        }
-                        return ready;
-                    });
-
-                    // Stop checking once we've started
-                    clearInterval(checkInterval);
+                // Clear interval if it exists
+                if (intervalId) {
+                    clearInterval(intervalId);
+                    intervalId = null;
                 }
-            }
 
-            // Stop after max attempts
-            if (attempts >= maxAttempts) {
-                clearInterval(checkInterval);
+                // Use a delay to ensure everything is fully rendered
+                setTimeout(() => {
+                    setRunTour(true);
+                }, 800);
+                return true;
             }
-        }, 250);
+            return false;
+        };
 
-        // Also listen to window load event as backup
-        const handleLoad = () => {
+        // Immediate check
+        checkAndStartTour();
+
+        // Set up continuous checking every 200ms
+        intervalId = setInterval(() => {
+            if (checkAndStartTour()) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+        }, 200);
+
+        // Check on various events as backup
+        const checkOnEvent = () => {
             setTimeout(() => {
-                const steps = pageSteps[currentPath] || [];
-                if (steps.length > 0) {
-                    const availableSteps = steps.filter(step => hasRef(step.target));
-                    if (availableSteps.length > 0 && !isReady) {
-                        setIsReady(true);
-                        setTimeout(() => {
-                            setRunTour(true);
-                        }, 500);
-                    }
-                }
-            }, 300);
+                checkAndStartTour();
+            }, 400);
         };
 
+        // Window load event
         if (document.readyState === 'complete') {
-            handleLoad();
+            checkOnEvent();
         } else {
-            window.addEventListener('load', handleLoad);
+            window.addEventListener('load', checkOnEvent, { once: true });
         }
 
-        // Clean up after 25 seconds
-        const timeout = setTimeout(() => {
-            clearInterval(checkInterval);
-        }, 25000);
+        // DOMContentLoaded event
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkOnEvent, { once: true });
+        } else {
+            checkOnEvent();
+        }
 
+        // Cleanup after 30 seconds
+        const timeoutId = setTimeout(() => {
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        }, 30000);
+
+        // Cleanup function
         return () => {
-            clearInterval(checkInterval);
-            clearTimeout(timeout);
-            window.removeEventListener('load', handleLoad);
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+            clearTimeout(timeoutId);
+            window.removeEventListener('load', checkOnEvent);
+            document.removeEventListener('DOMContentLoaded', checkOnEvent);
         };
-    }, [currentPath, userId, role, onboardingCompleted, hasRef, isReady]);
+    }, [currentPath, userId, role, onboardingCompleted, refs, refsUpdateTrigger]);
 
     const handleJoyrideCallback = useCallback((data) => {
         const { status, type, index, step } = data;
