@@ -4,6 +4,9 @@ import { useUser } from '../context/UserContext';
 import { useOnboarding } from '../context/OnboardingContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+// Version identifier to force cache bust
+const ONBOARDING_VERSION = '2.0.0-circular-tour';
+
 const OnboardingGuide = () => {
     const [runTour, setRunTour] = useState(false);
     const [isReady, setIsReady] = useState(false);
@@ -576,7 +579,7 @@ const OnboardingGuide = () => {
                 observer = null;
             }
         };
-    }, [currentPath, userId, role, onboardingCompleted, refsUpdateTrigger, location.pathname]);
+    }, [userId, role, onboardingCompleted, refsUpdateTrigger, location.pathname, allSteps, getCurrentStepIndex, getStartingStepIndex, setCurrentStepIndexStorage, navigate, runTour, currentPath]);
 
     const handleJoyrideCallback = useCallback((data) => {
         const { status, type, index, step, steps: callbackSteps } = data;
