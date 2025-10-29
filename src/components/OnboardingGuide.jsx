@@ -5,7 +5,7 @@ import { useOnboarding } from '../context/OnboardingContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // Version identifier to force cache bust
-const ONBOARDING_VERSION = '2.0.1-circular-tour-fix';
+const ONBOARDING_VERSION = '2.0.2-circular-tour-fix-v2';
 
 const OnboardingGuide = () => {
     console.log(`[OnboardingGuide] Component loaded - version: ${ONBOARDING_VERSION}`);
