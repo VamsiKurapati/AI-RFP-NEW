@@ -86,7 +86,7 @@ class ErrorBoundary extends React.Component {
                         )}
 
                         {/* Action Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-3">
+                        <div className="flex flex-col sm:flex-row gap-3 mx-auto">
                             <button
                                 onClick={this.handleRetry}
                                 className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"

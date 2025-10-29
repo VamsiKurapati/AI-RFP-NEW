@@ -650,8 +650,8 @@ const OnboardingGuide = () => {
         // Ensure refsRef is synced before computing steps
         refsRef.current = refs;
 
-        // Force recalculation by calling getStepsForCurrentPage fresh
-        const computedSteps = getStepsForCurrentPage();
+        // Get current step for rendering
+        const computedSteps = getStepsForRender();
         console.log(`[OnboardingGuide] 🔄 Steps memo computed: ${computedSteps.length} steps`);
         console.log(`[OnboardingGuide]   - runTour: ${runTour}`);
         console.log(`[OnboardingGuide]   - isReady: ${isReady}`);
@@ -678,7 +678,7 @@ const OnboardingGuide = () => {
             })));
         }
         return computedSteps;
-    }, [getStepsForCurrentPage, refsUpdateTrigger, runTour, isReady, refs]);
+    }, [getStepsForRender, refsUpdateTrigger, runTour, isReady, refs]);
 
     // Don't render if role is invalid (when userId is available)
     if (userId && role !== 'company' && role !== 'Editor' && role !== 'Viewer') {
@@ -714,7 +714,7 @@ const OnboardingGuide = () => {
     // Additional check - if we should run but steps have no targets, log warning
     if (runTour && isReady && steps.length === 0) {
         console.warn(`[OnboardingGuide] ⚠️ WARNING: runTour and isReady are true but no steps available!`);
-        console.warn(`[OnboardingGuide] This suggests getStepsForCurrentPage returned empty - checking refs now:`, Object.keys(refsRef.current));
+        console.warn(`[OnboardingGuide] This suggests getStepsForRender returned empty - checking refs now:`, Object.keys(refsRef.current));
     }
 
     // Log when Joyride is about to render
