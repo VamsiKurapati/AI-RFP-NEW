@@ -403,19 +403,24 @@ const OnboardingGuide = () => {
                 // Force steps recalculation by updating refsRef immediately
                 refsRef.current = refs;
 
+                console.log(`[OnboardingGuide] ⏳ About to set runTour=true, current refsRef keys:`, Object.keys(refsRef.current));
+
+                // Set isReady first, then runTour after a short delay to ensure steps memo recalculates
+                setIsReady(true);
+
                 setTimeout(() => {
                     console.log(`[OnboardingGuide] 🚀 Setting runTour = true`);
-                    console.log(`[OnboardingGuide] Current refsRef keys before setting runTour:`, Object.keys(refsRef.current));
+                    console.log(`[OnboardingGuide] Current refsRef keys:`, Object.keys(refsRef.current));
+                    console.log(`[OnboardingGuide] Verifying refs have current values:`,
+                        Object.entries(refsRef.current).map(([key, ref]) => ({
+                            key,
+                            hasCurrent: !!ref?.current,
+                            inDOM: ref?.current ? document.body.contains(ref.current) : false
+                        }))
+                    );
 
-                    // Force a state update that will trigger steps recalculation
                     setRunTour(true);
-
-                    // Also force steps to recalculate by triggering a small delay update
-                    setTimeout(() => {
-                        // This ensures getStepsForCurrentPage gets called with fresh refs
-                        console.log(`[OnboardingGuide] Post-runTour check - forcing steps recalculation`);
-                    }, 100);
-                }, 500);
+                }, 300);
 
                 return true;
             }
@@ -598,11 +603,19 @@ const OnboardingGuide = () => {
     }, [userId, setOnboardingCompleted, getStepsForCurrentPage]);
 
     // Compute steps for rendering - recalculate whenever runTour or refsUpdateTrigger changes
-    // Don't use memoization when runTour is true to ensure we always get fresh steps
+    // IMPORTANT: This MUST recalculate when runTour becomes true, using fresh refsRef.current
     const steps = useMemo(() => {
+        // Ensure refsRef is synced before computing steps
+        refsRef.current = refs;
+
         // Force recalculation by calling getStepsForCurrentPage fresh
         const computedSteps = getStepsForCurrentPage();
-        console.log(`[OnboardingGuide] Steps memo computed: ${computedSteps.length} steps (runTour: ${runTour}, isReady: ${isReady}, refsUpdateTrigger: ${refsUpdateTrigger})`);
+        console.log(`[OnboardingGuide] 🔄 Steps memo computed: ${computedSteps.length} steps`);
+        console.log(`[OnboardingGuide]   - runTour: ${runTour}`);
+        console.log(`[OnboardingGuide]   - isReady: ${isReady}`);
+        console.log(`[OnboardingGuide]   - refsUpdateTrigger: ${refsUpdateTrigger}`);
+        console.log(`[OnboardingGuide]   - refsRef keys:`, Object.keys(refsRef.current));
+
         if (computedSteps.length > 0) {
             console.log(`[OnboardingGuide] ✅ Step targets:`, computedSteps.map(s => ({
                 target: s.target ? `${s.target.tagName || typeof s.target}` : 'NULL',
@@ -611,17 +624,19 @@ const OnboardingGuide = () => {
                 targetInDOM: s.target ? document.body.contains(s.target) : false
             })));
         } else {
-            console.warn(`[OnboardingGuide] ⚠️ Steps memo returned 0 steps but runTour=${runTour}, isReady=${isReady}`);
-            console.warn(`[OnboardingGuide] Current refs in refsRef:`, Object.keys(refsRef.current));
-            console.warn(`[OnboardingGuide] Checking refs directly:`, Object.entries(refsRef.current).map(([key, ref]) => ({
+            console.warn(`[OnboardingGuide] ⚠️ Steps memo returned 0 steps!`);
+            console.warn(`[OnboardingGuide]   - runTour: ${runTour}`);
+            console.warn(`[OnboardingGuide]   - isReady: ${isReady}`);
+            console.warn(`[OnboardingGuide]   - Checking refs directly:`, Object.entries(refsRef.current).map(([key, ref]) => ({
                 key,
                 hasRef: !!ref,
                 hasCurrent: !!ref?.current,
+                currentType: ref?.current ? ref.current.constructor.name : 'null',
                 inDOM: ref?.current ? document.body.contains(ref.current) : false
             })));
         }
         return computedSteps;
-    }, [getStepsForCurrentPage, refsUpdateTrigger, runTour, isReady]);
+    }, [getStepsForCurrentPage, refsUpdateTrigger, runTour, isReady, refs]);
 
     // Don't render if role is invalid (when userId is available)
     if (userId && role !== 'company' && role !== 'Editor' && role !== 'Viewer') {
