@@ -579,7 +579,7 @@ const OnboardingGuide = () => {
     }, [currentPath, userId, role, onboardingCompleted, refsUpdateTrigger, location.pathname]);
 
     const handleJoyrideCallback = useCallback((data) => {
-        const { status, type, index, step } = data;
+        const { status, type, index, step, steps: callbackSteps } = data;
 
         // Scroll to the top of the target element before showing each step
         if (type === EVENTS.STEP_BEFORE) {
@@ -634,8 +634,38 @@ const OnboardingGuide = () => {
             const startIndex = getStartingStepIndex();
             let nextIndex = (currentIndex + 1) % allSteps.length; // Wrap around using modulo
 
-            console.log(`[OnboardingGuide] Step ${currentIndex} completed, moving to step ${nextIndex}`);
+            console.log(`[OnboardingGuide] Step ${currentIndex} completed (index: ${index}), moving to step ${nextIndex}`);
             console.log(`[OnboardingGuide] Circular tour: started at ${startIndex}, currently at ${currentIndex}, next will be ${nextIndex}`);
+
+            // If we're on the placeholder step (index 1, no target), skip it and go to actual next step
+            // This handles the case where we added a placeholder to show "Next" button
+            if (index === 1 && callbackSteps && callbackSteps.length > 1 && (!step || !step.target)) {
+                // This was the placeholder step, proceed to actual next
+                console.log(`[OnboardingGuide] Skipping placeholder step (index 1), moving to actual next step`);
+                // Advance to the real next step without showing the placeholder
+                const currentIndex = getCurrentStepIndex();
+                const startIndex = getStartingStepIndex();
+                let nextIndex = (currentIndex + 1) % allSteps.length;
+
+                if (nextIndex === startIndex) {
+                    // Completed the loop
+                    console.log(`[OnboardingGuide] 🎉 Circular tour completed!`);
+                    if (userId) {
+                        setOnboardingCompleted(true);
+                    }
+                    setRunTour(false);
+                    setCurrentStepIndexStorage(0);
+                    localStorage.removeItem('onboarding_step_index');
+                    localStorage.removeItem('onboarding_start_index');
+                } else {
+                    setCurrentStepIndexStorage(nextIndex);
+                    const nextStep = allSteps[nextIndex];
+                    if (nextStep.pagePath !== location.pathname) {
+                        setRunTour(false);
+                    }
+                }
+                return; // Exit early to prevent double advancement
+            }
 
             // Check if we've completed the circular loop (returned to starting point)
             if (nextIndex === startIndex) {
@@ -688,7 +718,7 @@ const OnboardingGuide = () => {
                 }
             }
         }
-    }, [userId, setOnboardingCompleted, allSteps, location.pathname, getCurrentStepIndex, getStartingStepIndex, setCurrentStepIndexStorage]);
+    }, [userId, setOnboardingCompleted, allSteps, location.pathname, getCurrentStepIndex, getStartingStepIndex, setCurrentStepIndexStorage, setRunTour]);
 
     // Compute steps for rendering - recalculate whenever runTour or refsUpdateTrigger changes
     // IMPORTANT: This MUST recalculate when runTour becomes true, using fresh refsRef.current
@@ -697,34 +727,54 @@ const OnboardingGuide = () => {
         refsRef.current = refs;
 
         // Get current step for rendering
-        const computedSteps = getStepsForRender();
-        console.log(`[OnboardingGuide] 🔄 Steps memo computed: ${computedSteps.length} steps`);
+        let computedSteps = getStepsForRender();
+
+        // For circular tour: add a placeholder "next" step so Joyride shows "Next" instead of "Finish"
+        // This tricks Joyride into thinking there's another step coming
+        if (computedSteps.length > 0) {
+            const currentIndex = getCurrentStepIndex();
+            const startIndex = getStartingStepIndex();
+            const nextIndex = (currentIndex + 1) % allSteps.length;
+            const isCompletingLoop = nextIndex === startIndex;
+
+            // If not completing the loop, add a dummy next step so "Next" button shows
+            if (!isCompletingLoop) {
+                const nextStep = allSteps[nextIndex];
+                // Add a placeholder step (without a valid target) so Joyride knows there's more
+                // We'll handle skipping this in the callback
+                computedSteps.push({
+                    ...nextStep,
+                    target: null, // No target - this will trigger an error that we'll catch
+                    content: '...', // Minimal content
+                });
+            }
+            // If completing loop, leave it as single step so "Finish" shows correctly
+
+            console.log(`[OnboardingGuide] 🔄 Steps memo computed: ${computedSteps.length} steps`);
+            console.log(`[OnboardingGuide]   - Current step index: ${currentIndex}`);
+            console.log(`[OnboardingGuide]   - Next step index: ${nextIndex}`);
+            console.log(`[OnboardingGuide]   - Start index: ${startIndex}`);
+            console.log(`[OnboardingGuide]   - Is completing loop: ${isCompletingLoop}`);
+        } else {
+            console.warn(`[OnboardingGuide] ⚠️ Steps memo returned 0 steps!`);
+        }
+
         console.log(`[OnboardingGuide]   - runTour: ${runTour}`);
         console.log(`[OnboardingGuide]   - isReady: ${isReady}`);
         console.log(`[OnboardingGuide]   - refsUpdateTrigger: ${refsUpdateTrigger}`);
-        console.log(`[OnboardingGuide]   - refsRef keys:`, Object.keys(refsRef.current));
 
         if (computedSteps.length > 0) {
-            console.log(`[OnboardingGuide] ✅ Step targets:`, computedSteps.map(s => ({
-                target: s.target ? `${s.target.tagName || typeof s.target}` : 'NULL',
+            console.log(`[OnboardingGuide] ✅ Step targets:`, computedSteps.map((s, i) => ({
+                stepIndex: i,
+                target: s.target ? `${s.target.tagName || typeof s.target}` : 'NULL/PLACEHOLDER',
                 title: s.title,
                 hasTarget: !!s.target,
                 targetInDOM: s.target ? document.body.contains(s.target) : false
             })));
-        } else {
-            console.warn(`[OnboardingGuide] ⚠️ Steps memo returned 0 steps!`);
-            console.warn(`[OnboardingGuide]   - runTour: ${runTour}`);
-            console.warn(`[OnboardingGuide]   - isReady: ${isReady}`);
-            console.warn(`[OnboardingGuide]   - Checking refs directly:`, Object.entries(refsRef.current).map(([key, ref]) => ({
-                key,
-                hasRef: !!ref,
-                hasCurrent: !!ref?.current,
-                currentType: ref?.current ? ref.current.constructor.name : 'null',
-                inDOM: ref?.current ? document.body.contains(ref.current) : false
-            })));
         }
+
         return computedSteps;
-    }, [getStepsForRender, refsUpdateTrigger, runTour, isReady, refs]);
+    }, [getStepsForRender, refsUpdateTrigger, runTour, isReady, refs, allSteps, getCurrentStepIndex, getStartingStepIndex]);
 
     // Don't render if role is invalid (when userId is available)
     if (userId && role !== 'company' && role !== 'Editor' && role !== 'Viewer') {
