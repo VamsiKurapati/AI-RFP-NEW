@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* place in index.css or global.css */
+#joyride-wrapper,
+.react-joyride__tooltip,
+.react-joyride__overlay {
+  z-index: 99999 !important;
+  position: fixed !important;
+}
+
+.react-joyride__spotlight {
+  z-index: 99998 !important;
+}
+
 .custom-scroll::-webkit-scrollbar {
   height: 6px;
 }
