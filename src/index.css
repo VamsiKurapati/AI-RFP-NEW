@@ -2,37 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* === FIXED JOYRIDE STYLING === */
-#joyride-wrapper {
-  position: fixed !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 99999 !important;
-  pointer-events: none;
-  /* so it doesn't block clicks unless overlay active */
-}
-
-.react-joyride__overlay {
-  position: fixed !important;
-  inset: 0 !important;
-  background: rgba(0, 0, 0, 0.5) !important;
-  z-index: 99998 !important;
-  pointer-events: auto;
-}
-
-.react-joyride__spotlight {
-  z-index: 99999 !important;
-  position: fixed !important;
-  pointer-events: none;
-}
-
-.react-joyride__tooltip {
-  z-index: 100000 !important;
-  position: absolute !important;
-  pointer-events: auto;
-}
-
 .custom-scroll::-webkit-scrollbar {
   height: 6px;
 }
