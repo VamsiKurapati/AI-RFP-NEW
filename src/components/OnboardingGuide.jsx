@@ -273,66 +273,6 @@ const OnboardingGuide = () => {
         return step;
     }, [allSteps, getCurrentStepIndex]);
 
-    // Get steps for rendering - only the current step from allSteps (circular tour)
-    const getStepsForRender = useCallback(() => {
-        const actualPath = location.pathname;
-        const storedIndex = getCurrentStepIndex();
-
-        // Validate index is within bounds
-        if (storedIndex < 0 || storedIndex >= allSteps.length) {
-            console.log(`[OnboardingGuide] Invalid step index: ${storedIndex}, total steps: ${allSteps.length}`);
-            return [];
-        }
-
-        const currentStep = allSteps[storedIndex];
-
-        // If current step doesn't exist, return empty
-        if (!currentStep) {
-            console.log(`[OnboardingGuide] No step at index ${storedIndex}`);
-            return [];
-        }
-
-        // If current step exists and is on current page, return it
-        if (currentStep && currentStep.pagePath === actualPath) {
-            console.log(`[OnboardingGuide] Current step ${storedIndex} is on current page ${actualPath}`);
-
-            // Check if the step's ref is available
-            const currentRefs = refsRef.current;
-            const ref = currentRefs[currentStep.target];
-            const hasRef = ref && ref.current !== null && ref.current !== undefined;
-
-            if (hasRef) {
-                let isInDOM = false;
-                let isVisible = false;
-                try {
-                    isInDOM = document.body.contains(ref.current);
-                    const rect = ref.current.getBoundingClientRect();
-                    isVisible = rect.width > 0 || rect.height > 0;
-                } catch (e) {
-                    console.warn(`[OnboardingGuide] Error checking element:`, e);
-                }
-
-                if (isInDOM && isVisible) {
-                    const mappedStep = {
-                        ...currentStep,
-                        target: ref.current,
-                    };
-                    console.log(`[OnboardingGuide] ✅ Step ready for render: ${currentStep.title}`);
-                    return [mappedStep];
-                } else {
-                    console.log(`[OnboardingGuide] Step not ready: inDOM=${isInDOM}, visible=${isVisible}`);
-                }
-            } else {
-                console.log(`[OnboardingGuide] Step ref not available yet: ${currentStep.target}`);
-            }
-        } else if (currentStep) {
-            // Step is on a different page - we'll navigate there
-            console.log(`[OnboardingGuide] Current step ${storedIndex} is on ${currentStep.pagePath}, but we're on ${actualPath}`);
-        }
-
-        return [];
-    }, [location.pathname, allSteps, getCurrentStepIndex]);
-
     // Effect to navigate to the page where the current step is located
     useEffect(() => {
         if (onboardingCompleted || !runTour) return;
@@ -731,13 +671,62 @@ const OnboardingGuide = () => {
             // Ensure refsRef is synced before computing steps
             refsRef.current = refs;
 
-            // Get current step for rendering - wrap in try-catch to handle any errors gracefully
+            // Get current step for rendering - inline the logic instead of calling getStepsForRender
             let computedSteps = [];
-            if (typeof getStepsForRender === 'function') {
-                computedSteps = getStepsForRender();
-            } else {
-                console.error(`[OnboardingGuide] getStepsForRender is not a function! Type: ${typeof getStepsForRender}`);
+
+            const actualPath = location.pathname;
+            const storedIndex = getCurrentStepIndex();
+
+            // Validate index is within bounds
+            if (storedIndex < 0 || storedIndex >= allSteps.length) {
+                console.log(`[OnboardingGuide] Invalid step index: ${storedIndex}, total steps: ${allSteps.length}`);
                 return [];
+            }
+
+            const currentStep = allSteps[storedIndex];
+
+            // If current step doesn't exist, return empty
+            if (!currentStep) {
+                console.log(`[OnboardingGuide] No step at index ${storedIndex}`);
+                return [];
+            }
+
+            // If current step exists and is on current page, return it
+            if (currentStep && currentStep.pagePath === actualPath) {
+                console.log(`[OnboardingGuide] Current step ${storedIndex} is on current page ${actualPath}`);
+
+                // Check if the step's ref is available
+                const currentRefs = refsRef.current;
+                const ref = currentRefs[currentStep.target];
+                const hasRef = ref && ref.current !== null && ref.current !== undefined;
+
+                if (hasRef) {
+                    let isInDOM = false;
+                    let isVisible = false;
+                    try {
+                        isInDOM = document.body.contains(ref.current);
+                        const rect = ref.current.getBoundingClientRect();
+                        isVisible = rect.width > 0 || rect.height > 0;
+                    } catch (e) {
+                        console.warn(`[OnboardingGuide] Error checking element:`, e);
+                    }
+
+                    if (isInDOM && isVisible) {
+                        const mappedStep = {
+                            ...currentStep,
+                            target: ref.current,
+                        };
+                        console.log(`[OnboardingGuide] ✅ Step ready for render: ${currentStep.title}`);
+                        computedSteps = [mappedStep];
+                    } else {
+                        console.log(`[OnboardingGuide] Step not ready: inDOM=${isInDOM}, visible=${isVisible}`);
+                    }
+                } else {
+                    console.log(`[OnboardingGuide] Step ref not available yet: ${currentStep.target}`);
+                }
+            } else if (currentStep) {
+                // Step is on a different page - we'll navigate there
+                console.log(`[OnboardingGuide] Current step ${storedIndex} is on ${currentStep.pagePath}, but we're on ${actualPath}`);
             }
 
             // For circular tour: add a placeholder "next" step so Joyride shows "Next" instead of "Finish"
@@ -789,7 +778,7 @@ const OnboardingGuide = () => {
             console.error(`[OnboardingGuide] Error computing steps:`, error);
             return [];
         }
-    }, [getStepsForRender, refsUpdateTrigger, runTour, isReady, refs, allSteps, getCurrentStepIndex, getStartingStepIndex]);
+    }, [refsUpdateTrigger, runTour, isReady, refs, allSteps, getCurrentStepIndex, getStartingStepIndex, location.pathname]);
 
     // Don't render if role is invalid (when userId is available)
     if (userId && role !== 'company' && role !== 'Editor' && role !== 'Viewer') {
@@ -825,7 +814,7 @@ const OnboardingGuide = () => {
     // Additional check - if we should run but steps have no targets, log warning
     if (runTour && isReady && steps.length === 0) {
         console.warn(`[OnboardingGuide] ⚠️ WARNING: runTour and isReady are true but no steps available!`);
-        console.warn(`[OnboardingGuide] This suggests getStepsForRender returned empty - checking refs now:`, Object.keys(refsRef.current));
+        console.warn(`[OnboardingGuide] This suggests step computation returned empty - checking refs now:`, Object.keys(refsRef.current));
     }
 
     // Log when Joyride is about to render
