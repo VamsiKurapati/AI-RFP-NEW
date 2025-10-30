@@ -824,6 +824,10 @@ const OnboardingGuide = () => {
     }
     console.log(`  - shouldRun: ${shouldRun}`);
 
+    useEffect(() => {
+        console.log("[DEBUG] Joyride render check — shouldRun:", shouldRun, "steps:", steps?.length);
+    }, [shouldRun, steps]);
+
     // Additional check - if we should run but steps have no targets, log warning
     if (runTour && isReady && steps.length === 0) {
         console.warn(`[OnboardingGuide] ⚠️ WARNING: runTour and isReady are true but no steps available!`);
@@ -842,68 +846,70 @@ const OnboardingGuide = () => {
     }
 
     return (
-        <Joyride
-            steps={steps}
-            run={shouldRun}
-            key={`joyride-${currentPath}-${runTour ? 'run' : 'stop'}-${steps.length}-${ONBOARDING_VERSION}`}
-            continuous={true}
-            showProgress={true}
-            showSkipButton={true}
-            scrollToFirstStep={true}
-            scrollOffset={80}
-            disableCloseOnEsc={false}
-            disableOverlayClose={false}
-            callback={handleJoyrideCallback}
-            floaterProps={{
-                disableAnimation: false,
-            }}
-            spotlightPadding={5}
-            hideCloseButton={false}
-            styles={{
-                options: {
-                    primaryColor: '#2563EB',
-                    textColor: '#111827',
-                    overlayColor: 'rgba(0, 0, 0, 0.5)',
-                    arrowColor: '#2563EB',
-                    backgroundColor: '#FFFFFF',
-                    zIndex: 10000,
-                },
-                tooltip: {
-                    borderRadius: 8,
-                    padding: 20,
-                },
-                tooltipContainer: {
-                    textAlign: 'left',
-                },
-                buttonNext: {
-                    backgroundColor: '#2563EB',
-                    color: '#FFFFFF',
-                    borderRadius: 6,
-                    fontSize: 14,
-                    fontWeight: 600,
-                    padding: '10px 20px',
-                    outline: 'none',
-                },
-                buttonBack: {
-                    color: '#6B7280',
-                    marginRight: 10,
-                    fontSize: 14,
-                    outline: 'none',
-                },
-                buttonSkip: {
-                    color: '#6B7280',
-                    fontSize: 14,
-                    outline: 'none',
-                },
-            }}
-            locale={{
-                back: 'Back',
-                close: 'Close',
-                last: 'Finish',
-                next: 'Next',
-                skip: 'Skip Tour',
-            }}
-        />
+        <div id="joyride-wrapper">
+            <Joyride
+                steps={steps}
+                run={shouldRun}
+                key={`joyride-${currentPath}-${runTour ? 'run' : 'stop'}-${steps.length}-${ONBOARDING_VERSION}`}
+                continuous={true}
+                showProgress={true}
+                showSkipButton={true}
+                scrollToFirstStep={true}
+                scrollOffset={80}
+                disableCloseOnEsc={false}
+                disableOverlayClose={false}
+                callback={handleJoyrideCallback}
+                floaterProps={{
+                    disableAnimation: false,
+                }}
+                spotlightPadding={5}
+                hideCloseButton={false}
+                styles={{
+                    options: {
+                        primaryColor: '#2563EB',
+                        textColor: '#111827',
+                        overlayColor: 'rgba(0, 0, 0, 0.5)',
+                        arrowColor: '#2563EB',
+                        backgroundColor: '#FFFFFF',
+                        zIndex: 10000,
+                    },
+                    tooltip: {
+                        borderRadius: 8,
+                        padding: 20,
+                    },
+                    tooltipContainer: {
+                        textAlign: 'left',
+                    },
+                    buttonNext: {
+                        backgroundColor: '#2563EB',
+                        color: '#FFFFFF',
+                        borderRadius: 6,
+                        fontSize: 14,
+                        fontWeight: 600,
+                        padding: '10px 20px',
+                        outline: 'none',
+                    },
+                    buttonBack: {
+                        color: '#6B7280',
+                        marginRight: 10,
+                        fontSize: 14,
+                        outline: 'none',
+                    },
+                    buttonSkip: {
+                        color: '#6B7280',
+                        fontSize: 14,
+                        outline: 'none',
+                    },
+                }}
+                locale={{
+                    back: 'Back',
+                    close: 'Close',
+                    last: 'Finish',
+                    next: 'Next',
+                    skip: 'Skip Tour',
+                }}
+            />
+        </div>
     );
 };
 
