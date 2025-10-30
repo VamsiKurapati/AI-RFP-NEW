@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { MdOutlineEdit, MdOutlineSearch, MdOutlineAddAPhoto, MdOutlineBusinessCenter, MdOutlineHome, MdOutlineLocationOn, MdOutlineMail, MdOutlineCall, MdOutlineLanguage, MdOutlineGroups, MdOutlineDocumentScanner, MdOutlineFolder, MdOutlineAssignment, MdOutlineVerifiedUser, MdOutlineDownload, MdOutlineOpenInNew, MdOutlineGroup, MdOutlineCalendarToday, MdOutlineAdd, MdOutlineClose, MdOutlinePhone, MdOutlineEmail, MdOutlineCheck, MdOutlinePayments, MdOutlineDelete } from "react-icons/md";
@@ -1076,15 +1076,44 @@ const CompanyProfileDashboard = () => {
   const profileSidebarRef = useRef(null);
   const profileDeadlinesRef = useRef(null);
 
-  // Register refs with onboarding context
-    useEffect(() => {
-        console.log(`[CompanyProfileDashboard] Registering refs - overview: ${!!profileOverviewRef.current}, completion: ${!!profileCompletionRef.current}, sidebar: ${!!profileSidebarRef.current}, deadlines: ${!!profileDeadlinesRef.current}`);
-        registerRef('profile-overview', profileOverviewRef);
-        registerRef('profile-completion', profileCompletionRef);
-        registerRef('profile-sidebar', profileSidebarRef);
-        registerRef('profile-deadlines', profileDeadlinesRef);
-        console.log(`[CompanyProfileDashboard] Refs registered`);
-    }, [registerRef]);
+  // Create callback refs that register when elements are mounted
+  const setProfileOverviewRef = useCallback((element) => {
+    profileOverviewRef.current = element;
+    if (element) {
+      registerRef('profile-overview', profileOverviewRef);
+    }
+  }, [registerRef]);
+
+  const setProfileCompletionRef = useCallback((element) => {
+    profileCompletionRef.current = element;
+    if (element) {
+      registerRef('profile-completion', profileCompletionRef);
+    }
+  }, [registerRef]);
+
+  const setProfileSidebarRef = useCallback((element) => {
+    profileSidebarRef.current = element;
+    if (element) {
+      registerRef('profile-sidebar', profileSidebarRef);
+    }
+  }, [registerRef]);
+
+  const setProfileDeadlinesRef = useCallback((element) => {
+    profileDeadlinesRef.current = element;
+    if (element) {
+      registerRef('profile-deadlines', profileDeadlinesRef);
+    }
+  }, [registerRef]);
+
+  // Fallback: Also register refs on mount in case callback refs don't fire
+  useEffect(() => {
+    console.log(`[CompanyProfileDashboard] Registering refs on mount - overview: ${!!profileOverviewRef.current}, completion: ${!!profileCompletionRef.current}, sidebar: ${!!profileSidebarRef.current}, deadlines: ${!!profileDeadlinesRef.current}`);
+    if (profileOverviewRef.current) registerRef('profile-overview', profileOverviewRef);
+    if (profileCompletionRef.current) registerRef('profile-completion', profileCompletionRef);
+    if (profileSidebarRef.current) registerRef('profile-sidebar', profileSidebarRef);
+    if (profileDeadlinesRef.current) registerRef('profile-deadlines', profileDeadlinesRef);
+    console.log(`[CompanyProfileDashboard] Refs registered`);
+  }, [registerRef]);
 
   // Modal states
   const [selectedMember, setSelectedMember] = useState(null);
@@ -1613,7 +1642,7 @@ const CompanyProfileDashboard = () => {
       <NavbarComponent />
       <OnboardingGuide />
 
-      <div ref={profileOverviewRef} className="bg-[#F8F9FA] w-full mt-20 lg:mt-0 lg:fixed lg:top-20 left-0 right-0 z-10 shadow-md px-8 lg:px-12 py-[14px]">
+      <div ref={setProfileOverviewRef} className="bg-[#F8F9FA] w-full mt-20 lg:mt-0 lg:fixed lg:top-20 left-0 right-0 z-10 shadow-md px-8 lg:px-12 py-[14px]">
         {/* Profile image and info */}
         <div className="w-full">
           {/* For <lg: Row 1 - image and edit button */}
@@ -1833,7 +1862,7 @@ const CompanyProfileDashboard = () => {
         </div>
       </div>
 
-      <div ref={profileSidebarRef} className="relative hidden lg:block lg:mt-[20rem]">
+      <div ref={setProfileSidebarRef} className="relative hidden lg:block lg:mt-[20rem]">
         <div className="relative z-10">
           <Sidebar active={activeTab} onSelect={handleSetActiveTab} />
         </div>
@@ -1868,7 +1897,7 @@ const CompanyProfileDashboard = () => {
           <div className="relative lg:hidden right-0 -mt-12 mb-4"><MobileDropdown activeTab={activeTab} onSelect={setActiveTab} /></div>
           {activeTab === "Overview" && (
             <div className="grid grid-cols-1 gap-6">
-              <div ref={profileCompletionRef}>
+              <div ref={setProfileCompletionRef}>
                 <ProfileCompletionPercentage />
               </div>
               <div>

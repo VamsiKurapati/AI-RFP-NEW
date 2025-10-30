@@ -579,13 +579,42 @@ const Discover = () => {
   const discoverResultsRef = useRef(null);
   const discoverActionsRef = useRef(null);
 
-  // Register refs with onboarding context
+  // Create callback refs that register when elements are mounted
+  const setDiscoverHeaderRef = useCallback((element) => {
+    discoverHeaderRef.current = element;
+    if (element) {
+      registerRef('discover-header', discoverHeaderRef);
+    }
+  }, [registerRef]);
+
+  const setDiscoverFiltersRef = useCallback((element) => {
+    discoverFiltersRef.current = element;
+    if (element) {
+      registerRef('discover-filters', discoverFiltersRef);
+    }
+  }, [registerRef]);
+
+  const setDiscoverResultsRef = useCallback((element) => {
+    discoverResultsRef.current = element;
+    if (element) {
+      registerRef('discover-results', discoverResultsRef);
+    }
+  }, [registerRef]);
+
+  const setDiscoverActionsRef = useCallback((element) => {
+    discoverActionsRef.current = element;
+    if (element) {
+      registerRef('discover-actions', discoverActionsRef);
+    }
+  }, [registerRef]);
+
+  // Fallback: Also register refs on mount in case callback refs don't fire
   useEffect(() => {
-    console.log(`[Discover] Registering refs - header: ${!!discoverHeaderRef.current}, filters: ${!!discoverFiltersRef.current}, results: ${!!discoverResultsRef.current}, actions: ${!!discoverActionsRef.current}`);
-    registerRef('discover-header', discoverHeaderRef);
-    registerRef('discover-filters', discoverFiltersRef);
-    registerRef('discover-results', discoverResultsRef);
-    registerRef('discover-actions', discoverActionsRef);
+    console.log(`[Discover] Registering refs on mount - header: ${!!discoverHeaderRef.current}, filters: ${!!discoverFiltersRef.current}, results: ${!!discoverResultsRef.current}, actions: ${!!discoverActionsRef.current}`);
+    if (discoverHeaderRef.current) registerRef('discover-header', discoverHeaderRef);
+    if (discoverFiltersRef.current) registerRef('discover-filters', discoverFiltersRef);
+    if (discoverResultsRef.current) registerRef('discover-results', discoverResultsRef);
+    if (discoverActionsRef.current) registerRef('discover-actions', discoverActionsRef);
     console.log(`[Discover] Refs registered`);
   }, [registerRef]);
 
@@ -2388,7 +2417,7 @@ const Discover = () => {
         <OnboardingGuide />
 
         {/* Hidden div to maintain ref when sidebar is closed */}
-        <div ref={discoverFiltersRef} className="fixed top-16 left-0 h-[calc(100vh-4rem)] z-40 hidden" />
+        <div ref={setDiscoverFiltersRef} className="fixed top-16 left-0 h-[calc(100vh-4rem)] z-40 hidden" />
         <LeftSidebar
           isOpen={isSearchFocused && activeTab === "rfp"}
           onClose={() => setIsSearchFocused(false)}
@@ -2404,7 +2433,7 @@ const Discover = () => {
         />
         <main className="pt-20 px-8 md:px-12 py-6 ml-0">
           {/* Search Bar Section */}
-          <div ref={discoverHeaderRef} className="flex  justify-center mx-auto text-lg space-x-6 border-b border-gray-200 p-4">
+          <div ref={setDiscoverHeaderRef} className="flex  justify-center mx-auto text-lg space-x-6 border-b border-gray-200 p-4">
             <button
               className={`pb-2 px-6 rounded-t-lg transition-all duration-200 focus:outline-none ${activeTab === "rfp"
                 ? "text-[#2563EB] font-bold border-b-2 border-[#2563EB] bg-[#E5E7EB] shadow"
@@ -2472,7 +2501,7 @@ const Discover = () => {
                   </div>
 
                   {/* Upload RFP Button */}
-                  <div ref={discoverActionsRef}>
+                  <div ref={setDiscoverActionsRef}>
                     <button className="flex items-center gap-2 text-[16px] text-white bg-[#2563EB] px-4 py-3 rounded-md hover:cursor-pointer transition-colors"
                       onClick={() => setUploadModalOpen(true)}
                     >
@@ -2483,7 +2512,7 @@ const Discover = () => {
                 </div>
               </div>
 
-              <div ref={discoverResultsRef}>
+              <div ref={setDiscoverResultsRef}>
                 <h2 className="text-[24px] text-[#000000] font-semibold mb-4">AI Recommended RFPs</h2>
                 {error && (
                   <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 text-center">

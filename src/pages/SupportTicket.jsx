@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useUser } from "../context/UserContext";
 import { useOnboarding } from "../context/OnboardingContext";
 import { FaChevronDown, FaChevronUp, FaTrash } from "react-icons/fa";
@@ -84,12 +84,34 @@ const SupportTicket = () => {
     const supportCreateRef = useRef(null);
     const supportTicketsRef = useRef(null);
 
-    // Register refs with onboarding context
+    // Create callback refs that register when elements are mounted
+    const setSupportHeaderRef = useCallback((element) => {
+        supportHeaderRef.current = element;
+        if (element) {
+            registerRef('support-header', supportHeaderRef);
+        }
+    }, [registerRef]);
+
+    const setSupportCreateRef = useCallback((element) => {
+        supportCreateRef.current = element;
+        if (element) {
+            registerRef('support-create', supportCreateRef);
+        }
+    }, [registerRef]);
+
+    const setSupportTicketsRef = useCallback((element) => {
+        supportTicketsRef.current = element;
+        if (element) {
+            registerRef('support-tickets', supportTicketsRef);
+        }
+    }, [registerRef]);
+
+    // Fallback: Also register refs on mount in case callback refs don't fire
     useEffect(() => {
-        console.log(`[SupportTicket] Registering refs - header: ${!!supportHeaderRef.current}, create: ${!!supportCreateRef.current}, tickets: ${!!supportTicketsRef.current}`);
-        registerRef('support-header', supportHeaderRef);
-        registerRef('support-create', supportCreateRef);
-        registerRef('support-tickets', supportTicketsRef);
+        console.log(`[SupportTicket] Registering refs on mount - header: ${!!supportHeaderRef.current}, create: ${!!supportCreateRef.current}, tickets: ${!!supportTicketsRef.current}`);
+        if (supportHeaderRef.current) registerRef('support-header', supportHeaderRef);
+        if (supportCreateRef.current) registerRef('support-create', supportCreateRef);
+        if (supportTicketsRef.current) registerRef('support-tickets', supportTicketsRef);
         console.log(`[SupportTicket] Refs registered`);
     }, [registerRef]);
 
@@ -282,7 +304,7 @@ const SupportTicket = () => {
             <OnboardingGuide />
             <div className="max-w-4xl mx-auto mt-20 pb-8">
                 {/* Form */}
-                <div ref={supportHeaderRef} className="bg-white p-8 rounded-lg">
+                <div ref={setSupportHeaderRef} className="bg-white p-8 rounded-lg">
                     <h2 className="text-2xl text-blue-600 font-semibold mb-1">
                         Create Support Ticket
                     </h2>
@@ -387,7 +409,7 @@ const SupportTicket = () => {
                         )}
 
                         {/* Buttons */}
-                        <div ref={supportCreateRef} className="flex gap-4">
+                        <div ref={setSupportCreateRef} className="flex gap-4">
                             <button
                                 type="button"
                                 onClick={() => {
@@ -419,7 +441,7 @@ const SupportTicket = () => {
                 </div>
 
                 {/* Ticket List */}
-                <div ref={supportTicketsRef} className="p-6 bg-gray-100 rounded-lg shadow-md">
+                <div ref={setSupportTicketsRef} className="p-6 bg-gray-100 rounded-lg shadow-md">
                     <h2 className="text-xl text-blue-600 font-semibold mb-1 text-center">
                         Track Support Ticket
                     </h2>

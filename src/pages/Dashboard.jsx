@@ -116,13 +116,42 @@ const Dashboard = () => {
     const dashboardCalendarRef = useRef(null);
     const dashboardStatsRef = useRef(null);
 
-    // Register refs with onboarding context
+    // Create callback refs that register when elements are mounted
+    const setDashboardOverviewRef = useCallback((element) => {
+        dashboardOverviewRef.current = element;
+        if (element) {
+            registerRef('dashboard-overview', dashboardOverviewRef);
+        }
+    }, [registerRef]);
+
+    const setDashboardProposalsRef = useCallback((element) => {
+        dashboardProposalsRef.current = element;
+        if (element) {
+            registerRef('dashboard-proposals', dashboardProposalsRef);
+        }
+    }, [registerRef]);
+
+    const setDashboardCalendarRef = useCallback((element) => {
+        dashboardCalendarRef.current = element;
+        if (element) {
+            registerRef('dashboard-calendar', dashboardCalendarRef);
+        }
+    }, [registerRef]);
+
+    const setDashboardStatsRef = useCallback((element) => {
+        dashboardStatsRef.current = element;
+        if (element) {
+            registerRef('dashboard-stats', dashboardStatsRef);
+        }
+    }, [registerRef]);
+
+    // Fallback: Also register refs on mount in case callback refs don't fire
     useEffect(() => {
-        console.log(`[Dashboard] Registering refs - overview: ${!!dashboardOverviewRef.current}, proposals: ${!!dashboardProposalsRef.current}, calendar: ${!!dashboardCalendarRef.current}, stats: ${!!dashboardStatsRef.current}`);
-        registerRef('dashboard-overview', dashboardOverviewRef);
-        registerRef('dashboard-proposals', dashboardProposalsRef);
-        registerRef('dashboard-calendar', dashboardCalendarRef);
-        registerRef('dashboard-stats', dashboardStatsRef);
+        console.log(`[Dashboard] Registering refs on mount - overview: ${!!dashboardOverviewRef.current}, proposals: ${!!dashboardProposalsRef.current}, calendar: ${!!dashboardCalendarRef.current}, stats: ${!!dashboardStatsRef.current}`);
+        if (dashboardOverviewRef.current) registerRef('dashboard-overview', dashboardOverviewRef);
+        if (dashboardProposalsRef.current) registerRef('dashboard-proposals', dashboardProposalsRef);
+        if (dashboardCalendarRef.current) registerRef('dashboard-calendar', dashboardCalendarRef);
+        if (dashboardStatsRef.current) registerRef('dashboard-stats', dashboardStatsRef);
     }, [registerRef]);
 
     // State for backend data
@@ -927,7 +956,7 @@ const Dashboard = () => {
             <main className="w-full mx-auto py-8 px-4 md:px-12 mt-20">
 
                 {/* Proposals Data */}
-                <div ref={dashboardOverviewRef} className="rounded-lg p-6 mb-6" style={{ background: "url('/dashboard-bg.png') no-repeat center center", backgroundSize: "cover" }}>
+                <div ref={setDashboardOverviewRef} className="rounded-lg p-6 mb-6" style={{ background: "url('/dashboard-bg.png') no-repeat center center", backgroundSize: "cover" }}>
                     <div className="flex justify-between items-start gap-4">
                         <div className="flex-1">
                             <h1 className="text-[36px] text-[#000000] mb-4">Welcome <span className="font-semibold">{userName}</span>!</h1>
@@ -984,7 +1013,7 @@ const Dashboard = () => {
                 <h2 className="text-[24px] font-semibold mb-4">Tracking Dashboard</h2>
 
                 {/* Summary Cards */}
-                <div ref={dashboardStatsRef} className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mt-4 mb-4">
+                <div ref={setDashboardStatsRef} className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mt-4 mb-4">
                     {summaryStats.map((stat) => (
                         <div key={stat.label} className={`p-3 sm:p-4 rounded shadow text-left`} style={{
                             background: getSummaryCardBgColor(stat.label),
@@ -1027,7 +1056,7 @@ const Dashboard = () => {
 
                 {/* RFP Proposals Table */}
                 <h3 className="text-[18px] sm:text-[24px] font-semibold mb-2">RFP Proposals</h3>
-                <div ref={dashboardProposalsRef} className="bg-white rounded-lg shadow overflow-x-auto mb-8">
+                <div ref={setDashboardProposalsRef} className="bg-white rounded-lg shadow overflow-x-auto mb-8">
                     <table className="min-w-full text-sm">
                         <thead>
                             <tr className="bg-[#F8FAFC]">
@@ -1641,7 +1670,7 @@ const Dashboard = () => {
 
                 {/* Calendar Section */}
                 <h3 className="text-[18px] sm:text-[24px] font-semibold mt-4 mb-2">Calendar</h3>
-                <div ref={dashboardCalendarRef} className="bg-white rounded-lg shadow p-2 sm:p-4 mb-8 overflow-x-auto">
+                <div ref={setDashboardCalendarRef} className="bg-white rounded-lg shadow p-2 sm:p-4 mb-8 overflow-x-auto">
                     <div className="flex flex-col xs:flex-row items-center justify-between mb-4">
                         <div className="flex gap-2 mb-4">
                             <select value={calendarMonth} onChange={e => setCalendarMonth(Number(e.target.value))} className="bg-[#F3F4F6] border rounded-md px-2 py-1 text-[#111827] text-xs sm:text-base">

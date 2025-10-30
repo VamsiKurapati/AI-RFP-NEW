@@ -367,12 +367,34 @@ const Proposals = () => {
     const proposalsListRef = useRef(null);
     const proposalsActionsRef = useRef(null);
 
-    // Register refs with onboarding context
+    // Create callback refs that register when elements are mounted
+    const setProposalsHeaderRef = useCallback((element) => {
+        proposalsHeaderRef.current = element;
+        if (element) {
+            registerRef('proposals-header', proposalsHeaderRef);
+        }
+    }, [registerRef]);
+
+    const setProposalsListRef = useCallback((element) => {
+        proposalsListRef.current = element;
+        if (element) {
+            registerRef('proposals-list', proposalsListRef);
+        }
+    }, [registerRef]);
+
+    const setProposalsActionsRef = useCallback((element) => {
+        proposalsActionsRef.current = element;
+        if (element) {
+            registerRef('proposals-actions', proposalsActionsRef);
+        }
+    }, [registerRef]);
+
+    // Fallback: Also register refs on mount in case callback refs don't fire
     useEffect(() => {
-        console.log(`[Proposals] Registering refs - header: ${!!proposalsHeaderRef.current}, list: ${!!proposalsListRef.current}, actions: ${!!proposalsActionsRef.current}`);
-        registerRef('proposals-header', proposalsHeaderRef);
-        registerRef('proposals-list', proposalsListRef);
-        registerRef('proposals-actions', proposalsActionsRef);
+        console.log(`[Proposals] Registering refs on mount - header: ${!!proposalsHeaderRef.current}, list: ${!!proposalsListRef.current}, actions: ${!!proposalsActionsRef.current}`);
+        if (proposalsHeaderRef.current) registerRef('proposals-header', proposalsHeaderRef);
+        if (proposalsListRef.current) registerRef('proposals-list', proposalsListRef);
+        if (proposalsActionsRef.current) registerRef('proposals-actions', proposalsActionsRef);
         console.log(`[Proposals] Refs registered`);
     }, [registerRef]);
 
@@ -1082,7 +1104,7 @@ const Proposals = () => {
                     </div>
                 ) : (
                     <>
-                        <div ref={proposalsHeaderRef}>
+                        <div ref={setProposalsHeaderRef}>
                             <h2 className="text-[24px] font-semibold mb-2">Saved Proposals</h2>
                         </div>
                         <div className="flex justify-between items-center mb-4">
@@ -1090,7 +1112,7 @@ const Proposals = () => {
                                 Showing {savedProposals.length > 0 ? savedProposalsStartIndex + 1 : 0} to {Math.min(savedProposalsEndIndex, savedProposals.length)} of {savedProposals.length} proposals
                             </span>
                         </div>
-                        <div ref={proposalsListRef} className={`grid ${getGridLayoutClass()} gap-5 mb-6`}>
+                        <div ref={setProposalsListRef} className={`grid ${getGridLayoutClass()} gap-5 mb-6`}>
                             {currentSavedProposals.length > 0 ? (
                                 <>
                                     {currentSavedProposals.length > itemsPerPage && (
@@ -1122,7 +1144,7 @@ const Proposals = () => {
                             </div>}
                         </div>
 
-                        <div ref={proposalsActionsRef} className="flex items-center gap-4">
+                        <div ref={setProposalsActionsRef} className="flex items-center gap-4">
                             {totalSavedPages > 1 && (
                                 <Pagination
                                     currentPage={currentSavedPage}
