@@ -232,7 +232,7 @@ const OnboardingGuide = () => {
     // Flatten all steps into a single continuous tour array
     const allSteps = useMemo(() => {
         const flatSteps = [];
-        const pageOrder = ['/dashboard', '/company-profile', '/discover', '/proposals', '/support-ticket'];
+        const pageOrder = ['/proposals', '/dashboard', '/company-profile', '/discover', '/support-ticket'];
         pageOrder.forEach(pagePath => {
             const steps = pageSteps[pagePath] || [];
             steps.forEach(step => {
@@ -282,7 +282,7 @@ const OnboardingGuide = () => {
 
     // Effect to navigate to the page where the current step is located
     useEffect(() => {
-        if (onboardingCompleted || !runTour) return;
+        if (onboardingCompleted) return;
 
         const storedIndex = getCurrentStepIndex();
         const currentStep = allSteps[storedIndex];
@@ -291,7 +291,7 @@ const OnboardingGuide = () => {
             console.log(`[OnboardingGuide] 🧭 Navigating to ${currentStep.pagePath} for step ${storedIndex}`);
             navigate(currentStep.pagePath, { replace: true });
         }
-    }, [runTour, location.pathname, allSteps, getCurrentStepIndex, onboardingCompleted, navigate]);
+    }, [location.pathname, allSteps, getCurrentStepIndex, onboardingCompleted, navigate]);
 
     // Single unified effect to handle tour initialization - continuous tour
     useEffect(() => {
