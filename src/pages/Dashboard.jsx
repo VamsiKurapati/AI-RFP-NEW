@@ -122,28 +122,28 @@ const Dashboard = () => {
         if (element) {
             registerRef('dashboard-overview', dashboardOverviewRef);
         }
-    }, []);
+    }, [registerRef]);
 
     const setDashboardProposalsRef = useCallback((element) => {
         dashboardProposalsRef.current = element;
         if (element) {
             registerRef('dashboard-proposals', dashboardProposalsRef);
         }
-    }, []);
+    }, [registerRef]);
 
     const setDashboardCalendarRef = useCallback((element) => {
         dashboardCalendarRef.current = element;
         if (element) {
             registerRef('dashboard-calendar', dashboardCalendarRef);
         }
-    }, []);
+    }, [registerRef]);
 
     const setDashboardStatsRef = useCallback((element) => {
         dashboardStatsRef.current = element;
         if (element) {
             registerRef('dashboard-stats', dashboardStatsRef);
         }
-    }, []);
+    }, [registerRef]);
 
     // Fallback: Also register refs on mount in case callback refs don't fire
     useEffect(() => {
@@ -152,7 +152,7 @@ const Dashboard = () => {
         if (dashboardProposalsRef.current) registerRef('dashboard-proposals', dashboardProposalsRef);
         if (dashboardCalendarRef.current) registerRef('dashboard-calendar', dashboardCalendarRef);
         if (dashboardStatsRef.current) registerRef('dashboard-stats', dashboardStatsRef);
-    }, []);
+    }, [registerRef]);
 
     // State for backend data
     const [proposalsState, setProposalsState] = useState([]);
@@ -334,13 +334,6 @@ const Dashboard = () => {
             setError('Failed to load dashboard data');
         } finally {
             setLoading(false);
-            // Force ref re-registration after loading completes
-            setTimeout(() => {
-                if (dashboardOverviewRef.current) registerRef('dashboard-overview', dashboardOverviewRef);
-                if (dashboardProposalsRef.current) registerRef('dashboard-proposals', dashboardProposalsRef);
-                if (dashboardCalendarRef.current) registerRef('dashboard-calendar', dashboardCalendarRef);
-                if (dashboardStatsRef.current) registerRef('dashboard-stats', dashboardStatsRef);
-            }, 100);
         }
     }, [registerRef]);
 
@@ -350,6 +343,19 @@ const Dashboard = () => {
             setFetchedDashboardData(true);
         }
     }, [fetchedDashboardData]);
+
+    // Re-register refs when loading completes
+    useEffect(() => {
+        if (!loading) {
+            setTimeout(() => {
+                console.log(`[Dashboard] Re-registering refs after loading completes - overview: ${!!dashboardOverviewRef.current}, proposals: ${!!dashboardProposalsRef.current}, calendar: ${!!dashboardCalendarRef.current}, stats: ${!!dashboardStatsRef.current}`);
+                if (dashboardOverviewRef.current) registerRef('dashboard-overview', dashboardOverviewRef);
+                if (dashboardProposalsRef.current) registerRef('dashboard-proposals', dashboardProposalsRef);
+                if (dashboardCalendarRef.current) registerRef('dashboard-calendar', dashboardCalendarRef);
+                if (dashboardStatsRef.current) registerRef('dashboard-stats', dashboardStatsRef);
+            }, 200);
+        }
+    }, [loading, registerRef]);
 
     const handleSetCurrentEditor = async (idx, editorId) => {
         const editor = employees.find(emp => emp.employeeId === editorId);
