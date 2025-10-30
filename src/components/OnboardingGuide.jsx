@@ -13,6 +13,13 @@ const OnboardingGuide = () => {
     const [isReady, setIsReady] = useState(false);
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const { userId, role, onboardingCompleted, setOnboardingCompleted } = useUser();
+
+    // Debug: Log user data
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        console.log(`[OnboardingGuide] DEBUG - localStorage user:`, storedUser ? JSON.parse(storedUser) : 'null');
+        console.log(`[OnboardingGuide] DEBUG - userId from context:`, userId);
+    }, [userId]);
     const { refs, currentPath, hasRef, refsUpdateTrigger } = useOnboarding();
     const location = useLocation();
     const navigate = useNavigate();
