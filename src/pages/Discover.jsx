@@ -1032,7 +1032,7 @@ const Discover = () => {
       const subscription = JSON.parse(storedSubscription);
       const plan = subscription?.plan_name;
 
-      const validPlans = ["Basic", "Pro", "Enterprise", "Custom Enterprise Plan"];
+      const validPlans = ["Free", "Basic", "Pro", "Enterprise", "Custom Enterprise Plan"];
       if (validPlans.includes(plan)) {
         fetchRFPs();
         setFetchedRFPs(true);
@@ -1052,7 +1052,7 @@ const Discover = () => {
     const subscription = JSON.parse(storedSubscription);
     if (!subscription) return;
     const plan = subscription ? subscription.plan_name : null;
-    if (["Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(plan) && activeTab === "grants" && !fetchedGrants) {
+    if (["Free", "Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(plan) && activeTab === "grants" && !fetchedGrants) {
       fetchGrants();
       setFetchedGrants(true);
     }
@@ -2366,7 +2366,7 @@ const Discover = () => {
 
   // Prevent body scroll when subscription modal is open
   useEffect(() => {
-    if (flag && !["Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(flag.plan_name)) {
+    if (flag && !["Free", "Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(flag.plan_name)) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -2380,7 +2380,7 @@ const Discover = () => {
 
   return (
     <>
-      {(flag && !["Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(flag.plan_name)) ? (
+      {(flag && !["Free", "Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(flag.plan_name)) ? (
         <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-[50] overflow-y-auto hide-scrollbar">
           <div className="min-h-full flex justify-center items-center pt-20 pb-8 z-[70]">
             <Subscription />
@@ -2388,7 +2388,7 @@ const Discover = () => {
         </div>
       ) : null}
 
-      <div className={`${flag && !["Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(flag.plan_name) ? "h-screen" : "min-h-screen"} bg-[#FFFFFF]`}>
+      <div className={`${flag && !["Free", "Basic", "Pro", "Enterprise", "Custom Enterprise Plan"].includes(flag.plan_name) ? "h-screen" : "min-h-screen"} bg-[#FFFFFF]`}>
         {/* Loading Overlay */}
         {isGeneratingGrantProposal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
