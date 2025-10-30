@@ -39,7 +39,6 @@ export const UserProvider = ({ children }) => {
 
             // Update userId from localStorage immediately
             if (parsedUser?._id && parsedUser._id !== userId) {
-                console.log("[UserContext] Updating userId from localStorage...");
                 setUserId(parsedUser._id);
             }
 

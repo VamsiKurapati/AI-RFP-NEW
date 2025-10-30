@@ -147,7 +147,6 @@ const Dashboard = () => {
 
     // Fallback: Also register refs on mount in case callback refs don't fire
     useEffect(() => {
-        console.log(`[Dashboard] Registering refs on mount - overview: ${!!dashboardOverviewRef.current}, proposals: ${!!dashboardProposalsRef.current}, calendar: ${!!dashboardCalendarRef.current}, stats: ${!!dashboardStatsRef.current}`);
         if (dashboardOverviewRef.current) registerRef('dashboard-overview', dashboardOverviewRef);
         if (dashboardProposalsRef.current) registerRef('dashboard-proposals', dashboardProposalsRef);
         if (dashboardCalendarRef.current) registerRef('dashboard-calendar', dashboardCalendarRef);
@@ -348,7 +347,6 @@ const Dashboard = () => {
     useEffect(() => {
         if (!loading) {
             setTimeout(() => {
-                console.log(`[Dashboard] Re-registering refs after loading completes - overview: ${!!dashboardOverviewRef.current}, proposals: ${!!dashboardProposalsRef.current}, calendar: ${!!dashboardCalendarRef.current}, stats: ${!!dashboardStatsRef.current}`);
                 if (dashboardOverviewRef.current) registerRef('dashboard-overview', dashboardOverviewRef);
                 if (dashboardProposalsRef.current) registerRef('dashboard-proposals', dashboardProposalsRef);
                 if (dashboardCalendarRef.current) registerRef('dashboard-calendar', dashboardCalendarRef);

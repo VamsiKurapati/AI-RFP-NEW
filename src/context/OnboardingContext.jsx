@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export const OnboardingContext = createContext();
@@ -19,27 +19,21 @@ export const OnboardingProvider = ({ children }) => {
     // Register a ref for a specific step key - register immediately even if current is null
     const registerRef = useCallback((key, ref) => {
         if (ref) {
-            console.log(`[OnboardingContext] registerRef called for "${key}" - ref exists: ${!!ref}, ref.current: ${!!ref?.current}`);
             setRefs(prev => {
                 // Only update if it's a new ref or different
                 if (!prev[key] || prev[key] !== ref) {
-                    console.log(`[OnboardingContext] Adding/updating ref for "${key}"`);
                     return {
                         ...prev,
                         [key]: ref
                     };
                 }
-                console.log(`[OnboardingContext] Ref "${key}" already registered, skipping update`);
                 return prev;
             });
             // Trigger update to re-check refs
             setRefsUpdateTrigger(prev => {
                 const newValue = prev + 1;
-                console.log(`[OnboardingContext] RefsUpdateTrigger: ${prev} -> ${newValue}`);
                 return newValue;
             });
-        } else {
-            console.log(`[OnboardingContext] registerRef called for "${key}" but ref is null/undefined`);
         }
     }, []);
 
@@ -52,7 +46,6 @@ export const OnboardingProvider = ({ children }) => {
     const hasRef = useCallback((key) => {
         const ref = refs[key];
         const hasRefValue = ref && ref.current !== null && ref.current !== undefined;
-        console.log(`[OnboardingContext] hasRef("${key}") = ${hasRefValue} (ref exists: ${!!ref}, current exists: ${!!ref?.current})`);
         return hasRefValue;
     }, [refs]);
 

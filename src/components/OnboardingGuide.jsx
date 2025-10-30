@@ -4,22 +4,12 @@ import { useUser } from '../context/UserContext';
 import { useOnboarding } from '../context/OnboardingContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-// Version identifier to force cache bust
-const ONBOARDING_VERSION = '2.0.2-circular-tour-fix-v2';
-
 const OnboardingGuide = () => {
-    console.log(`[OnboardingGuide] Component loaded - version: ${ONBOARDING_VERSION}`);
     const [runTour, setRunTour] = useState(false);
     const [isReady, setIsReady] = useState(false);
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const { userId, role, onboardingCompleted, setOnboardingCompleted } = useUser();
 
-    // Debug: Log user data
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
-        console.log(`[OnboardingGuide] DEBUG - localStorage user:`, storedUser ? JSON.parse(storedUser) : 'null');
-        console.log(`[OnboardingGuide] DEBUG - userId from context:`, userId);
-    }, [userId]);
     const { refs, currentPath, hasRef, refsUpdateTrigger } = useOnboarding();
     const location = useLocation();
     const navigate = useNavigate();
@@ -31,7 +21,6 @@ const OnboardingGuide = () => {
         refsRef.current = refs;
         const newKeys = Object.keys(refs);
         if (oldKeys.length !== newKeys.length || JSON.stringify(oldKeys.sort()) !== JSON.stringify(newKeys.sort())) {
-            console.log(`[OnboardingGuide] refsRef updated - old keys (${oldKeys.length}):`, oldKeys, `new keys (${newKeys.length}):`, newKeys);
         }
     }, [refs]);
 
@@ -232,7 +221,8 @@ const OnboardingGuide = () => {
     // Flatten all steps into a single continuous tour array
     const allSteps = useMemo(() => {
         const flatSteps = [];
-        const pageOrder = ['/proposals', '/dashboard', '/company-profile', '/discover', '/support-ticket'];
+        const profileStep = role === 'company' ? '/company-profile' : '/employee-profile';
+        const pageOrder = ['/dashboard', '/discover', '/proposals', profileStep, '/support-ticket'];
         pageOrder.forEach(pagePath => {
             const steps = pageSteps[pagePath] || [];
             steps.forEach(step => {
@@ -243,7 +233,6 @@ const OnboardingGuide = () => {
                 });
             });
         });
-        console.log(`[OnboardingGuide] Created ${flatSteps.length} total steps for continuous tour`);
         return flatSteps;
     }, []);
 
@@ -275,7 +264,6 @@ const OnboardingGuide = () => {
         const storedIndex = getCurrentStepIndex();
         const step = allSteps[storedIndex];
         if (step) {
-            console.log(`[OnboardingGuide] Current step ${storedIndex}/${allSteps.length}: ${step.title} on page ${step.pagePath}`);
         }
         return step;
     }, [allSteps, getCurrentStepIndex]);
@@ -288,14 +276,12 @@ const OnboardingGuide = () => {
         const currentStep = allSteps[storedIndex];
 
         if (currentStep && currentStep.pagePath !== location.pathname) {
-            console.log(`[OnboardingGuide] 🧭 Navigating to ${currentStep.pagePath} for step ${storedIndex}`);
             navigate(currentStep.pagePath, { replace: true });
         }
     }, [location.pathname, allSteps, getCurrentStepIndex, onboardingCompleted, navigate]);
 
     // Single unified effect to handle tour initialization - continuous tour
     useEffect(() => {
-        console.log(`[OnboardingGuide] Effect triggered - Path: ${currentPath}, UserId: ${userId}, Role: ${role}, OnboardingCompleted: ${onboardingCompleted}`);
 
         // 🧩 Ensure userId is loaded before starting any onboarding logic
         if (!userId) {
@@ -313,7 +299,6 @@ const OnboardingGuide = () => {
 
         // If we have userId, validate role
         if (userId && role !== 'company' && role !== 'Editor' && role !== 'Viewer') {
-            console.log(`[OnboardingGuide] Early return - invalid role: ${role}`);
             setRunTour(false);
             setIsReady(false);
             return;
@@ -358,13 +343,8 @@ const OnboardingGuide = () => {
             return;
         }
 
-        console.log(`[OnboardingGuide] Circular tour - Started at ${startIndex}, current step ${storedIndex}/${allSteps.length}: ${currentStep.title} on ${currentStep.pagePath}`);
-        console.log(`[OnboardingGuide] Current refs:`, Object.keys(refs));
-        console.log(`[OnboardingGuide] RefsUpdateTrigger: ${refsUpdateTrigger}`);
-
         // If current step is on different page, navigation effect will handle it
         if (currentStep.pagePath !== location.pathname) {
-            console.log(`[OnboardingGuide] Current step is on ${currentStep.pagePath}, waiting for navigation`);
             return;
         }
 
@@ -407,10 +387,7 @@ const OnboardingGuide = () => {
                     console.warn(`[OnboardingGuide] Error checking element:`, e);
                 }
 
-                console.log(`[OnboardingGuide] Step "${currentStep.target}": hasRef=${hasRef}, inDOM=${isInDOM}, visible=${isVisible}, onPage=${currentStep.pagePath === location.pathname}`);
-
                 if (isInDOM && isVisible && currentStep.pagePath === location.pathname) {
-                    console.log(`[OnboardingGuide] ✅✅✅ STARTING TOUR! Step ${storedIndex}/${allSteps.length} ready`);
                     hasStartedLocally = true;
                     setIsReady(true);
 
@@ -426,7 +403,6 @@ const OnboardingGuide = () => {
                     refsRef.current = refs;
 
                     setTimeout(() => {
-                        console.log(`[OnboardingGuide] 🚀 Setting runTour = true`);
                         setRunTour(true);
                     }, 300);
 
@@ -434,29 +410,24 @@ const OnboardingGuide = () => {
                 }
             }
 
-            console.log(`[OnboardingGuide] Waiting for refs for step "${currentStep.target}"...`);
             return false;
         };
 
         // Immediate check
-        console.log(`[OnboardingGuide] Performing immediate check...`);
         checkAndStartTour();
 
         // Set up VERY aggressive checking - every 100ms for up to 60 seconds
-        console.log(`[OnboardingGuide] Setting up aggressive interval check every 100ms`);
         let checkCount = 0;
         const maxChecks = 600; // 60 seconds
 
         intervalId = setInterval(() => {
             checkCount++;
             if (checkAndStartTour()) {
-                console.log(`[OnboardingGuide] Tour started, clearing interval`);
                 clearInterval(intervalId);
                 intervalId = null;
                 return;
             }
             if (checkCount >= maxChecks) {
-                console.log(`[OnboardingGuide] Max checks reached (${maxChecks}), stopping`);
                 clearInterval(intervalId);
                 intervalId = null;
             }
@@ -479,7 +450,6 @@ const OnboardingGuide = () => {
                 attributes: true,
                 attributeFilter: ['class', 'style'] // Watch for class/style changes that might indicate rendering
             });
-            console.log(`[OnboardingGuide] MutationObserver started on document.body`);
         }
 
         // Also set up observer when document becomes ready
@@ -492,9 +462,7 @@ const OnboardingGuide = () => {
                         attributes: true,
                         attributeFilter: ['class', 'style']
                     });
-                    console.log(`[OnboardingGuide] MutationObserver set up on document.body`);
                 } catch (e) {
-                    console.warn(`[OnboardingGuide] Error setting up observer:`, e);
                 }
             }
         };
@@ -521,7 +489,6 @@ const OnboardingGuide = () => {
 
         // Cleanup function
         return () => {
-            console.log(`[OnboardingGuide] Cleaning up effect for path: ${currentPath}`);
             hasStartedLocally = false;
             if (intervalId) {
                 clearInterval(intervalId);
@@ -591,14 +558,10 @@ const OnboardingGuide = () => {
             const startIndex = getStartingStepIndex();
             let nextIndex = (currentIndex + 1) % allSteps.length; // Wrap around using modulo
 
-            console.log(`[OnboardingGuide] Step ${currentIndex} completed (index: ${index}), moving to step ${nextIndex}`);
-            console.log(`[OnboardingGuide] Circular tour: started at ${startIndex}, currently at ${currentIndex}, next will be ${nextIndex}`);
-
             // If we're on the placeholder step (index 1, no target), skip it and go to actual next step
             // This handles the case where we added a placeholder to show "Next" button
             if (index === 1 && callbackSteps && callbackSteps.length > 1 && (!step || !step.target)) {
                 // This was the placeholder step, proceed to actual next
-                console.log(`[OnboardingGuide] Skipping placeholder step (index 1), moving to actual next step`);
                 // Advance to the real next step without showing the placeholder
                 const currentIndex = getCurrentStepIndex();
                 const startIndex = getStartingStepIndex();
@@ -606,7 +569,6 @@ const OnboardingGuide = () => {
 
                 if (nextIndex === startIndex) {
                     // Completed the loop
-                    console.log(`[OnboardingGuide] 🎉 Circular tour completed!`);
                     if (userId) {
                         setOnboardingCompleted(true);
                     }
@@ -627,7 +589,6 @@ const OnboardingGuide = () => {
             // Check if we've completed the circular loop (returned to starting point)
             if (nextIndex === startIndex) {
                 // We've completed the full circle - tour is done
-                console.log(`[OnboardingGuide] 🎉 Circular tour completed! Returned to starting step ${startIndex}`);
                 if (userId) {
                     setOnboardingCompleted(true);
                 }
@@ -640,15 +601,11 @@ const OnboardingGuide = () => {
                 setCurrentStepIndexStorage(nextIndex);
                 const nextStep = allSteps[nextIndex];
 
-                console.log(`[OnboardingGuide] Next step: ${nextIndex} "${nextStep.title}" on ${nextStep.pagePath}`);
-
                 // If next step is on a different page, stop tour and let navigation effect handle it
                 if (nextStep.pagePath !== location.pathname) {
-                    console.log(`[OnboardingGuide] Next step is on different page (${nextStep.pagePath}), pausing tour`);
                     setRunTour(false);
                     // Navigation effect will resume tour once on correct page
                 } else {
-                    console.log(`[OnboardingGuide] Next step is on same page, continuing tour`);
                     // Tour will continue automatically on same page
                 }
             }
@@ -657,7 +614,6 @@ const OnboardingGuide = () => {
         // Handle errors gracefully
         if (status === STATUS.ERROR) {
             if (type === EVENTS.STEP_NOT_FOUND || type === EVENTS.TARGET_NOT_FOUND) {
-                console.warn(`Tour step ${index} target not found, moving to next step`);
                 const currentIndex = getCurrentStepIndex();
                 const startIndex = getStartingStepIndex();
                 const nextIndex = (currentIndex + 1) % allSteps.length; // Wrap around
@@ -692,7 +648,6 @@ const OnboardingGuide = () => {
 
             // Validate index is within bounds
             if (storedIndex < 0 || storedIndex >= allSteps.length) {
-                console.log(`[OnboardingGuide] Invalid step index: ${storedIndex}, total steps: ${allSteps.length}`);
                 return [];
             }
 
@@ -700,14 +655,11 @@ const OnboardingGuide = () => {
 
             // If current step doesn't exist, return empty
             if (!currentStep) {
-                console.log(`[OnboardingGuide] No step at index ${storedIndex}`);
                 return [];
             }
 
             // If current step exists and is on current page, return it
             if (currentStep && currentStep.pagePath === actualPath) {
-                console.log(`[OnboardingGuide] Current step ${storedIndex} is on current page ${actualPath}`);
-
                 // Check if the step's ref is available
                 const currentRefs = refsRef.current;
                 const ref = currentRefs[currentStep.target];
@@ -721,7 +673,6 @@ const OnboardingGuide = () => {
                         const rect = ref.current.getBoundingClientRect();
                         isVisible = rect.width > 0 || rect.height > 0;
                     } catch (e) {
-                        console.warn(`[OnboardingGuide] Error checking element:`, e);
                     }
 
                     if (isInDOM && isVisible) {
@@ -729,17 +680,9 @@ const OnboardingGuide = () => {
                             ...currentStep,
                             target: ref.current,
                         };
-                        console.log(`[OnboardingGuide] ✅ Step ready for render: ${currentStep.title}`);
                         computedSteps = [mappedStep];
-                    } else {
-                        console.log(`[OnboardingGuide] Step not ready: inDOM=${isInDOM}, visible=${isVisible}`);
                     }
-                } else {
-                    console.log(`[OnboardingGuide] Step ref not available yet: ${currentStep.target}`);
                 }
-            } else if (currentStep) {
-                // Step is on a different page - we'll navigate there
-                console.log(`[OnboardingGuide] Current step ${storedIndex} is on ${currentStep.pagePath}, but we're on ${actualPath}`);
             }
 
             // For circular tour: add a placeholder "next" step so Joyride shows "Next" instead of "Finish"
@@ -763,45 +706,21 @@ const OnboardingGuide = () => {
                 }
                 // If completing loop, leave it as single step so "Finish" shows correctly
 
-                console.log(`[OnboardingGuide] 🔄 Steps memo computed: ${computedSteps.length} steps`);
-                console.log(`[OnboardingGuide]   - Current step index: ${currentIndex}`);
-                console.log(`[OnboardingGuide]   - Next step index: ${nextIndex}`);
-                console.log(`[OnboardingGuide]   - Start index: ${startIndex}`);
-                console.log(`[OnboardingGuide]   - Is completing loop: ${isCompletingLoop}`);
-            } else {
-                console.warn(`[OnboardingGuide] ⚠️ Steps memo returned 0 steps!`);
-            }
-
-            console.log(`[OnboardingGuide]   - runTour: ${runTour}`);
-            console.log(`[OnboardingGuide]   - isReady: ${isReady}`);
-            console.log(`[OnboardingGuide]   - refsUpdateTrigger: ${refsUpdateTrigger}`);
-
-            if (computedSteps.length > 0) {
-                console.log(`[OnboardingGuide] ✅ Step targets:`, computedSteps.map((s, i) => ({
-                    stepIndex: i,
-                    target: s.target ? `${s.target.tagName || typeof s.target}` : 'NULL/PLACEHOLDER',
-                    title: s.title,
-                    hasTarget: !!s.target,
-                    targetInDOM: s.target ? document.body.contains(s.target) : false
-                })));
             }
 
             return computedSteps;
         } catch (error) {
-            console.error(`[OnboardingGuide] Error computing steps:`, error);
             return [];
         }
     }, [refsUpdateTrigger, runTour, isReady, refs, allSteps, getCurrentStepIndex, getStartingStepIndex, location.pathname]);
 
     // Don't render if role is invalid (when userId is available)
     if (userId && role !== 'company' && role !== 'Editor' && role !== 'Viewer') {
-        console.log(`[OnboardingGuide] Not rendering - invalid role: ${role}`);
         return null;
     }
 
     // Don't render if onboarding is already completed
     if (onboardingCompleted) {
-        console.log(`[OnboardingGuide] Not rendering - onboarding already completed`);
         return null;
     }
 
@@ -811,42 +730,13 @@ const OnboardingGuide = () => {
     }
 
     const shouldRun = runTour && isReady && steps.length > 0;
-    console.log(`[OnboardingGuide] 🎯 RENDER CHECK:`);
-    console.log(`  - userId: ${userId}`);
-    console.log(`  - runTour: ${runTour}`);
-    console.log(`  - isReady: ${isReady}`);
-    console.log(`  - steps.length: ${steps.length}`);
-    if (steps.length > 0) {
-        console.log(`  - steps with targets:`, steps.map(s => ({
-            target: s.target ? `${s.target.tagName || typeof s.target}` : 'NULL',
-            title: s.title
-        })));
-    }
-    console.log(`  - shouldRun: ${shouldRun}`);
-
-    // Additional check - if we should run but steps have no targets, log warning
-    if (runTour && isReady && steps.length === 0) {
-        console.warn(`[OnboardingGuide] ⚠️ WARNING: runTour and isReady are true but no steps available!`);
-        console.warn(`[OnboardingGuide] This suggests step computation returned empty - checking refs now:`, Object.keys(refsRef.current));
-    }
-
-    // Log when Joyride is about to render
-    if (shouldRun && steps.length > 0) {
-        console.log(`[OnboardingGuide] 🎉 RENDERING JOYRIDE COMPONENT with ${steps.length} steps`);
-        console.log(`[OnboardingGuide] First step:`, {
-            targetExists: !!steps[0].target,
-            targetType: steps[0].target?.constructor?.name,
-            targetTagName: steps[0].target?.tagName,
-            title: steps[0].title
-        });
-    }
 
     return (
         <div id="joyride-wrapper">
             <Joyride
                 steps={steps}
                 run={shouldRun}
-                key={`joyride-${currentPath}-${runTour ? 'run' : 'stop'}-${steps.length}-${ONBOARDING_VERSION}`}
+                key={`joyride-${currentPath}-${runTour ? 'run' : 'stop'}-${steps.length}`}
                 continuous={true}
                 showProgress={true}
                 showSkipButton={true}

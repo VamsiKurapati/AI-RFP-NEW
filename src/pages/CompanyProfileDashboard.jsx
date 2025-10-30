@@ -1107,12 +1107,10 @@ const CompanyProfileDashboard = () => {
 
   // Fallback: Also register refs on mount in case callback refs don't fire
   useEffect(() => {
-    console.log(`[CompanyProfileDashboard] Registering refs on mount - overview: ${!!profileOverviewRef.current}, completion: ${!!profileCompletionRef.current}, sidebar: ${!!profileSidebarRef.current}, deadlines: ${!!profileDeadlinesRef.current}`);
     if (profileOverviewRef.current) registerRef('profile-overview', profileOverviewRef);
     if (profileCompletionRef.current) registerRef('profile-completion', profileCompletionRef);
     if (profileSidebarRef.current) registerRef('profile-sidebar', profileSidebarRef);
     if (profileDeadlinesRef.current) registerRef('profile-deadlines', profileDeadlinesRef);
-    console.log(`[CompanyProfileDashboard] Refs registered`);
   }, [registerRef]);
 
   // Modal states

@@ -108,11 +108,9 @@ const SupportTicket = () => {
 
     // Fallback: Also register refs on mount in case callback refs don't fire
     useEffect(() => {
-        console.log(`[SupportTicket] Registering refs on mount - header: ${!!supportHeaderRef.current}, create: ${!!supportCreateRef.current}, tickets: ${!!supportTicketsRef.current}`);
         if (supportHeaderRef.current) registerRef('support-header', supportHeaderRef);
         if (supportCreateRef.current) registerRef('support-create', supportCreateRef);
         if (supportTicketsRef.current) registerRef('support-tickets', supportTicketsRef);
-        console.log(`[SupportTicket] Refs registered`);
     }, [registerRef]);
 
     const fetchConversationMessages = async (ticketId) => {

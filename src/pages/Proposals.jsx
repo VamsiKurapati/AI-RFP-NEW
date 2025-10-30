@@ -391,11 +391,9 @@ const Proposals = () => {
 
     // Fallback: Also register refs on mount in case callback refs don't fire
     useEffect(() => {
-        console.log(`[Proposals] Registering refs on mount - header: ${!!proposalsHeaderRef.current}, list: ${!!proposalsListRef.current}, actions: ${!!proposalsActionsRef.current}`);
         if (proposalsHeaderRef.current) registerRef('proposals-header', proposalsHeaderRef);
         if (proposalsListRef.current) registerRef('proposals-list', proposalsListRef);
         if (proposalsActionsRef.current) registerRef('proposals-actions', proposalsActionsRef);
-        console.log(`[Proposals] Refs registered`);
     }, [registerRef]);
 
     // Calculate items per page based on screen size

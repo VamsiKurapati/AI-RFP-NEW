@@ -610,12 +610,10 @@ const Discover = () => {
 
   // Fallback: Also register refs on mount in case callback refs don't fire
   useEffect(() => {
-    console.log(`[Discover] Registering refs on mount - header: ${!!discoverHeaderRef.current}, filters: ${!!discoverFiltersRef.current}, results: ${!!discoverResultsRef.current}, actions: ${!!discoverActionsRef.current}`);
     if (discoverHeaderRef.current) registerRef('discover-header', discoverHeaderRef);
     if (discoverFiltersRef.current) registerRef('discover-filters', discoverFiltersRef);
     if (discoverResultsRef.current) registerRef('discover-results', discoverResultsRef);
     if (discoverActionsRef.current) registerRef('discover-actions', discoverActionsRef);
-    console.log(`[Discover] Refs registered`);
   }, [registerRef]);
 
   // Grant-specific state variables
@@ -798,7 +796,6 @@ const Discover = () => {
       setOtherRFPs(rfps);
       setOriginalOtherRFPs(rfps);
     } catch (err) {
-      //console.error("Failed to fetch other RFPs, using dummy data...");
       setOtherRFPs([]);
       setOriginalOtherRFPs([]);
     } finally {
@@ -823,7 +820,6 @@ const Discover = () => {
       setOriginalSaved(savedRFPs ?? []);
       setRetryCount(0); // Reset retry count on success
     } catch (err) {
-      //console.error("Backend failed, loading dummy data...");
       setError("Failed to load recommended and saved RFPs. Please try again later.");
     } finally {
       setLoadingRecommended(false);
@@ -848,7 +844,6 @@ const Discover = () => {
       setOriginalSavedGrants(savedGrants ?? []);
       setRetryCount(0);
     } catch (err) {
-      // console.error("Failed to load grants:", err);
       setError("Failed to load recent and saved grants. Please try again later.");
     } finally {
       setLoadingRecentGrants(false);
@@ -879,7 +874,6 @@ const Discover = () => {
       setOtherGrants(grants);
       setOriginalOtherGrants(grants);
     } catch (err) {
-      // console.error("Failed to fetch other grants:", err);
       Swal.fire({
         icon: 'error',
         title: 'Failed to fetch other grants',
@@ -934,7 +928,6 @@ const Discover = () => {
         }, 1000);
       }
     } catch (err) {
-      // console.error(err);
       Swal.fire({
         icon: 'error',
         title: 'Save Failed',
@@ -993,7 +986,6 @@ const Discover = () => {
         }, 1000);
       }
     } catch (err) {
-      // console.error(err);
       Swal.fire({
         icon: 'error',
         title: 'Unsave Failed',
