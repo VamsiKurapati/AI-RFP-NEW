@@ -824,10 +824,6 @@ const OnboardingGuide = () => {
     }
     console.log(`  - shouldRun: ${shouldRun}`);
 
-    useEffect(() => {
-        console.log("[DEBUG] Joyride render check — shouldRun:", shouldRun, "steps:", steps?.length);
-    }, [shouldRun, steps]);
-
     // Additional check - if we should run but steps have no targets, log warning
     if (runTour && isReady && steps.length === 0) {
         console.warn(`[OnboardingGuide] ⚠️ WARNING: runTour and isReady are true but no steps available!`);
