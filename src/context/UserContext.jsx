@@ -37,26 +37,36 @@ export const UserProvider = ({ children }) => {
             const storedUser = localStorage.getItem("user");
             const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
-            setUserId(parsedUser?._id || null);
+            // Update userId from localStorage immediately
+            if (parsedUser?._id && parsedUser._id !== userId) {
+                console.log("[UserContext] Updating userId from localStorage...");
+                setUserId(parsedUser._id);
+            }
 
-            // Update onboarding status from localStorage
+            // Update onboarding status
             if (parsedUser) {
                 setOnboardingCompletedState(parsedUser.onboarding_status || false);
             }
 
+            // Update role if changed
             if (newRole !== role) {
                 setRole(newRole);
             }
         };
 
-        window.addEventListener('storage', handleStorageChange);
-        window.addEventListener('focus', handleStorageChange);
+        // Run immediately on mount (⚡ fixes missing userId after login)
+        handleStorageChange();
+
+        // Also respond to tab focus or localStorage updates
+        window.addEventListener("storage", handleStorageChange);
+        window.addEventListener("focus", handleStorageChange);
 
         return () => {
-            window.removeEventListener('storage', handleStorageChange);
-            window.removeEventListener('focus', handleStorageChange);
+            window.removeEventListener("storage", handleStorageChange);
+            window.removeEventListener("focus", handleStorageChange);
         };
-    }, [role]);
+    }, [role, userId]);
+
 
     const contextValue = useMemo(() => ({ role, setRole, userId, setUserId, onboardingCompleted, setOnboardingCompleted }), [role, userId, onboardingCompleted]);
 
