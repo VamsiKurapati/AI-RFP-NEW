@@ -297,7 +297,13 @@ const OnboardingGuide = () => {
     useEffect(() => {
         console.log(`[OnboardingGuide] Effect triggered - Path: ${currentPath}, UserId: ${userId}, Role: ${role}, OnboardingCompleted: ${onboardingCompleted}`);
 
-        // Wait for userId to load - don't start until we have it
+        // 🧩 Ensure userId is loaded before starting any onboarding logic
+        if (!userId) {
+            console.log("[OnboardingGuide] Waiting for userId before initializing onboarding...");
+            return;
+        }
+
+        // Wait for onboarding completion
         if (onboardingCompleted) {
             console.log(`[OnboardingGuide] Early return - onboarding already completed`);
             setRunTour(false);
