@@ -233,8 +233,14 @@ const OnboardingGuide = () => {
                 });
             });
         });
+        console.log('[OnboardingGuide] allSteps computed:', {
+            role,
+            profileStep,
+            totalSteps: flatSteps.length,
+            stepsByPage: pageOrder.map(p => ({ page: p, count: pageSteps[p]?.length || 0 }))
+        });
         return flatSteps;
-    }, []);
+    }, [role]);
 
     // Get current step index from localStorage or start from any random step (for circular tour)
     const getCurrentStepIndex = useCallback(() => {
@@ -282,10 +288,37 @@ const OnboardingGuide = () => {
 
     // Single unified effect to handle tour initialization - continuous tour
     useEffect(() => {
+        // Debug logging for tour initialization
+        console.log('[OnboardingGuide] Tour initialization check:', {
+            userId,
+            role,
+            onboardingCompleted,
+            currentPath: location.pathname,
+            allStepsLength: allSteps.length,
+            refsCount: Object.keys(refs).length,
+            refsKeys: Object.keys(refs),
+            runTour,
+            isReady,
+            storedStepIndex: localStorage.getItem('onboarding_step_index'),
+            storedStartIndex: localStorage.getItem('onboarding_start_index')
+        });
 
         // 🧩 Ensure userId is loaded before starting any onboarding logic
         if (!userId) {
             console.log("[OnboardingGuide] Waiting for userId before initializing onboarding...");
+
+            // Try to load userId from localStorage if not available
+            const storedUser = localStorage.getItem("user");
+            if (storedUser) {
+                try {
+                    const parsedUser = JSON.parse(storedUser);
+                    if (parsedUser._id) {
+                        console.log("[OnboardingGuide] Found userId in localStorage, but not in context. User may need to refresh.");
+                    }
+                } catch (e) {
+                    console.error("[OnboardingGuide] Error parsing user from localStorage:", e);
+                }
+            }
             return;
         }
 
@@ -387,7 +420,21 @@ const OnboardingGuide = () => {
                     console.warn(`[OnboardingGuide] Error checking element:`, e);
                 }
 
+                console.log(`[OnboardingGuide] Checking step "${currentStep.target}":`, {
+                    hasRef,
+                    isInDOM,
+                    isVisible,
+                    pageMatch: currentStep.pagePath === location.pathname,
+                    elementRect: hasRef ? (() => {
+                        try {
+                            const rect = ref.current.getBoundingClientRect();
+                            return { width: rect.width, height: rect.height, top: rect.top, left: rect.left };
+                        } catch (e) { return null; }
+                    })() : null
+                });
+
                 if (isInDOM && isVisible && currentStep.pagePath === location.pathname) {
+                    console.log(`[OnboardingGuide] ✅ Step "${currentStep.target}" is ready! Starting tour...`);
                     hasStartedLocally = true;
                     setIsReady(true);
 
@@ -404,10 +451,24 @@ const OnboardingGuide = () => {
 
                     setTimeout(() => {
                         setRunTour(true);
+                        console.log('[OnboardingGuide] 🎉 Tour started! runTour set to true');
                     }, 300);
 
                     return true;
+                } else {
+                    console.log(`[OnboardingGuide] ⏳ Step "${currentStep.target}" not ready yet:`, {
+                        isInDOM,
+                        isVisible,
+                        pageMatch: currentStep.pagePath === location.pathname,
+                        waitingFor: [
+                            !isInDOM && 'element not in DOM',
+                            !isVisible && 'element not visible',
+                            currentStep.pagePath !== location.pathname && `wrong page (need ${currentStep.pagePath}, on ${location.pathname})`
+                        ].filter(Boolean)
+                    });
                 }
+            } else {
+                console.log(`[OnboardingGuide] ⚠️ Ref not found for step "${currentStep.target}"`);
             }
 
             return false;
@@ -489,6 +550,7 @@ const OnboardingGuide = () => {
 
         // Cleanup function
         return () => {
+            console.log('[OnboardingGuide] Cleaning up tour initialization');
             hasStartedLocally = false;
             if (intervalId) {
                 clearInterval(intervalId);
@@ -500,7 +562,7 @@ const OnboardingGuide = () => {
                 observer = null;
             }
         };
-    }, [userId, role, onboardingCompleted, refsUpdateTrigger, location.pathname, allSteps, getCurrentStepIndex, getStartingStepIndex, setCurrentStepIndexStorage, navigate, runTour, currentPath]);
+    }, [userId, role, onboardingCompleted, refsUpdateTrigger, location.pathname, allSteps, getCurrentStepIndex, getStartingStepIndex, setCurrentStepIndexStorage, navigate, runTour, currentPath, refs]);
 
     const handleJoyrideCallback = useCallback((data) => {
         const { status, type, index, step, steps: callbackSteps } = data;
@@ -646,8 +708,16 @@ const OnboardingGuide = () => {
             const actualPath = location.pathname;
             const storedIndex = getCurrentStepIndex();
 
+            console.log('[OnboardingGuide] Computing steps:', {
+                storedIndex,
+                actualPath,
+                allStepsLength: allSteps.length,
+                refsAvailable: Object.keys(refsRef.current).length
+            });
+
             // Validate index is within bounds
             if (storedIndex < 0 || storedIndex >= allSteps.length) {
+                console.warn(`[OnboardingGuide] Invalid step index: ${storedIndex} (bounds: 0-${allSteps.length - 1})`);
                 return [];
             }
 
@@ -655,6 +725,7 @@ const OnboardingGuide = () => {
 
             // If current step doesn't exist, return empty
             if (!currentStep) {
+                console.warn(`[OnboardingGuide] Current step at index ${storedIndex} is undefined`);
                 return [];
             }
 
@@ -673,6 +744,7 @@ const OnboardingGuide = () => {
                         const rect = ref.current.getBoundingClientRect();
                         isVisible = rect.width > 0 || rect.height > 0;
                     } catch (e) {
+                        console.warn(`[OnboardingGuide] Error checking ref for "${currentStep.target}":`, e);
                     }
 
                     if (isInDOM && isVisible) {
@@ -681,8 +753,21 @@ const OnboardingGuide = () => {
                             target: ref.current,
                         };
                         computedSteps = [mappedStep];
+                        console.log(`[OnboardingGuide] ✅ Step "${currentStep.target}" added to steps array`);
+                    } else {
+                        console.log(`[OnboardingGuide] ⚠️ Step "${currentStep.target}" ref exists but element not ready:`, {
+                            isInDOM,
+                            isVisible
+                        });
                     }
+                } else {
+                    console.log(`[OnboardingGuide] ⚠️ Ref not found for step "${currentStep.target}". Available refs:`, Object.keys(currentRefs));
                 }
+            } else {
+                console.log(`[OnboardingGuide] Current step is on different page:`, {
+                    stepPage: currentStep.pagePath,
+                    currentPage: actualPath
+                });
             }
 
             // For circular tour: add a placeholder "next" step so Joyride shows "Next" instead of "Finish"
@@ -708,8 +793,10 @@ const OnboardingGuide = () => {
 
             }
 
+            console.log(`[OnboardingGuide] Steps computed: ${computedSteps.length} step(s) ready`);
             return computedSteps;
         } catch (error) {
+            console.error('[OnboardingGuide] Error computing steps:', error);
             return [];
         }
     }, [refsUpdateTrigger, runTour, isReady, refs, allSteps, getCurrentStepIndex, getStartingStepIndex, location.pathname]);
@@ -726,10 +813,28 @@ const OnboardingGuide = () => {
 
     // Don't render if no steps available
     if (!steps || steps.length === 0) {
+        console.log('[OnboardingGuide] Not rendering: no steps available', {
+            stepsLength: steps?.length,
+            runTour,
+            isReady,
+            onboardingCompleted,
+            userId,
+            role
+        });
         return null;
     }
 
     const shouldRun = runTour && isReady && steps.length > 0;
+
+    console.log('[OnboardingGuide] Render decision:', {
+        shouldRun,
+        runTour,
+        isReady,
+        stepsLength: steps.length,
+        onboardingCompleted,
+        userId,
+        role
+    });
 
     return (
         <div id="joyride-wrapper">

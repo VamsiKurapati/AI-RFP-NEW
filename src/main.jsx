@@ -16,6 +16,7 @@ import { SubscriptionPlansProvider } from './context/SubscriptionPlansContext';
 import { JWTVerifierProvider } from './context/JWTVerifier';
 import { OnboardingProvider } from './context/OnboardingContext';
 import ErrorBoundary from './components/ErrorBoundary';
+import './utils/onboardingUtils'; // Load onboarding utilities for debugging
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ErrorBoundary>

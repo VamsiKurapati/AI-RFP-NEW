@@ -146,11 +146,36 @@ const Dashboard = () => {
     }, [registerRef]);
 
     // Fallback: Also register refs on mount in case callback refs don't fire
+    // Improved: Register refs immediately and after delays to catch late renders
     useEffect(() => {
-        if (dashboardOverviewRef.current) registerRef('dashboard-overview', dashboardOverviewRef);
-        if (dashboardProposalsRef.current) registerRef('dashboard-proposals', dashboardProposalsRef);
-        if (dashboardCalendarRef.current) registerRef('dashboard-calendar', dashboardCalendarRef);
-        if (dashboardStatsRef.current) registerRef('dashboard-stats', dashboardStatsRef);
+        const registerAllRefs = () => {
+            if (dashboardOverviewRef.current) {
+                registerRef('dashboard-overview', dashboardOverviewRef);
+            }
+            if (dashboardProposalsRef.current) {
+                registerRef('dashboard-proposals', dashboardProposalsRef);
+            }
+            if (dashboardCalendarRef.current) {
+                registerRef('dashboard-calendar', dashboardCalendarRef);
+            }
+            if (dashboardStatsRef.current) {
+                registerRef('dashboard-stats', dashboardStatsRef);
+            }
+        };
+
+        // Register immediately
+        registerAllRefs();
+
+        // Register after a short delay to catch elements that render later
+        const timeout1 = setTimeout(registerAllRefs, 100);
+        const timeout2 = setTimeout(registerAllRefs, 500);
+        const timeout3 = setTimeout(registerAllRefs, 1000);
+
+        return () => {
+            clearTimeout(timeout1);
+            clearTimeout(timeout2);
+            clearTimeout(timeout3);
+        };
     }, [registerRef]);
 
     // State for backend data
@@ -346,12 +371,18 @@ const Dashboard = () => {
     // Re-register refs when loading completes
     useEffect(() => {
         if (!loading) {
-            setTimeout(() => {
+            const registerAllRefs = () => {
                 if (dashboardOverviewRef.current) registerRef('dashboard-overview', dashboardOverviewRef);
                 if (dashboardProposalsRef.current) registerRef('dashboard-proposals', dashboardProposalsRef);
                 if (dashboardCalendarRef.current) registerRef('dashboard-calendar', dashboardCalendarRef);
                 if (dashboardStatsRef.current) registerRef('dashboard-stats', dashboardStatsRef);
-            }, 200);
+            };
+
+            // Register immediately and with delays to catch async renders
+            registerAllRefs();
+            setTimeout(registerAllRefs, 200);
+            setTimeout(registerAllRefs, 500);
+            setTimeout(registerAllRefs, 1000);
         }
     }, [loading, registerRef]);
 
