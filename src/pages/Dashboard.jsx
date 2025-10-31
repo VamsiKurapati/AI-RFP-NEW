@@ -10,6 +10,7 @@ import { useOnboarding } from '../context/OnboardingContext';
 import Swal from 'sweetalert2';
 import PaymentButton from '../components/PaymentButton';
 import OnboardingGuide from '../components/OnboardingGuide';
+import AddToCalendarButtons from '../components/AddToCalendarButtons';
 
 const localizer = momentLocalizer(moment);
 
@@ -938,11 +939,20 @@ const Dashboard = () => {
                     <>
                         {/* Show the most important event */}
                         <div className="absolute bottom-6 left-2 mb-1 flex flex-col items-start w-full">
-                            <span className="font-medium text-[13px] sm:text-[17px] line-clamp-4 w-full pr-2">{sortedEvents[0].title}</span>
+                            <span className="font-medium text-[13px] sm:text-[17px] line-clamp-3 w-full pr-2">{sortedEvents[0].title}</span>
                             <span className={`flex items-center gap-1 mt-1 px-2 py-[2px] rounded-full text-[10px] sm:text-xs font-medium ${statusBgMap[sortedEvents[0].status]}`}>
                                 <span className={`inline-block w-2 h-2 rounded-full ${statusDotMap[sortedEvents[0].status]}`}></span>
                                 {sortedEvents[0].status}
                             </span>
+                            {/* Add calendar buttons for single event */}
+                            {sortedEvents.length === 1 && (
+                                <AddToCalendarButtons
+                                    title={sortedEvents[0].title}
+                                    description={sortedEvents[0].description || sortedEvents[0].status}
+                                    start={sortedEvents[0].startDate}
+                                    end={sortedEvents[0].endDate}
+                                />
+                            )}
                         </div>
                         {/* Show "+X more" if more events */}
                         {sortedEvents.length > 1 && (
@@ -970,6 +980,12 @@ const Dashboard = () => {
                                             <span className={`inline-block w-2 h-2 rounded-full ${statusDotMap[ev.status]}`}></span>
                                             {ev.status}
                                         </span>
+                                        <AddToCalendarButtons
+                                            title={ev.title}
+                                            description={ev.description || ev.status}
+                                            start={ev.startDate}
+                                            end={ev.endDate}
+                                        />
                                     </div>
                                 ))}
                             </div>

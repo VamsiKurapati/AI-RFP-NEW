@@ -233,12 +233,7 @@ const OnboardingGuide = () => {
                 });
             });
         });
-        console.log('[OnboardingGuide] allSteps computed:', {
-            role,
-            profileStep,
-            totalSteps: flatSteps.length,
-            stepsByPage: pageOrder.map(p => ({ page: p, count: pageSteps[p]?.length || 0 }))
-        });
+        console.log("flatSteps", flatSteps);
         return flatSteps;
     }, [role]);
 
@@ -274,17 +269,46 @@ const OnboardingGuide = () => {
         return step;
     }, [allSteps, getCurrentStepIndex]);
 
+    // Guard to prevent rapid navigation
+    const navigationGuardRef = useRef(false);
+    // Store the intended step index to avoid stale reads
+    const intendedStepIndexRef = useRef(null);
+
     // Effect to navigate to the page where the current step is located
     useEffect(() => {
         if (onboardingCompleted) return;
 
-        const currentStep = allSteps[currentStepIndex];
+        // Prevent rapid re-navigation - if guard is active, don't navigate
+        if (navigationGuardRef.current) {
+            return;
+        }
+
+        // Use the intended step index if set, otherwise use currentStepIndex from localStorage directly
+        let stepIndexToUse;
+        if (intendedStepIndexRef.current !== null) {
+            stepIndexToUse = intendedStepIndexRef.current;
+            intendedStepIndexRef.current = null; // Clear after using
+        } else {
+            // Read directly from localStorage to get the latest value, avoiding stale state
+            const storedIndex = localStorage.getItem('onboarding_step_index');
+            stepIndexToUse = storedIndex ? parseInt(storedIndex, 10) : currentStepIndex;
+        }
+
+        const currentStep = allSteps[stepIndexToUse];
 
         if (currentStep && currentStep.pagePath !== location.pathname) {
-            console.log(`[OnboardingGuide] Navigating to ${currentStep.pagePath} for step "${currentStep.target}"`);
+            navigationGuardRef.current = true;
+
+            console.log(`[OnboardingGuide] Navigating to ${currentStep.pagePath} for step "${currentStep.target}" (step index: ${stepIndexToUse})`);
             // Reset tourStartedRef when navigating so tour can restart on new page
             tourStartedRef.current = false;
+            // Use replace: true to prevent adding to history and avoid loops
             navigate(currentStep.pagePath, { replace: true });
+
+            // Reset guard after navigation completes
+            setTimeout(() => {
+                navigationGuardRef.current = false;
+            }, 800); // Increased timeout to prevent rapid re-navigation
         }
     }, [location.pathname, allSteps, currentStepIndex, onboardingCompleted, navigate]);
 
@@ -293,36 +317,19 @@ const OnboardingGuide = () => {
 
     // Single unified effect to handle tour initialization - continuous tour
     useEffect(() => {
-        // Debug logging for tour initialization
-        console.log('[OnboardingGuide] Tour initialization check:', {
-            userId,
-            role,
-            onboardingCompleted,
-            currentPath: location.pathname,
-            allStepsLength: allSteps.length,
-            refsCount: Object.keys(refs).length,
-            refsKeys: Object.keys(refs),
-            runTour,
-            isReady,
-            tourStartedRef: tourStartedRef.current,
-            storedStepIndex: localStorage.getItem('onboarding_step_index'),
-            storedStartIndex: localStorage.getItem('onboarding_start_index')
-        });
 
         // 🧩 Ensure userId is loaded before starting any onboarding logic
         if (!userId) {
-            console.log("[OnboardingGuide] Waiting for userId before initializing onboarding...");
-
             // Try to load userId from localStorage if not available
             const storedUser = localStorage.getItem("user");
             if (storedUser) {
                 try {
                     const parsedUser = JSON.parse(storedUser);
                     if (parsedUser._id) {
-                        console.log("[OnboardingGuide] Found userId in localStorage, but not in context. User may need to refresh.");
+                        // User may need to refresh
                     }
                 } catch (e) {
-                    console.error("[OnboardingGuide] Error parsing user from localStorage:", e);
+                    // Error parsing user from localStorage
                 }
             }
             return;
@@ -330,7 +337,6 @@ const OnboardingGuide = () => {
 
         // Wait for onboarding completion
         if (onboardingCompleted) {
-            console.log(`[OnboardingGuide] Early return - onboarding already completed`);
             setRunTour(false);
             setIsReady(false);
             tourStartedRef.current = false;
@@ -352,7 +358,6 @@ const OnboardingGuide = () => {
         // If tour is already running on the same page, don't re-initialize
         // But allow re-initialization if we've navigated to a new page (tourStartedRef will be reset)
         if (runTour && tourStartedRef.current && currentStep && currentStep.pagePath === location.pathname) {
-            console.log('[OnboardingGuide] Tour already started on current page, skipping re-initialization');
             return;
         }
 
@@ -360,7 +365,6 @@ const OnboardingGuide = () => {
         if (storedIndex === startIndex && localStorage.getItem('onboarding_step_index') && storedIndex !== 0) {
             // Check if this is after completing a full loop (not the initial start)
             // This is handled in the callback, so just return here
-            console.log(`[OnboardingGuide] Circular tour completed, marking as done`);
             if (userId) {
                 setOnboardingCompleted(true);
             }
@@ -373,7 +377,6 @@ const OnboardingGuide = () => {
 
         // If no current step, initialize start index and current step
         if (!currentStep) {
-            console.log(`[OnboardingGuide] No current step, initializing circular tour`);
             // Set start index to current page's first step, or 0
             const pageStepsForCurrentPath = allSteps.filter(s => s.pagePath === location.pathname);
             const firstStepOnPage = pageStepsForCurrentPath[0];
@@ -434,23 +437,10 @@ const OnboardingGuide = () => {
                     // Don't check visibility - allow empty divs to show in tour (important for initial onboarding)
                     // Empty sections are common during first-time user experience
                 } catch (e) {
-                    console.warn(`[OnboardingGuide] Error checking element:`, e);
+                    // Error checking element
                 }
 
-                console.log(`[OnboardingGuide] Checking step "${currentStepForCheck.target}":`, {
-                    hasRef,
-                    isInDOM,
-                    pageMatch: currentStepForCheck.pagePath === location.pathname,
-                    elementRect: hasRef ? (() => {
-                        try {
-                            const rect = ref.current.getBoundingClientRect();
-                            return { width: rect.width, height: rect.height, top: rect.top, left: rect.left };
-                        } catch (e) { return null; }
-                    })() : null
-                });
-
                 if (isInDOM && currentStepForCheck.pagePath === location.pathname) {
-                    console.log(`[OnboardingGuide] ✅ Step "${currentStepForCheck.target}" is ready! Starting tour... (empty divs allowed)`);
                     hasStartedLocally = true;
                     tourStartedRef.current = true; // Mark as started to prevent re-initialization
                     setIsReady(true);
@@ -468,22 +458,10 @@ const OnboardingGuide = () => {
 
                     setTimeout(() => {
                         setRunTour(true);
-                        console.log('[OnboardingGuide] 🎉 Tour started! runTour set to true');
                     }, 300);
 
                     return true;
-                } else {
-                    console.log(`[OnboardingGuide] ⏳ Step "${currentStepForCheck.target}" not ready yet:`, {
-                        isInDOM,
-                        pageMatch: currentStepForCheck.pagePath === location.pathname,
-                        waitingFor: [
-                            !isInDOM && 'element not in DOM',
-                            currentStepForCheck.pagePath !== location.pathname && `wrong page (need ${currentStepForCheck.pagePath}, on ${location.pathname})`
-                        ].filter(Boolean)
-                    });
                 }
-            } else {
-                console.log(`[OnboardingGuide] ⚠️ Ref not found for step "${currentStepForCheck.target}"`);
             }
 
             return false;
@@ -565,12 +543,6 @@ const OnboardingGuide = () => {
 
         // Cleanup function
         return () => {
-            console.log('[OnboardingGuide] Cleaning up tour initialization', {
-                runTour,
-                tourStartedRef: tourStartedRef.current,
-                hasStartedLocally
-            });
-
             // Only reset hasStartedLocally if tour hasn't actually started
             // This prevents cleanup from interfering with an active tour
             if (!runTour && !tourStartedRef.current) {
@@ -591,20 +563,14 @@ const OnboardingGuide = () => {
 
     // Use a ref to store the current steps array so it doesn't change while Joyride is using it
     const stepsRef = useRef([]);
+    // Guard to prevent duplicate processing of STATUS.FINISHED
+    const finishedProcessingRef = useRef(false);
 
     const handleJoyrideCallback = useCallback((data) => {
         const { status, type, index, step } = data;
 
         // Use stepsRef.current instead of callbackSteps from data (which may be undefined)
         const currentSteps = stepsRef.current || [];
-
-        console.log(`[OnboardingGuide] Callback fired:`, {
-            status,
-            type,
-            index,
-            currentStepsLength: currentSteps.length,
-            hasMoreSteps: currentSteps.length > 0 && (index + 1 < currentSteps.length)
-        });
 
         // Scroll to the top of the target element before showing each step
         if (type === EVENTS.STEP_BEFORE) {
@@ -642,27 +608,57 @@ const OnboardingGuide = () => {
         }
 
         if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
+            // Prevent duplicate processing
+            if (finishedProcessingRef.current) {
+                return;
+            }
+            finishedProcessingRef.current = true;
+
             // When Joyride finishes the current batch (page), continue if there are more steps globally
             const currentIndex = getCurrentStepIndex();
             const startIndex = getStartingStepIndex();
-
-            // Compute next step after the last step on this page
             const currentStep = allSteps[currentIndex];
-            const stepsOnCurrentPage = allSteps.filter(s => s.pagePath === currentStep?.pagePath);
+
+            if (!currentStep) {
+                finishedProcessingRef.current = false;
+                return;
+            }
+
+            // Find the last step that was shown on the current page
+            // The steps array contains all steps shown in this batch, starting from currentIndex
+            const stepsOnCurrentPage = allSteps.filter(s => s.pagePath === currentStep.pagePath);
             const lastStepOnPage = stepsOnCurrentPage[stepsOnCurrentPage.length - 1];
+
+            if (!lastStepOnPage) {
+                return;
+            }
+
             const lastStepGlobalIndex = allSteps.findIndex(s =>
-                s.target === lastStepOnPage?.target && s.pagePath === lastStepOnPage?.pagePath
+                s.target === lastStepOnPage.target && s.pagePath === lastStepOnPage.pagePath
             );
+
+            if (lastStepGlobalIndex === -1) {
+                return;
+            }
+
             const nextIndexAfterPage = (lastStepGlobalIndex + 1) % allSteps.length;
 
             if (status === STATUS.FINISHED && nextIndexAfterPage !== startIndex) {
                 // More steps exist globally; advance instead of completing
-                setCurrentStepIndexStorage(nextIndexAfterPage);
                 const nextStep = allSteps[nextIndexAfterPage];
                 console.log(`[OnboardingGuide] Page batch finished, advancing to ${nextIndexAfterPage} "${nextStep.target}" on ${nextStep.pagePath}`);
+
+                // Stop tour first to prevent interference
                 setRunTour(false);
                 tourStartedRef.current = false;
                 setIsReady(false);
+
+                // Update step index after a brief delay to ensure tour is stopped first
+                setTimeout(() => {
+                    setCurrentStepIndexStorage(nextIndexAfterPage);
+                    // Reset guard after updating step index
+                    finishedProcessingRef.current = false;
+                }, 150);
                 return;
             }
 
@@ -675,6 +671,7 @@ const OnboardingGuide = () => {
             setCurrentStepIndexStorage(0);
             localStorage.removeItem('onboarding_step_index');
             localStorage.removeItem('onboarding_start_index');
+            finishedProcessingRef.current = false;
             return;
         }
 
@@ -690,7 +687,6 @@ const OnboardingGuide = () => {
             // Check if this is the placeholder step (content is '...')
             // If yes, skip it immediately and advance to next page
             if (step && step.content === '...' && step.title === '...') {
-                console.log(`[OnboardingGuide] Placeholder step detected, skipping and advancing to next page`);
 
                 // Calculate next step index (skip placeholder)
                 const stepsOnCurrentPage = allSteps.filter(s => s.pagePath === location.pathname);
@@ -702,7 +698,6 @@ const OnboardingGuide = () => {
 
                 if (nextIndex === startIndex) {
                     // Completed the circle
-                    console.log(`[OnboardingGuide] Completed circular tour`);
                     if (userId) {
                         setOnboardingCompleted(true);
                     }
@@ -724,97 +719,14 @@ const OnboardingGuide = () => {
             }
 
             // Check if there are more steps on the current page by looking at the steps array
-            // Only advance when the LAST step has been completed (index === stepsCount - 1)
-            // This keeps the final step interactive and allows Back to work
+            // Only handle intermediate steps here - let STATUS.FINISHED handle the last step
             const hasMoreStepsOnPage = stepsCount > 0 && (index < stepsCount - 1);
 
             if (!hasMoreStepsOnPage) {
-                // This was the last step in the array (all steps on current page completed)
-                console.log(`[OnboardingGuide] Last step on page completed (step ${index + 1} of ${stepsCount})`);
-
-                // If currentSteps is empty, we can't proceed - fallback to next step
-                if (stepsCount === 0) {
-                    console.warn(`[OnboardingGuide] No steps available, advancing to next step`);
-                    let nextIndex = (currentIndex + 1) % allSteps.length;
-                    setCurrentStepIndexStorage(nextIndex);
-                    const nextStep = allSteps[nextIndex];
-                    if (nextStep.pagePath !== location.pathname) {
-                        setRunTour(false);
-                        setIsReady(false);
-                    }
-                    return;
-                }
-
-                // Find which step definition corresponds to the completed step
-                // currentSteps contains steps starting from currentStep onwards on current page
-                const stepsOnCurrentPage = allSteps.filter(s => s.pagePath === location.pathname);
-                const currentStepInAllSteps = allSteps[currentIndex];
-                const currentStepPageIndex = stepsOnCurrentPage.findIndex(s =>
-                    s.target === currentStepInAllSteps.target && s.pagePath === currentStepInAllSteps.pagePath
-                );
-
-                // Find the first step of this page in allSteps to get the offset
-                const firstStepOfPage = stepsOnCurrentPage[0];
-                const firstStepGlobalIndex = allSteps.findIndex(s =>
-                    s.target === firstStepOfPage.target && s.pagePath === firstStepOfPage.pagePath
-                );
-
-                // Count how many real steps (non-placeholder) were completed
-                let realStepCount = 0;
-                for (let i = 0; i <= index; i++) {
-                    const stepInCallback = currentSteps[i];
-                    if (stepInCallback && stepInCallback.content !== '...' && stepInCallback.title !== '...') {
-                        realStepCount++;
-                    }
-                }
-
-                // The completed step is at position (currentStepPageIndex + realStepCount - 1) in stepsOnCurrentPage
-                // Its global index is (firstStepGlobalIndex + currentStepPageIndex + realStepCount - 1)
-                const completedStepPageIndex = currentStepPageIndex + realStepCount - 1;
-                const completedStepDef = stepsOnCurrentPage[completedStepPageIndex];
-                const completedStepGlobalIndex = completedStepDef ?
-                    allSteps.findIndex(s => s.target === completedStepDef.target && s.pagePath === completedStepDef.pagePath) :
-                    -1;
-
-                // Advance to the next step after the completed one
-                let nextIndex = (completedStepGlobalIndex !== -1 ? completedStepGlobalIndex + 1 : currentIndex + realStepCount) % allSteps.length;
-                const nextStep = allSteps[nextIndex];
-
-                console.log(`[OnboardingGuide] Step calculation:`, {
-                    currentIndex,
-                    callbackIndex: index,
-                    currentStepPageIndex,
-                    firstStepGlobalIndex,
-                    realStepCount,
-                    completedStepPageIndex,
-                    completedStepDef: completedStepDef?.target,
-                    completedStepGlobalIndex,
-                    calculatedNextIndex: nextIndex,
-                    nextStepPage: nextStep?.pagePath,
-                    nextStepTarget: nextStep?.target,
-                    currentStepsLength: currentSteps.length
-                });
-
-                // Check if we've completed the circular loop
-                if (nextIndex === startIndex) {
-                    console.log(`[OnboardingGuide] Completed circular tour, returning to start index ${startIndex}`);
-                    if (userId) {
-                        setOnboardingCompleted(true);
-                    }
-                    setRunTour(false);
-                    tourStartedRef.current = false;
-                    setCurrentStepIndexStorage(0);
-                    localStorage.removeItem('onboarding_step_index');
-                    localStorage.removeItem('onboarding_start_index');
-                } else {
-                    // Advance to next step (which will be on a different page)
-                    setCurrentStepIndexStorage(nextIndex);
-                    console.log(`[OnboardingGuide] All steps on page completed, advancing to step ${nextIndex} "${nextStep.target}" on page ${nextStep.pagePath}`);
-
-                    // Stop tour - navigation effect will handle moving to next page
-                    setRunTour(false);
-                    setIsReady(false);
-                }
+                // This was the last step in the array - STATUS.FINISHED will handle the completion
+                // Don't process it here to avoid duplicate handling
+                console.log(`[OnboardingGuide] Last step on page completed (step ${index + 1} of ${stepsCount}) - STATUS.FINISHED will handle advancement`);
+                return;
             } else {
                 // Still more steps in the array - Joyride handles them automatically
                 // DON'T update the index here - let Joyride handle internal step advancement
@@ -844,14 +756,13 @@ const OnboardingGuide = () => {
                     setCurrentStepIndexStorage(nextIndex);
                     const nextStep = allSteps[nextIndex];
                     if (nextStep.pagePath !== location.pathname) {
-                        console.log(`[OnboardingGuide] Error handler: Next step "${nextStep.target}" is on different page, stopping tour`);
                         setRunTour(false);
                         setIsReady(false);
                     }
                 }
             }
         }
-    }, [userId, setOnboardingCompleted, allSteps, location.pathname, getCurrentStepIndex, getStartingStepIndex, setCurrentStepIndexStorage, setRunTour]);
+    }, [userId, setOnboardingCompleted, allSteps, location.pathname, getCurrentStepIndex, getStartingStepIndex, setCurrentStepIndexStorage, setRunTour, navigate]);
 
     // Compute steps for rendering - recalculate whenever refsUpdateTrigger changes
     // IMPORTANT: This MUST recalculate when runTour becomes true, using fresh refsRef.current
@@ -866,16 +777,8 @@ const OnboardingGuide = () => {
             const actualPath = location.pathname;
             const storedIndex = getCurrentStepIndex();
 
-            console.log('[OnboardingGuide] Computing steps:', {
-                storedIndex,
-                actualPath,
-                allStepsLength: allSteps.length,
-                refsAvailable: Object.keys(refsRef.current).length
-            });
-
             // Validate index is within bounds
             if (storedIndex < 0 || storedIndex >= allSteps.length) {
-                console.warn(`[OnboardingGuide] Invalid step index: ${storedIndex} (bounds: 0-${allSteps.length - 1})`);
                 return stepsRef.current.length > 0 ? stepsRef.current : []; // Return previous steps if available
             }
 
@@ -883,7 +786,6 @@ const OnboardingGuide = () => {
 
             // If current step doesn't exist, return empty
             if (!currentStep) {
-                console.warn(`[OnboardingGuide] Current step at index ${storedIndex} is undefined`);
                 return stepsRef.current.length > 0 ? stepsRef.current : []; // Return previous steps if available
             }
 
@@ -912,7 +814,7 @@ const OnboardingGuide = () => {
                         try {
                             isInDOM = document.body.contains(ref.current);
                         } catch (e) {
-                            console.warn(`[OnboardingGuide] Error checking ref for "${step.target}":`, e);
+                            // Error checking ref
                         }
 
                         if (isInDOM) {
@@ -926,20 +828,16 @@ const OnboardingGuide = () => {
                 }).filter(Boolean); // Remove any null entries
 
                 if (mappedSteps.length > 0) {
+                    // Don't add placeholder steps - just use the real steps
+                    // Joyride's continuous prop will show "Next" on all steps
+                    // When user clicks "Finish" on the last step, STATUS.FINISHED will handle advancing to next page
                     computedSteps = mappedSteps;
                     stepsRef.current = mappedSteps; // Store for stability
-
-                    console.log(`[OnboardingGuide] ✅ Added ${computedSteps.length} step(s) from current page (empty divs allowed)`);
                 } else {
-                    console.log(`[OnboardingGuide] ⚠️ No valid steps found on current page`);
                     // Return previous steps if available to prevent tour from disappearing
                     return stepsRef.current.length > 0 ? stepsRef.current : [];
                 }
             } else {
-                console.log(`[OnboardingGuide] Current step is on different page:`, {
-                    stepPage: currentStep.pagePath,
-                    currentPage: actualPath
-                });
                 // Return previous steps if available
                 return stepsRef.current.length > 0 ? stepsRef.current : [];
             }
@@ -948,10 +846,8 @@ const OnboardingGuide = () => {
             // Joyride's continuous prop will handle showing "Next" vs "Finish" button
             // We'll handle step advancement in the callback
 
-            console.log(`[OnboardingGuide] Steps computed: ${computedSteps.length} step(s) ready`);
             return computedSteps;
         } catch (error) {
-            console.error('[OnboardingGuide] Error computing steps:', error);
             return stepsRef.current.length > 0 ? stepsRef.current : [];
         }
     }, [refsUpdateTrigger, refs, allSteps, getCurrentStepIndex, getStartingStepIndex, location.pathname]);
@@ -968,48 +864,10 @@ const OnboardingGuide = () => {
 
     // Don't render if no steps available
     if (!steps || steps.length === 0) {
-        console.log('[OnboardingGuide] Not rendering: no steps available', {
-            stepsLength: steps?.length,
-            runTour,
-            isReady,
-            onboardingCompleted,
-            userId,
-            role
-        });
         return null;
     }
 
     const shouldRun = runTour && isReady && steps.length > 0;
-
-    console.log('[OnboardingGuide] Render decision:', {
-        shouldRun,
-        runTour,
-        isReady,
-        stepsLength: steps.length,
-        onboardingCompleted,
-        userId,
-        role,
-        stepsDetails: steps.map(s => ({
-            target: s.target ? `${s.target.tagName || 'element'}` : 'null',
-            title: s.title,
-            content: s.content?.substring(0, 50) + '...',
-            hasValidTarget: !!s.target
-        }))
-    });
-
-    // Debug: Log Joyride props
-    if (shouldRun && steps.length > 0) {
-        console.log('[OnboardingGuide] 🎯 About to render Joyride with:', {
-            stepsCount: steps.length,
-            firstStep: {
-                target: steps[0].target,
-                title: steps[0].title,
-                hasTarget: !!steps[0].target,
-                targetType: steps[0].target?.nodeType
-            },
-            run: shouldRun
-        });
-    }
 
     return (
         <>
@@ -1071,7 +929,7 @@ const OnboardingGuide = () => {
                 locale={{
                     back: 'Back',
                     close: 'Close',
-                    last: 'Next',
+                    last: 'Finish',
                     next: 'Next',
                     skip: 'Skip Tour',
                 }}
