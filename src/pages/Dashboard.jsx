@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 import PaymentButton from '../components/PaymentButton';
 import OnboardingGuide from '../components/OnboardingGuide';
 import AddToCalendarButtons from '../components/AddToCalendarButtons';
+import ProposalModal from '../components/ProposalModal';
 
 const localizer = momentLocalizer(moment);
 
@@ -207,6 +208,9 @@ const Dashboard = () => {
     const [calendarEvents, setCalendarEvents] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [fetchedDashboardData, setFetchedDashboardData] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedProposal, setSelectedProposal] = useState(null);
+    const [selectedProposalType, setSelectedProposalType] = useState('rfp');
 
     const [editIdx, setEditIdx] = useState(null);
     const [editForm, setEditForm] = useState({ deadline: "", submittedAt: "", status: "" });
@@ -908,6 +912,19 @@ const Dashboard = () => {
         );
     }
 
+    // Handle opening proposal modal
+    const handleProposalClick = (proposal, type = 'rfp') => {
+        setSelectedProposal(proposal);
+        setSelectedProposalType(type);
+        setModalOpen(true);
+    };
+
+    // Handle closing proposal modal
+    const handleCloseModal = () => {
+        setModalOpen(false);
+        setSelectedProposal(null);
+    };
+
     // Custom date cell for calendar
     function CustomDateCellWrapper({ value }) {
         const events = getEventsForDate(value);
@@ -1145,14 +1162,12 @@ const Dashboard = () => {
                                             )}
 
                                             <td className="px-4 py-2 font-semibold">
-                                                <a
-                                                    href={p.url || p.urlLink || p.link || '#'}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-[#2563EB] hover:underline"
+                                                <button
+                                                    onClick={() => handleProposalClick(p, 'rfp')}
+                                                    className="text-[#2563EB] hover:underline cursor-pointer text-left"
                                                 >
                                                     {p.title || p.OPPORTUNITY_TITLE || 'Not Provided'}
-                                                </a>
+                                                </button>
                                             </td>
 
                                             <td className="px-4 py-2">{p.client || "Not Provided"}</td>
@@ -1468,9 +1483,12 @@ const Dashboard = () => {
                                             )}
 
                                             <td className="px-4 py-2 font-semibold">
-                                                <a href={p.url || p.urlLink || p.OPPORTUNITY_NUMBER_LINK || '#'} target="_blank" rel="noopener noreferrer" className="text-[#2563EB] hover:underline">
+                                                <button
+                                                    onClick={() => handleProposalClick(p, 'grant')}
+                                                    className="text-[#2563EB] hover:underline cursor-pointer text-left"
+                                                >
                                                     {p.title || p.OPPORTUNITY_TITLE || 'Not Provided'}
-                                                </a>
+                                                </button>
                                             </td>
 
                                             <td className="px-4 py-2">{p.AGENCY_NAME || p.client || "Not Provided"}</td>
@@ -1946,6 +1964,14 @@ const Dashboard = () => {
                     </div>
                 </div>
             </main>
+
+            {/* Proposal Modal */}
+            <ProposalModal
+                proposal={selectedProposal}
+                type={selectedProposalType}
+                isOpen={modalOpen}
+                onClose={handleCloseModal}
+            />
         </div>
     );
 };
