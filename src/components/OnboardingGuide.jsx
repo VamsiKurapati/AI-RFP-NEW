@@ -828,9 +828,32 @@ const OnboardingGuide = () => {
                 }).filter(Boolean); // Remove any null entries
 
                 if (mappedSteps.length > 0) {
-                    // Don't add placeholder steps - just use the real steps
-                    // Joyride's continuous prop will show "Next" on all steps
-                    // When user clicks "Finish" on the last step, STATUS.FINISHED will handle advancing to next page
+                    // Check if there are more steps globally after this page
+                    const lastStepOnPage = stepsOnCurrentPage[stepsOnCurrentPage.length - 1];
+                    const lastStepGlobalIndex = allSteps.findIndex(s =>
+                        s.target === lastStepOnPage.target && s.pagePath === lastStepOnPage.pagePath
+                    );
+
+                    if (lastStepGlobalIndex !== -1) {
+                        const nextIndexAfterPage = (lastStepGlobalIndex + 1) % allSteps.length;
+                        const startIndex = getStartingStepIndex();
+                        const hasMoreStepsGlobally = nextIndexAfterPage !== startIndex && nextIndexAfterPage !== lastStepGlobalIndex;
+
+                        // If there are more steps globally, customize the last step to show "Next Page" instead of "Finish"
+                        if (hasMoreStepsGlobally && mappedSteps.length > 0) {
+                            // Modify the last step to have custom locale
+                            const lastMappedStep = mappedSteps[mappedSteps.length - 1];
+                            if (lastMappedStep) {
+                                mappedSteps[mappedSteps.length - 1] = {
+                                    ...lastMappedStep,
+                                    locale: {
+                                        last: 'Next Page'
+                                    }
+                                };
+                            }
+                        }
+                    }
+
                     computedSteps = mappedSteps;
                     stepsRef.current = mappedSteps; // Store for stability
                 } else {
